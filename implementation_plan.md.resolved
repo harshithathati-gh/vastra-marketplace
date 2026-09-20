@@ -1,0 +1,390 @@
+# Vastra — Technical Architecture & Implementation Plan
+
+## Goal
+
+Build a production-grade tailoring marketplace with **3 interfaces** (customer web, mobile app, admin panel) and a shared backend, achievable as a college project.
+
+---
+
+## Tech Stack
+
+| Layer | Technology | Why |
+|-------|-----------|-----|
+| **Backend** | Node.js + Express.js | Fast to build, huge ecosystem, great for REST APIs |
+| **Database** | MongoDB + Mongoose | Flexible schema, free Atlas tier, easy for prototyping |
+| **Auth** | JWT + bcrypt + OTP (via email) | Industry-standard, no vendor lock-in |
+| **File Storage** | Cloudinary (free tier) | Image upload, transformation, CDN delivery — 25GB free |
+| **Payments** | Razorpay (test mode) | Indian payment gateway, excellent docs, test mode for project |
+| **Real-time** | Socket.io | In-app chat messaging |
+| **Web Frontend** | Next.js (React) | SSR for SEO, file-based routing, production-ready |
+| **Mobile App** | React Native (Expo) | Cross-platform, shares JS ecosystem with backend/web |
+| **Admin Panel** | Next.js (separate app) | Reuse React knowledge, separate deployment |
+| **Deployment** | Vercel (web) + Render (backend) | Free tiers, zero DevOps |
+
+> [!NOTE]
+> All these services have **free tiers** sufficient for a college project demo.
+
+---
+
+## Project Structure (Monorepo)
+
+```
+d:\PersonalProjects\Vastra\
+├── backend/                  # Express.js API server
+│   ├── src/
+│   │   ├── config/           # DB, cloudinary, razorpay config
+│   │   ├── middleware/        # auth, upload, error handling
+│   │   ├── models/           # Mongoose schemas
+│   │   ├── routes/           # API route handlers
+│   │   ├── controllers/      # Business logic
+│   │   ├── services/         # Reusable service layer
+│   │   ├── utils/            # Helpers
+│   │   └── socket/           # Chat socket handlers
+│   ├── tests/                # Jest + Supertest API tests
+│   ├── .env.example
+│   ├── package.json
+│   └── server.js
+│
+├── web/                      # Next.js customer-facing website
+│   ├── src/
+│   │   ├── app/              # App router pages
+│   │   ├── components/       # Reusable UI components
+│   │   ├── contexts/         # Auth, cart, theme contexts
+│   │   ├── hooks/            # Custom hooks
+│   │   ├── lib/              # API client, utils
+│   │   └── styles/           # Global CSS
+│   └── package.json
+│
+├── mobile/                   # React Native (Expo) app
+│   ├── src/
+│   │   ├── screens/          # App screens
+│   │   ├── components/       # Shared components
+│   │   ├── navigation/       # React Navigation setup
+│   │   ├── contexts/         # Auth, state
+│   │   └── services/         # API calls
+│   └── package.json
+│
+├── admin/                    # Next.js admin panel
+│   ├── src/
+│   │   ├── app/              # Admin pages
+│   │   ├── components/       # Admin UI components
+│   │   └── lib/              # API client
+│   └── package.json
+│
+└── shared/                   # Shared constants, types
+    ├── constants.js          # Order statuses, categories, etc.
+    └── measurementTemplates.js
+```
+
+---
+
+## Database Schema (MongoDB Collections)
+
+### Users
+```js
+{
+  name, email, phone, password (hashed),
+  role: "customer" | "tailor" | "admin",
+  avatar, location: { city, state, coordinates },
+  isVerified: Boolean,
+  createdAt, updatedAt
+}
+```
+
+### TailorProfiles
+```js
+{
+  userId (ref → Users),
+  bio, specializations: [String],
+  experience: Number (years),
+  serviceArea: [String],
+  startingPrices: { shirt: 500, kurta: 800, ... },
+  portfolio: [{ imageUrl, caption }],
+  verificationStatus: "pending" | "approved" | "rejected",
+  verificationDocs: [String] (Cloudinary URLs),
+  averageRating, totalReviews,
+  isActive: Boolean
+}
+```
+
+### Products (catalog/categories)
+```js
+{
+  name, category: "men" | "women" | "kids",
+  subCategory: "ethnic" | "western",
+  type: "shirt" | "kurta" | "lehenga" | ...,
+  designOptions: { collarTypes: [...], sleeveStyles: [...], ... },
+  measurementTemplate: String (ref),
+  baseImage, description
+}
+```
+
+### Orders
+```js
+{
+  customerId, tailorId,
+  product: { type, designChoices, referenceImages },
+  measurements: { chest, waist, ... },
+  measurementProfileName: String,
+  fabricPreference, specialInstructions,
+  deliveryAddress, deliveryType: "shipping" | "self-pickup",
+  status: "placed" | "accepted" | "rejected" | "in_progress" | "shipped" | "delivered" | "disputed",
+  quotedPrice, advancePaid, balancePaid,
+  trackingNumber, estimatedDelivery,
+  razorpayOrderId, razorpayPaymentId,
+  createdAt, updatedAt
+}
+```
+
+### Reviews
+```js
+{
+  customerId, tailorId, orderId,
+  rating: 1-5, text,
+  photos: [String],
+  isFlagged: Boolean,
+  createdAt
+}
+```
+
+### Messages
+```js
+{
+  orderId, senderId, receiverId,
+  content, imageUrl,
+  isRead: Boolean,
+  createdAt
+}
+```
+
+### MeasurementProfiles
+```js
+{
+  userId, profileName: "Self" | "Mom" | ...,
+  garmentType,
+  measurements: { chest, waist, hip, ... }
+}
+```
+
+### Disputes
+```js
+{
+  orderId, raisedBy (customerId),
+  reason, description, evidencePhotos: [String],
+  status: "open" | "resolved" | "refunded",
+  adminNotes, resolvedAt
+}
+```
+
+---
+
+## API Design (RESTful)
+
+### Auth
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Register (customer/tailor) |
+| POST | `/api/auth/login` | Login → JWT |
+| POST | `/api/auth/forgot-password` | Send reset email |
+| POST | `/api/auth/reset-password` | Reset password |
+| GET | `/api/auth/me` | Get current user |
+
+### Tailors
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/tailors` | List/search/filter tailors |
+| GET | `/api/tailors/:id` | Tailor public profile |
+| PUT | `/api/tailors/profile` | Update own profile (tailor) |
+| POST | `/api/tailors/portfolio` | Upload portfolio image |
+| DELETE | `/api/tailors/portfolio/:imageId` | Remove portfolio image |
+
+### Products
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/products` | Browse product catalog |
+| GET | `/api/products/:id` | Product details + design options |
+
+### Orders
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/orders` | Place order |
+| GET | `/api/orders` | My orders (customer or tailor) |
+| GET | `/api/orders/:id` | Order details |
+| PATCH | `/api/orders/:id/status` | Update status (tailor) |
+| PATCH | `/api/orders/:id/quote` | Send price quote (tailor) |
+| POST | `/api/orders/:id/pay` | Initiate Razorpay payment |
+| POST | `/api/orders/:id/verify-payment` | Verify Razorpay callback |
+
+### Reviews
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/reviews` | Create review |
+| GET | `/api/reviews/tailor/:tailorId` | Get tailor's reviews |
+| PUT | `/api/reviews/:id` | Edit own review |
+| DELETE | `/api/reviews/:id` | Delete own review |
+
+### Messages (REST + Socket.io)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/messages/:orderId` | Chat history for an order |
+| POST | `/api/messages` | Send message (also via socket) |
+
+### Measurements
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/measurements` | My saved profiles |
+| POST | `/api/measurements` | Save new profile |
+| PUT | `/api/measurements/:id` | Update profile |
+| GET | `/api/measurements/template/:garmentType` | Get measurement template |
+
+### Admin
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/users` | All users |
+| PATCH | `/api/admin/users/:id` | Activate/ban user |
+| GET | `/api/admin/tailors/pending` | Pending verifications |
+| PATCH | `/api/admin/tailors/:id/verify` | Approve/reject tailor |
+| GET | `/api/admin/orders` | All orders |
+| GET | `/api/admin/disputes` | All disputes |
+| PATCH | `/api/admin/disputes/:id` | Resolve dispute / issue refund |
+| GET | `/api/admin/reviews/flagged` | Flagged reviews |
+| DELETE | `/api/admin/reviews/:id` | Remove review |
+| CRUD | `/api/admin/products` | Manage product catalog |
+| GET | `/api/admin/settings` | Platform settings |
+| PUT | `/api/admin/settings` | Update settings |
+
+---
+
+## Web Pages (Next.js App Router)
+
+| Page | Route | Description |
+|------|-------|-------------|
+| Home | `/` | Hero, featured tailors, categories, how-it-works |
+| Browse Products | `/products` | Product grid with filters |
+| Product Detail | `/products/[id]` | Design options, "Find a tailor" |
+| Browse Tailors | `/tailors` | Search, filter, map view |
+| Tailor Profile | `/tailors/[id]` | Full profile, portfolio, reviews, order CTA |
+| Place Order | `/order/new?tailor=[id]` | Multi-step order form |
+| My Orders | `/dashboard/orders` | Customer order list |
+| Order Detail | `/dashboard/orders/[id]` | Status, chat, payment |
+| My Measurements | `/dashboard/measurements` | Saved profiles |
+| Messages | `/dashboard/messages` | Chat threads |
+| Tailor Dashboard | `/tailor/dashboard` | Tailor home (stats) |
+| Tailor Orders | `/tailor/orders` | Incoming & active orders |
+| Tailor Profile Edit | `/tailor/profile` | Edit profile & portfolio |
+| Auth | `/login`, `/register` | Login & signup pages |
+
+---
+
+## Mobile Screens (React Native)
+
+Mirrors web pages with mobile-native navigation:
+- Bottom tabs: Home, Search, Orders, Messages, Profile
+- Stack navigation within each tab
+
+---
+
+## Admin Panel Pages
+
+| Page | Route |
+|------|-------|
+| Dashboard (stats) | `/` |
+| Users list | `/users` |
+| Tailor verifications | `/verifications` |
+| Orders management | `/orders` |
+| Disputes | `/disputes` |
+| Reviews moderation | `/reviews` |
+| Product catalog | `/products` |
+| Settings | `/settings` |
+
+---
+
+## Proposed Changes
+
+### Backend (`backend/`)
+
+#### [NEW] Complete Express.js API server
+
+All models, routes, controllers, middleware, and socket handlers as described in the schema and API sections above. Key files:
+
+- `server.js` — Express app entry point with Socket.io
+- `src/config/db.js` — MongoDB connection
+- `src/config/cloudinary.js` — Cloudinary setup
+- `src/config/razorpay.js` — Razorpay instance
+- `src/middleware/auth.js` — JWT verification middleware
+- `src/middleware/upload.js` — Multer + Cloudinary upload
+- `src/models/` — All 8 Mongoose models
+- `src/routes/` — All route files
+- `src/controllers/` — All controller files
+- `src/socket/chatHandler.js` — Socket.io chat events
+
+---
+
+### Web Frontend (`web/`)
+
+#### [NEW] Next.js customer-facing website
+
+All pages, components, and styles as described in the Web Pages section.
+
+---
+
+### Mobile App (`mobile/`)
+
+#### [NEW] React Native (Expo) cross-platform app
+
+All screens and navigation as described in the Mobile Screens section.
+
+---
+
+### Admin Panel (`admin/`)
+
+#### [NEW] Next.js admin dashboard
+
+All admin pages as described in the Admin Panel Pages section.
+
+---
+
+### Shared (`shared/`)
+
+#### [NEW] Shared constants and templates
+
+- `constants.js` — Order statuses, categories, roles
+- `measurementTemplates.js` — Per-garment measurement fields
+
+---
+
+## Implementation Phases
+
+| Phase | What | Estimated Effort |
+|-------|------|-----------------|
+| **1** | Project setup, database models, auth APIs | Foundation |
+| **2** | Tailor & product APIs, web home + browse pages | Core discovery |
+| **3** | Order flow (placement, status, quotes, payment) | Core transaction |
+| **4** | Reviews, messaging (Socket.io), measurements | Trust & communication |
+| **5** | Admin panel (all must-have modules) | Moderation |
+| **6** | Mobile app (React Native) | Mobile experience |
+
+> [!IMPORTANT]
+> Each phase should be functional and demo-able on its own. We'll build and verify incrementally.
+
+---
+
+## Verification Plan
+
+### Automated Tests
+- **Backend API tests** using **Jest + Supertest**
+  - Command: `cd d:\PersonalProjects\Vastra\backend && npm test`
+  - Tests for: auth flow, CRUD operations, order state transitions, payment verification, authorization checks
+- **Web E2E tests** using **Cypress** (stretch goal)
+  - Command: `cd d:\PersonalProjects\Vastra\web && npx cypress run`
+
+### Manual Verification (Browser-Based)
+After each phase, we'll use the browser tool to:
+1. Open the web app at `http://localhost:3000`
+2. Walk through the primary user flows (register → browse → order → pay → review)
+3. Test the admin panel at `http://localhost:3001`
+4. Verify mobile app in Expo Go on a device or emulator
+
+### User Testing
+- Deploy to free hosting (Vercel + Render) for the user to test on their own device
+- User confirms all flows work as expected before marking phase complete

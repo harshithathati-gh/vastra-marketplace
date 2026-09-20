@@ -1,0 +1,193 @@
+# Vastra — Consolidated Requirements Specification
+
+> A marketplace connecting customers with local tailors across India
+
+---
+
+## Roles
+
+| Role | Description |
+|------|-------------|
+| **Customer** | Browses, orders, reviews |
+| **Tailor** | Manages profile, receives & fulfils orders |
+| **Admin** | Moderates platform, manages disputes, views analytics |
+
+---
+
+## 1. Authentication & User Management
+
+- Register via **Email + Password** or **Phone OTP**
+- Social login (Google)
+- Role selection at signup (Customer / Tailor)
+- JWT-based session management
+- Forgot password / reset flow
+- Profile edit & account deletion
+
+### Tailor-Specific Onboarding
+- Submit verification documents (Aadhaar / business proof) — admin approves before profile goes live
+
+---
+
+## 2. Customer Features
+
+### 2.1 Product Browsing
+- Browse by **category** → Men / Women / Kids → Ethnic / Western → Shirt, Kurta, Lehenga, etc.
+- View **design options** per product (collar types, sleeve styles, embroidery patterns)
+- Filter by: price range, product type, fabric type
+- Reference image upload ("I want something like this")
+
+### 2.2 Tailor Discovery
+- Search & filter tailors by: location, specialization, rating, price range, experience
+- GPS-based "**Tailors near me**"
+- Sort by: rating, distance, price (low-high / high-low), experience
+
+### 2.3 Tailor Profile (public view)
+- Name, photo, base location on map
+- Specializations & expertise areas
+- Years of experience
+- Portfolio gallery (photos of completed work)
+- Service area (delivery radius / pan-India)
+- Starting prices per product category
+- Reviews & ratings (average + individual reviews)
+- "Place Order" CTA button
+
+### 2.4 Order Placement
+Order form captures:
+- Selected product type & design customizations
+- Customer location (delivery address)
+- Body measurements (guided by measurement templates per garment)
+- Saved measurement profiles (reusable)
+- Reference images (optional uploads)
+- Fabric preference (tailor-provided / self-provided)
+- Special instructions (free text)
+- Preferred delivery date
+
+### 2.5 Order Tracking
+- Real-time status: `Placed → Accepted → In Progress → Shipped → Delivered`
+- Push / in-app notifications on status changes
+- Order history with re-order option
+
+### 2.6 Reviews & Ratings
+- Rate tailor 1–5 stars after delivery
+- Write text review
+- Upload photos of received product
+- Edit/delete own reviews
+
+### 2.7 Messaging
+- In-app chat with tailor (text + image sharing)
+- Chat history preserved per order
+
+---
+
+## 3. Tailor Features
+
+### 3.1 Profile Management
+- Edit profile: bio, specializations, experience, location, service area
+- Set starting prices per product category
+- Upload / manage portfolio gallery
+
+### 3.2 Order Management
+- View incoming orders with full details
+- **Accept / Reject** orders (with reject reason)
+- Update order status as work progresses
+- Set estimated delivery date upon acceptance
+- View order history & earnings summary
+
+### 3.3 Dashboard
+- Pending orders count
+- Earnings this month
+- Average rating
+- Recent reviews
+
+### 3.4 Messaging
+- In-app chat with customers
+- Clarify measurements / design details before starting work
+
+---
+
+## 4. Admin Panel (Must-Haves Only)
+
+### 4.1 User Management
+- View / search all customers & tailors
+- Activate / deactivate / ban accounts
+
+### 4.2 Tailor Verification
+- Queue of pending tailor applications
+- View submitted documents
+- Approve / reject with reason
+
+### 4.3 Order Management
+- View all platform orders, filter by status / date / tailor / customer
+- Intervene in stuck or disputed orders
+
+### 4.4 Dispute & Refund Management
+- Customer-raised disputes dashboard
+- View dispute details (order, complaint, evidence photos)
+- Mediate and issue refunds
+
+### 4.5 Review Moderation
+- Flagged / reported reviews queue
+- Remove fake or abusive reviews
+
+### 4.6 Content Moderation
+- Review uploaded portfolio / product images
+- Remove inappropriate content
+
+### 4.7 Platform Settings
+- Manage product categories & sub-categories
+- Set platform commission percentage
+- Configure supported delivery locations
+
+---
+
+## 5. Pricing & Payments
+
+| Aspect | Decision |
+|--------|----------|
+| **Pricing model** | Tailor sets starting prices per category; sends final quote after reviewing order |
+| **Customer pays** | Advance (50%) on order acceptance + Balance before shipping |
+| **Payment gateway** | **Razorpay** (UPI, cards, netbanking, wallets) — test mode for project |
+| **Platform commission** | Configurable % deducted from tailor payout |
+| **Refunds** | Admin-initiated via dispute resolution |
+| **Invoices** | Auto-generated PDF receipt per order |
+
+---
+
+## 6. Measurement System
+
+- **Guided measurement templates** per garment type with illustrations
+- **Saved profiles** — "My measurements", "Mom's measurements", etc.
+- Different templates: shirt, trousers, kurta, blouse, lehenga, suit, etc.
+- Required vs. optional measurement fields per garment
+
+---
+
+## 7. Delivery & Logistics
+
+- Tailor ships via **third-party courier** (Shiprocket / manual tracking number entry)
+- Tracking number shared with customer
+- **Self-pickup** option for local orders
+- Shipping cost added to order total (set by tailor or flat rate)
+
+---
+
+## 8. Notifications
+
+| Event | Channel |
+|-------|---------|
+| Order placed / accepted / rejected | Push + In-app |
+| Order status change | Push + In-app |
+| New message received | Push + In-app |
+| New review on profile (tailor) | In-app |
+| Dispute update | In-app + Email |
+
+---
+
+## 9. Non-Functional Requirements
+
+- **Responsive web** (desktop + tablet + mobile)
+- **Mobile app** (Android — via React Native)
+- **Language**: English (Hindi as stretch goal)
+- **Image optimization** (compressed uploads, CDN delivery)
+- **Security**: password hashing (bcrypt), input validation, rate limiting
+- **Data**: DPDP Act aware — user data deletion support
