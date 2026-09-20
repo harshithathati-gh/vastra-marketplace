@@ -80,7 +80,7 @@ export default function MeasurementGuidePage() {
                         {/* Under Bust */}
                         <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                             <div style={{ flex: '1 1 300px' }}>
-                                <img src="/images/measuring_under_bust_1789891173717.png" alt="Measuring Under Bust" style={{ width: '100%', borderRadius: '8px', objectFit: 'cover', height: '240px', border: '1px solid #e5e7eb' }} />
+                                <img src="/images/measuring_under_bust_modest_1789919869331.png" alt="Measuring Under Bust" style={{ width: '100%', borderRadius: '8px', objectFit: 'cover', height: '240px', border: '1px solid #e5e7eb' }} />
                             </div>
                             <div style={{ flex: '2 1 300px' }}>
                                 <h3 style={{ fontSize: '1.4rem', margin: '0 0 10px', color: '#111827' }}>C. Under Bust</h3>
@@ -121,7 +121,7 @@ export default function MeasurementGuidePage() {
                         {/* Neck Depth */}
                         <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                             <div style={{ flex: '1 1 300px' }}>
-                                <img src="/images/measuring_neck_depth_1789891216570.png" alt="Measuring Neck Depth" style={{ width: '100%', borderRadius: '8px', objectFit: 'cover', height: '240px', border: '1px solid #e5e7eb' }} />
+                                <img src="/images/measuring_neck_depth_modest_1789919880621.png" alt="Measuring Neck Depth" style={{ width: '100%', borderRadius: '8px', objectFit: 'cover', height: '240px', border: '1px solid #e5e7eb' }} />
                             </div>
                             <div style={{ flex: '2 1 300px' }}>
                                 <h3 style={{ fontSize: '1.4rem', margin: '0 0 10px', color: '#111827' }}>F. Front / Back Neck Depth</h3>
@@ -159,7 +159,7 @@ export default function MeasurementGuidePage() {
                         {/* Waist */}
                         <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                             <div style={{ flex: '1 1 300px' }}>
-                                <img src="/images/measuring_waist_1789890567590.png" alt="Measuring Waist" style={{ width: '100%', borderRadius: '8px', objectFit: 'cover', height: '240px', border: '1px solid #e5e7eb' }} />
+                                <img src="/images/measuring_waist_modest_1789919931801.png" alt="Measuring Waist" style={{ width: '100%', borderRadius: '8px', objectFit: 'cover', height: '240px', border: '1px solid #e5e7eb' }} />
                             </div>
                             <div style={{ flex: '2 1 300px' }}>
                                 <h3 style={{ fontSize: '1.4rem', margin: '0 0 10px', color: '#111827' }}>H. Waist</h3>
