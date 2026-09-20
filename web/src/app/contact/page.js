@@ -1,3 +1,5 @@
+'use client';
+
 export default function ContactPage() {
     return (
         <div className="container section" style={{ maxWidth: '640px', margin: '0 auto' }}>
