@@ -182,7 +182,7 @@ export default function Home() {
                         Join India's fastest growing tailoring marketplace. Reach customers across the country, manage orders digitally, and grow your business.
                     </p>
                     <Link href="/register?role=tailor" className="btn btn-primary btn-lg">
-                        Join as Tailor — It's Free →
+                        Join as a Tailor for Free →
                     </Link>
                 </div>
             </section>
