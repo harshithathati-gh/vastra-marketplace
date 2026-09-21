@@ -11,10 +11,11 @@ export default function ColourPanelPage() {
     useEffect(() => {
         const fetchColors = async () => {
             try {
-                const res = await api.get('/colors');
-                const data = res.data || [];
-                setCombinations(data);
-                if (data.length > 0) setSelectedPattern(data[0]);
+                const response = await api.get('/colors');
+                // The API now correctly returns { success: true, data: [...] }
+                const colorsArray = response.data || [];
+                setCombinations(colorsArray);
+                if (colorsArray.length > 0) setSelectedPattern(colorsArray[0]);
             } catch (err) {
                 console.error('Failed to fetch colors', err);
             } finally {
