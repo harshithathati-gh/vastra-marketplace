@@ -91,7 +91,7 @@ export default function OrderDetailPage() {
 
         try {
             // Step 1: Initialize payment order in backend
-            const { data } = await api.post(`/orders/${id}/pay`, { paymentType: 'escrow' });
+            const data = await api.post(`/orders/${id}/pay`, { paymentType: 'escrow' });
 
             const options = {
                 key: data.key,
