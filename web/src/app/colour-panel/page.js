@@ -11,7 +11,8 @@ export default function ColourPanelPage() {
     useEffect(() => {
         const fetchColors = async () => {
             try {
-                const data = await api.get('/colors');
+                const res = await api.get('/colors');
+                const data = res.data || [];
                 setCombinations(data);
                 if (data.length > 0) setSelectedPattern(data[0]);
             } catch (err) {

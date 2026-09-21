@@ -6,9 +6,9 @@ const ColorCombination = require('../models/ColorCombination');
 exports.getColors = async (req, res) => {
     try {
         const colors = await ColorCombination.find({ isActive: true });
-        res.json(colors);
+        res.json({ success: true, data: colors });
     } catch (error) {
-        res.status(500).json({ message: 'Server Error calling colors API', error: error.message });
+        res.status(500).json({ success: false, message: 'Server Error calling colors API', error: error.message });
     }
 };
 
@@ -25,8 +25,8 @@ exports.createColor = async (req, res) => {
             season
         });
         const saved = await newColor.save();
-        res.status(201).json(saved);
+        res.status(201).json({ success: true, data: saved });
     } catch (error) {
-        res.status(400).json({ message: 'Invalid data', error: error.message });
+        res.status(400).json({ success: false, message: 'Invalid data', error: error.message });
     }
 };
