@@ -93,39 +93,20 @@ export default function OrderDetailPage() {
             // Step 1: Initialize payment order in backend
             const data = await api.post(`/orders/${id}/pay`, { paymentType: 'escrow' });
 
-            const options = {
-                key: data.key,
-                amount: data.amount.toString(),
-                currency: data.currency,
-                name: "Vastra Escrow Payments",
-                description: `Secured Order Payment #${order._id.substring(0, 8)}`,
-                image: "/favicon.ico",
-                order_id: data.razorpayOrderId,
-                handler: async function (response) {
-                    try {
-                        const payload = {
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_order_id: response.razorpay_order_id,
-                            razorpay_signature: response.razorpay_signature
-                        };
+            // --- MOCK GATEWAY BYPASS ---
+            const confirmed = window.confirm(`[MOCK RAZORPAY GATEWAY]\n\nPay ₹${data.amount || 0} to Vastra's Secure Escrow?`);
 
-                        await api.post(`/orders/${id}/verify-payment`, payload);
-                        alert("Escrow Payment Successfully Verified!");
-                        loadOrder(); // Re-sync ui state 
-                    } catch (err) {
-                        alert("Error authenticating payment via Vastra servers. " + err.message);
-                    }
-                },
-                prefill: {
-                    name: user?.name,
-                    email: user?.email,
-                    contact: user?.phone
-                },
-                theme: { color: "#D4AF37" } // Gold Vastra theme
-            };
+            if (confirmed) {
+                // Validate payment using mock signature that bypasses backend crypto
+                await api.post(`/orders/${id}/verify-payment`, {
+                    razorpay_order_id: data.razorpayOrderId,
+                    razorpay_payment_id: `mock_pay_${Date.now()}`,
+                    razorpay_signature: 'mock_signature'
+                });
 
-            const paymentObject = new window.Razorpay(options);
-            paymentObject.open();
+                alert("Escrow Payment Successfully Verified!");
+                loadOrder();
+            }
 
         } catch (error) {
             alert("Error initiating Razorpay checkout: " + error.message);
