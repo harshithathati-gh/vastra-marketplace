@@ -9,6 +9,7 @@ const {
     getFlaggedReviews, deleteReview, unflagReview,
     createProduct, updateProduct, deleteProduct,
     getSettings, updateSettings,
+    getFinanceLedger
 } = require('../controllers/adminController');
 
 // All admin routes require admin role
@@ -44,5 +45,8 @@ router.delete('/products/:id', deleteProduct);
 // Platform settings
 router.get('/settings', getSettings);
 router.put('/settings', updateSettings);
+
+// Finance Ledger
+router.get('/finance', getFinanceLedger);
 
 module.exports = router;

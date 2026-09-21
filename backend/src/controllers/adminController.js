@@ -303,3 +303,55 @@ exports.updateSettings = async (req, res, next) => {
         next(error);
     }
 };
+
+// ========= FINANCE LEDGER =========
+
+// @route   GET /api/admin/finance
+exports.getFinanceLedger = async (req, res, next) => {
+    try {
+        const orders = await Order.find({ isEscrowFunded: true })
+            .populate('tailorId', 'name email')
+            .populate('customerId', 'name email')
+            .sort({ updatedAt: -1 });
+
+        let escrowHeld = 0;
+        let totalPaidOutToTailors = 0;
+        let platformEarnings = 0;
+
+        const ledgerItems = orders.map(order => {
+            const hasCommission = order.platformCommission > 0;
+            const comm = order.platformCommission || 0;
+
+            if (order.escrowStatus === 'held') {
+                escrowHeld += order.totalAmount;
+            } else if (order.escrowStatus === 'released') {
+                const payout = order.totalAmount - comm;
+                totalPaidOutToTailors += payout;
+                platformEarnings += comm;
+            }
+
+            return {
+                id: order._id,
+                totalAmount: order.totalAmount,
+                commission: comm,
+                tailorPayout: order.totalAmount - comm,
+                escrowStatus: order.escrowStatus,
+                tailorName: order.tailorId?.name || 'Unknown',
+                customerName: order.customerId?.name || 'Unknown',
+                date: order.updatedAt
+            };
+        });
+
+        res.json({
+            success: true,
+            summary: {
+                escrowHeld,
+                totalPaidOutToTailors,
+                platformEarnings
+            },
+            ledger: ledgerItems
+        });
+    } catch (error) {
+        next(error);
+    }
+};

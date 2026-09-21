@@ -16,6 +16,7 @@ export default function AdminDashboard() {
     const [pendingTailors, setPendingTailors] = useState([]);
     const [orders, setOrders] = useState([]);
     const [reviews, setReviews] = useState([]);
+    const [finance, setFinance] = useState(null);
 
     useEffect(() => {
         if (authLoading) return;
@@ -28,6 +29,7 @@ export default function AdminDashboard() {
         if (activeTab === 'tailors') loadPendingTailors();
         if (activeTab === 'orders') loadOrders();
         if (activeTab === 'reviews') loadReviews();
+        if (activeTab === 'finances') loadFinance();
     }, [activeTab]);
 
     const loadDashboard = async () => {
@@ -52,6 +54,10 @@ export default function AdminDashboard() {
 
     const loadReviews = async () => {
         try { const data = await api.get('/admin/reviews?limit=50'); setReviews(data.reviews || []); } catch { }
+    };
+
+    const loadFinance = async () => {
+        try { const data = await api.get('/admin/finance'); setFinance(data); } catch { }
     };
 
     const verifyTailor = async (tailorId, status) => {
@@ -91,6 +97,7 @@ export default function AdminDashboard() {
                     { key: 'users', icon: '👥', label: 'Users' },
                     { key: 'tailors', icon: '🧵', label: 'Tailor Verification' },
                     { key: 'orders', icon: '📦', label: 'Orders' },
+                    { key: 'finances', icon: '💰', label: 'Finances & Escrow' },
                     { key: 'reviews', icon: '⭐', label: 'Reviews' },
                 ].map(item => (
                     <a key={item.key} className={activeTab === item.key ? 'active' : ''} onClick={() => setActiveTab(item.key)} style={{ cursor: 'pointer' }}>
@@ -117,6 +124,64 @@ export default function AdminDashboard() {
                             <div className="stat-card"><div className="stat-label">Pending Tailors</div><div className="stat-value" style={{ color: 'var(--warning)' }}>{dashboard.pendingTailors || 0}</div></div>
                             <div className="stat-card"><div className="stat-label">Active Orders</div><div className="stat-value" style={{ color: 'var(--accent-500)' }}>{dashboard.activeOrders || 0}</div></div>
                             <div className="stat-card"><div className="stat-label">Disputes</div><div className="stat-value" style={{ color: 'var(--error)' }}>{dashboard.openDisputes || 0}</div></div>
+                        </div>
+                    </>
+                )}
+
+                {/* Finances Tab */}
+                {activeTab === 'finances' && finance && (
+                    <>
+                        <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '24px' }}>Platform Finances & Escrow Ledger</h2>
+                        <div className="stats-grid" style={{ marginBottom: '32px' }}>
+                            <div className="stat-card" style={{ borderLeft: '4px solid var(--warning)' }}>
+                                <div className="stat-label">Currently Held in Escrow</div>
+                                <div className="stat-value" style={{ color: 'var(--warning)' }}>₹{finance.summary?.escrowHeld || 0}</div>
+                            </div>
+                            <div className="stat-card" style={{ borderLeft: '4px solid var(--success)' }}>
+                                <div className="stat-label">Total Paid Out to Tailors</div>
+                                <div className="stat-value" style={{ color: 'var(--success)' }}>₹{finance.summary?.totalPaidOutToTailors || 0}</div>
+                            </div>
+                            <div className="stat-card" style={{ borderLeft: '4px solid var(--primary-500)' }}>
+                                <div className="stat-label">Platform Earnings (Commission)</div>
+                                <div className="stat-value" style={{ color: 'var(--primary-500)' }}>₹{finance.summary?.platformEarnings || 0}</div>
+                            </div>
+                        </div>
+
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '16px' }}>Escrow Ledger</h3>
+                        <div style={{ overflowX: 'auto', background: '#fff', borderRadius: '8px', border: '1px solid var(--neutral-200)' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
+                                <thead>
+                                    <tr style={{ background: 'var(--neutral-100)', textAlign: 'left' }}>
+                                        <th style={{ padding: '12px 16px' }}>Order ID</th>
+                                        <th style={{ padding: '12px 16px' }}>Customer</th>
+                                        <th style={{ padding: '12px 16px' }}>Tailor</th>
+                                        <th style={{ padding: '12px 16px' }}>Total Amount</th>
+                                        <th style={{ padding: '12px 16px' }}>Commission</th>
+                                        <th style={{ padding: '12px 16px' }}>Tailor Cut</th>
+                                        <th style={{ padding: '12px 16px' }}>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {finance.ledger?.map(item => (
+                                        <tr key={item.id} style={{ borderBottom: '1px solid var(--neutral-100)' }}>
+                                            <td style={{ padding: '12px 16px', fontFamily: 'monospace', color: 'var(--text-tertiary)' }}>{item.id.substring(0, 8)}</td>
+                                            <td style={{ padding: '12px 16px' }}>{item.customerName}</td>
+                                            <td style={{ padding: '12px 16px' }}>{item.tailorName}</td>
+                                            <td style={{ padding: '12px 16px', fontWeight: 600 }}>₹{item.totalAmount}</td>
+                                            <td style={{ padding: '12px 16px', color: 'var(--primary-600)' }}>₹{item.commission}</td>
+                                            <td style={{ padding: '12px 16px', color: 'var(--success)' }}>₹{item.tailorPayout}</td>
+                                            <td style={{ padding: '12px 16px' }}>
+                                                <span className={`badge ${item.escrowStatus === 'held' ? 'badge-warning' : item.escrowStatus === 'released' ? 'badge-success' : 'badge-error'}`}>
+                                                    {item.escrowStatus?.toUpperCase() || 'UNKNOWN'}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {(!finance.ledger || finance.ledger.length === 0) && (
+                                        <tr><td colSpan="7" style={{ padding: '24px', textAlign: 'center', color: 'var(--text-tertiary)' }}>No escrow transactions recorded.</td></tr>
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
                     </>
                 )}

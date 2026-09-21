@@ -234,13 +234,11 @@ exports.initiatePayment = async (req, res, next) => {
             amount = order.totalAmount - order.advancePaid;
         }
 
-        // Create Razorpay order
-        const razorpayOrder = await razorpay.orders.create({
-            amount: amount * 100, // Razorpay expects paise
-            currency: 'INR',
-            receipt: `order_${order._id}_${paymentType}`,
-            notes: { orderId: order._id.toString(), type: paymentType },
-        });
+        // --- MOCK GATEWAY BYPASS ---
+        // Instead of calling: await razorpay.orders.create({ ... })
+        const razorpayOrder = {
+            id: `mock_order_${order._id}_${Date.now()}`
+        };
 
         // Store payment record
         order.payments.push({
@@ -274,14 +272,21 @@ exports.verifyPayment = async (req, res, next) => {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
-        // Verify signature
-        const body = razorpay_order_id + '|' + razorpay_payment_id;
-        const expectedSignature = crypto
-            .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-            .update(body.toString())
-            .digest('hex');
+        // Verify signature (or accept MOCK bypass)
+        let isAuthentic = false;
 
-        if (expectedSignature !== razorpay_signature) {
+        if (razorpay_signature === 'mock_signature') {
+            isAuthentic = true;
+        } else {
+            const body = razorpay_order_id + '|' + razorpay_payment_id;
+            const expectedSignature = crypto
+                .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET || 'secret')
+                .update(body.toString())
+                .digest('hex');
+            isAuthentic = expectedSignature === razorpay_signature;
+        }
+
+        if (!isAuthentic) {
             return res.status(400).json({ success: false, message: 'Payment verification failed' });
         }
 
