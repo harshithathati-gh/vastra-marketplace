@@ -62,22 +62,30 @@ export default function Home() {
                     </div>
                     <div className="features-grid">
                         <div className="feature-card">
-                            <div className="feature-icon gold">🔍</div>
+                            <div className="feature-icon gold">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                            </div>
                             <h3>1. Browse & Discover</h3>
                             <p>Explore our collection of designs and find the perfect tailor based on your location, budget, and style preferences.</p>
                         </div>
                         <div className="feature-card">
-                            <div className="feature-icon indigo">📏</div>
+                            <div className="feature-icon indigo">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.4 2.4 0 0 1 0-3.4l2.6-2.6a2.4 2.4 0 0 1 3.4 0L21.3 15.3z" /><path d="m14.5 12.5 2-2" /><path d="m11.5 9.5 2-2" /><path d="m8.5 6.5 2-2" /><path d="m17.5 15.5 2-2" /></svg>
+                            </div>
                             <h3>2. Share Measurements</h3>
                             <p>Use our guided measurement tool to submit your body measurements. Save profiles for yourself and family members.</p>
                         </div>
                         <div className="feature-card">
-                            <div className="feature-icon gold">🧵</div>
+                            <div className="feature-icon gold">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
+                            </div>
                             <h3>3. Place Your Order</h3>
                             <p>Choose design options, add your preferences, and submit your order. The tailor will send you a quote to approve.</p>
                         </div>
                         <div className="feature-card">
-                            <div className="feature-icon green">📦</div>
+                            <div className="feature-icon green">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15" /><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" /><path d="m3.3 7 8.7 5 8.7-5" /><path d="M12 22V12" /></svg>
+                            </div>
                             <h3>4. Receive & Review</h3>
                             <p>Your custom-tailored outfit is shipped to your doorstep. Leave a review and share your experience!</p>
                         </div>
