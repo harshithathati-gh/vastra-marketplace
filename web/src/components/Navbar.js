@@ -21,6 +21,7 @@ export default function Navbar() {
                 </Link>
 
                 <ul className="navbar-links" style={menuOpen ? { display: 'flex', position: 'absolute', top: '70px', left: 0, right: 0, background: 'white', flexDirection: 'column', padding: '20px', gap: '16px', borderBottom: '1px solid var(--neutral-200)', zIndex: 99 } : {}}>
+                    <li><Link href="/colour-panel" className={isActive('/colour-panel')} onClick={() => setMenuOpen(false)}>Colour Panel</Link></li>
                     {(!user || user.role === 'customer') && (
                         <>
                             <li><Link href="/products" className={isActive('/products')}>Products</Link></li>

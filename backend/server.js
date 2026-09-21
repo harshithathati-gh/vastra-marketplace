@@ -52,6 +52,7 @@ app.use('/api/reviews', require('./src/routes/reviews'));
 app.use('/api/messages', require('./src/routes/messages'));
 app.use('/api/measurements', require('./src/routes/measurements'));
 app.use('/api/admin', require('./src/routes/admin'));
+app.use('/api/colors', require('./src/routes/colorRoutes'));
 
 // Health check
 app.get('/api/health', (req, res) => {
