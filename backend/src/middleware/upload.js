@@ -12,13 +12,13 @@ const portfolioStorage = new CloudinaryStorage({
     },
 });
 
-// Storage for review photos
+// Storage for review photos & videos
 const reviewStorage = new CloudinaryStorage({
     cloudinary,
     params: {
         folder: 'vastra/reviews',
-        allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-        transformation: [{ width: 800, height: 800, crop: 'limit', quality: 'auto' }],
+        resource_type: 'auto',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'mp4', 'mov', 'webm'],
     },
 });
 
@@ -55,7 +55,7 @@ const docStorage = new CloudinaryStorage({
 const limits = { fileSize: 5 * 1024 * 1024 };
 
 const uploadPortfolio = multer({ storage: portfolioStorage, limits });
-const uploadReview = multer({ storage: reviewStorage, limits });
+const uploadReview = multer({ storage: reviewStorage, limits: { fileSize: 50 * 1024 * 1024 } });
 const uploadOrder = multer({ storage: orderStorage, limits });
 const uploadAvatar = multer({ storage: avatarStorage, limits });
 const uploadDoc = multer({ storage: docStorage, limits });

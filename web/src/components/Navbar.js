@@ -80,6 +80,7 @@ export default function Navbar() {
                                             <Link href="/dashboard/orders" style={{ display: 'block', padding: '10px 16px', fontSize: '0.88rem', color: 'var(--text-secondary)' }} onClick={() => setDropdownOpen(false)}>📦 My Orders</Link>
                                             <Link href="/dashboard/measurements" style={{ display: 'block', padding: '10px 16px', fontSize: '0.88rem', color: 'var(--text-secondary)' }} onClick={() => setDropdownOpen(false)}>📏 Measurements</Link>
                                             <Link href="/dashboard/messages" style={{ display: 'block', padding: '10px 16px', fontSize: '0.88rem', color: 'var(--text-secondary)' }} onClick={() => setDropdownOpen(false)}>💬 Messages</Link>
+                                            <Link href="/dashboard/reviews" style={{ display: 'block', padding: '10px 16px', fontSize: '0.88rem', color: 'var(--text-secondary)' }} onClick={() => setDropdownOpen(false)}>⭐ Write Reviews</Link>
                                         </>
                                     )}
                                     {user.role === 'tailor' && (
