@@ -259,6 +259,12 @@ exports.initiatePayment = async (req, res, next) => {
             key: process.env.RAZORPAY_KEY_ID,
         });
     } catch (error) {
+        if (error.error && error.error.description) {
+            return res.status(500).json({ success: false, message: 'Razorpay API rejected: ' + error.error.description });
+        }
+        if (error.statusCode) {
+            return res.status(500).json({ success: false, message: 'Razorpay API crashed. Code: ' + error.statusCode });
+        }
         next(error);
     }
 };
