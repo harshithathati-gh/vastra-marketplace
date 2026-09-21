@@ -1,100 +1,194 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import api from '@/lib/api';
+import { useState, useRef, useEffect } from 'react';
 
 export default function ColourPanelPage() {
-    const [combinations, setCombinations] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [selectedPattern, setSelectedPattern] = useState(null);
+    const [hue, setHue] = useState(0);
+    const [isDragging, setIsDragging] = useState(false);
+    const wheelRef = useRef(null);
+
+    // Helper to generate HSL string
+    const getHSL = (h, s = 100, l = 50) => `hsl(${h}, ${s}%, ${l}%)`;
+
+    // Mathematical harmonies based on hue
+    const baseColor = getHSL(hue);
+    const complementary = getHSL((hue + 180) % 360);
+    const analogous1 = getHSL((hue + 30) % 360);
+    const analogous2 = getHSL((hue - 30 + 360) % 360);
+    const triadic1 = getHSL((hue + 120) % 360);
+    const triadic2 = getHSL((hue + 240) % 360);
+
+    const handleInteract = (e) => {
+        if (!wheelRef.current) return;
+        const rect = wheelRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // Handle both mouse and touch events
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+        const dx = clientX - centerX;
+        const dy = clientY - centerY;
+
+        // Math.atan2 gives angle from positive x-axis (right), CSS gradients start from top.
+        // We'll just map the raw geometric angle (0-360) to the hue directly.
+        let angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+        // Shift angle so 0 is at the top matching standard conic gradients 
+        // (CSS 0deg is top, atan2 0 is right)
+        angle = angle + 90;
+        if (angle < 0) angle += 360;
+
+        setHue(Math.round(angle));
+    };
 
     useEffect(() => {
-        const fetchColors = async () => {
-            try {
-                const response = await api.get('/colors');
-                // The API now correctly returns { success: true, data: [...] }
-                const colorsArray = response.data || [];
-                setCombinations(colorsArray);
-                if (colorsArray.length > 0) setSelectedPattern(colorsArray[0]);
-            } catch (err) {
-                console.error('Failed to fetch colors', err);
-            } finally {
-                setLoading(false);
+        const handleMouseUp = () => setIsDragging(false);
+        const handleMouseMove = (e) => {
+            if (isDragging) handleInteract(e);
+        };
+        const handleTouchMove = (e) => {
+            if (isDragging) {
+                // Prevent scrolling when dragging wheel on mobile
+                e.preventDefault();
+                handleInteract(e);
             }
         };
-        fetchColors();
-    }, []);
 
-    if (loading) return <div className="container section text-center">Loading Colour Panel...</div>;
+        if (isDragging) {
+            window.addEventListener('mouseup', handleMouseUp);
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('touchend', handleMouseUp);
+            window.addEventListener('touchmove', handleTouchMove, { passive: false });
+        }
 
-    if (!combinations || combinations.length === 0) {
-        return <div className="container section text-center">No colour combinations found yet! Check back later.</div>;
-    }
+        return () => {
+            window.removeEventListener('mouseup', handleMouseUp);
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('touchend', handleMouseUp);
+            window.removeEventListener('touchmove', handleTouchMove);
+        };
+    }, [isDragging]);
 
     return (
-        <div className="container section" style={{ minHeight: '80vh' }}>
-            <h1 style={{ textAlign: 'center', marginBottom: '10px' }}>Tailoring Colour Combinations</h1>
-            <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '40px' }}>Mix and match the perfect palette for your bespoke outfits.</p>
+        <div className="container section" style={{ minHeight: '85vh' }}>
+            <h1 style={{ textAlign: 'center', marginBottom: '10px' }}>Interactive Colour Wheel</h1>
+            <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '50px' }}>
+                Drag the pointer on the rainbox wheel to generate perfectly balanced mathematical color harmonies.
+            </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(250px, 1fr) 3fr', gap: '30px' }}>
-                <div style={{ background: 'white', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--neutral-200)', boxShadow: 'var(--shadow-sm)' }}>
-                    <h3 style={{ marginBottom: '20px', fontSize: '1.2rem' }}>Palettes</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        {combinations.map(combo => (
-                            <div
-                                key={combo._id}
-                                onClick={() => setSelectedPattern(combo)}
-                                style={{
-                                    padding: '15px',
-                                    cursor: 'pointer',
-                                    border: selectedPattern?._id === combo._id ? '2px solid var(--primary)' : '1px solid var(--neutral-200)',
-                                    borderRadius: 'var(--radius-md)',
-                                    background: selectedPattern?._id === combo._id ? 'var(--primary-light)' : 'transparent',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '15px',
-                                    transition: 'all 0.2s ease'
-                                }}
-                            >
-                                <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: combo.baseColor?.hex || '#ccc', border: '1px solid #ddd' }}></div>
-                                <span style={{ fontWeight: 600 }}>{combo.baseColor?.name || 'Unknown'} Base</span>
-                            </div>
-                        ))}
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(350px, 1fr) 2fr', gap: '40px', alignItems: 'start' }}>
+
+                {/* Left Side: The Interactive Wheel */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'white', padding: '30px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
+                    <h3 style={{ marginBottom: '30px' }}>Select Base Shade</h3>
+
+                    <div
+                        ref={wheelRef}
+                        onMouseDown={(e) => { setIsDragging(true); handleInteract(e); }}
+                        onTouchStart={(e) => { setIsDragging(true); handleInteract(e); }}
+                        style={{
+                            width: '280px',
+                            height: '280px',
+                            borderRadius: '50%',
+                            background: 'conic-gradient(from 0deg, red, #ff0, lime, cyan, blue, #f0f, red)',
+                            position: 'relative',
+                            cursor: 'crosshair',
+                            boxShadow: 'inset 0 0 20px rgba(0,0,0,0.1), 0 10px 25px rgba(0,0,0,0.1)'
+                        }}
+                    >
+                        {/* The middle cutout to make it a ring (optional, but looks better) */}
+                        <div style={{
+                            position: 'absolute',
+                            top: '50%', left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            width: '180px', height: '180px',
+                            backgroundColor: 'white',
+                            borderRadius: '50%',
+                            boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.1)'
+                        }}></div>
+
+                        {/* The Draggable Arrow/Pointer */}
+                        <div style={{
+                            position: 'absolute',
+                            top: '50%', left: '50%',
+                            width: '100%', height: '100%',
+                            transform: `translate(-50%, -50%) rotate(${hue}deg)`,
+                            pointerEvents: 'none'
+                        }}>
+                            {/* Arrow Head Pointing to the selected color */}
+                            <div style={{
+                                position: 'absolute',
+                                top: '-10px',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                width: '20px',
+                                height: '20px',
+                                backgroundColor: 'white',
+                                border: '3px solid #333',
+                                borderRadius: '50%',
+                                boxShadow: '0 2px 5px rgba(0,0,0,0.3)'
+                            }}></div>
+                        </div>
+                    </div>
+
+                    <div style={{ marginTop: '30px', textAlign: 'center' }}>
+                        <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Selected Hue Angle: {hue}°</span>
                     </div>
                 </div>
 
-                <div style={{ padding: '30px', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    {selectedPattern ? (
-                        <>
-                            <h2 style={{ fontSize: '2rem', marginBottom: '10px' }}>{selectedPattern.baseColor.name} & Friends</h2>
-                            <p style={{ color: 'var(--text-secondary)', marginBottom: '30px', textAlign: 'center' }}>{selectedPattern.description}</p>
+                {/* Right Side: Generated Harmonies */}
+                <div style={{ padding: '30px', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', display: 'flex', flexDirection: 'column' }}>
+                    <h3 style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--neutral-200)' }}>Your Selected Shade</h3>
 
-                            <div style={{ display: 'flex', gap: '0', borderRadius: 'var(--radius-lg)', overflow: 'hidden', width: '100%', maxWidth: '600px', height: '150px', boxShadow: 'var(--shadow-lg)' }}>
-                                <div style={{ flex: 2, background: selectedPattern.baseColor.hex, display: 'flex', alignItems: 'flex-end', padding: '15px' }}>
-                                    <span style={{ background: 'rgba(255,255,255,0.9)', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold', color: '#333' }}>BASE: {selectedPattern.baseColor.name}</span>
-                                </div>
-                                {selectedPattern.complementaryColors?.map((c, idx) => (
-                                    <div key={idx} style={{ flex: 1, background: c.hex, display: 'flex', alignItems: 'flex-end', padding: '15px' }}>
-                                        <span style={{ background: 'rgba(255,255,255,0.9)', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold', color: '#333' }}>{c.name}</span>
-                                    </div>
-                                ))}
-                            </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
+                        <div style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', background: baseColor, boxShadow: 'var(--shadow-sm)', border: '1px solid var(--neutral-200)' }}></div>
+                        <div>
+                            <h2 style={{ margin: 0, color: baseColor }}>{baseColor}</h2>
+                            <p style={{ color: 'var(--text-secondary)', margin: '5px 0 0 0' }}>Base Foundation Color</p>
+                        </div>
+                    </div>
 
-                            <div style={{ marginTop: '40px', width: '100%' }}>
-                                <h4 style={{ marginBottom: '15px', borderBottom: '1px solid var(--neutral-200)', paddingBottom: '10px' }}>Recommended Styles for this Palette</h4>
-                                <ul style={{ columnCount: 2, gap: '20px' }}>
-                                    {selectedPattern.complementaryColors?.map((c, i) => (
-                                        <li key={i} style={{ marginBottom: '10px' }}>
-                                            <strong>{c.styleType.charAt(0).toUpperCase() + c.styleType.slice(1)}:</strong> Focus on adding {c.name} ({c.hex}) elements against the primary {selectedPattern.baseColor.name} base.
-                                        </li>
-                                    ))}
-                                </ul>
+                    <h3 style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--neutral-200)' }}>Matching Harmonies</h3>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+
+                        {/* Contrast / Complementary */}
+                        <div>
+                            <h4 style={{ marginBottom: '10px' }}>High Contrast / Complementary</h4>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>Exact opposite on the wheel. Highly dynamic and makes elements pop.</p>
+                            <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
+                                <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
+                                <div style={{ flex: 1, background: complementary, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>{complementary}</div>
                             </div>
-                        </>
-                    ) : (
-                        <p>Select a palette to view matching colors.</p>
-                    )}
+                        </div>
+
+                        {/* Analogous / Matching */}
+                        <div>
+                            <h4 style={{ marginBottom: '10px' }}>Analogous / Smooth Matching</h4>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>Neighboring colors on the wheel. Creates a serene, unified design.</p>
+                            <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
+                                <div style={{ flex: 1, background: analogous1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>{analogous1}</div>
+                                <div style={{ flex: 1.5, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
+                                <div style={{ flex: 1, background: analogous2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>{analogous2}</div>
+                            </div>
+                        </div>
+
+                        {/* Triadic / Balanced */}
+                        <div>
+                            <h4 style={{ marginBottom: '10px' }}>Triadic / Boldly Balanced</h4>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>Evenly spaced around the wheel. Rich colors while retaining harmony.</p>
+                            <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
+                                <div style={{ flex: 1, background: triadic1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>{triadic1}</div>
+                                <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
+                                <div style={{ flex: 1, background: triadic2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>{triadic2}</div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
+
             </div>
         </div>
     );
