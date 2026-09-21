@@ -25,10 +25,21 @@ export default function OrderDetailPage() {
     const [newMessage, setNewMessage] = useState('');
     const [reviewForm, setReviewForm] = useState({ rating: 5, text: '' });
     const [showReview, setShowReview] = useState(false);
+    const [paymentLoading, setPaymentLoading] = useState(false);
 
     useEffect(() => {
         loadOrder();
     }, [id]);
+
+    const loadScript = (src) => {
+        return new Promise((resolve) => {
+            const script = document.createElement("script");
+            script.src = src;
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
+    };
 
     const loadOrder = async () => {
         try {
@@ -36,7 +47,9 @@ export default function OrderDetailPage() {
             setOrder(data.order);
             const msgData = await api.get(`/messages/${id}`).catch(() => ({ messages: [] }));
             setMessages(msgData.messages || []);
-        } catch { }
+        } catch (e) {
+            console.error("Order load failed");
+        }
         setLoading(false);
     };
 
@@ -67,6 +80,60 @@ export default function OrderDetailPage() {
         } catch (err) { alert(err.message); }
     };
 
+    const handleEscrowPayment = async () => {
+        setPaymentLoading(true);
+        const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+        if (!res) {
+            alert("Razorpay SDK failed to load. Are you online?");
+            setPaymentLoading(false);
+            return;
+        }
+
+        try {
+            // Step 1: Initialize payment order in backend
+            const { data } = await api.post(`/orders/${id}/pay`, { paymentType: 'escrow' });
+
+            const options = {
+                key: data.key,
+                amount: data.amount.toString(),
+                currency: data.currency,
+                name: "Vastra Escrow Payments",
+                description: `Secured Order Payment #${order._id.substring(0, 8)}`,
+                image: "/favicon.ico",
+                order_id: data.razorpayOrderId,
+                handler: async function (response) {
+                    try {
+                        const payload = {
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature
+                        };
+
+                        await api.post(`/orders/${id}/verify-payment`, payload);
+                        alert("Escrow Payment Successfully Verified!");
+                        loadOrder(); // Re-sync ui state 
+                    } catch (err) {
+                        alert("Error authenticating payment via Vastra servers. " + err.message);
+                    }
+                },
+                prefill: {
+                    name: user?.name,
+                    email: user?.email,
+                    contact: user?.phone
+                },
+                theme: { color: "#D4AF37" } // Gold Vastra theme
+            };
+
+            const paymentObject = new window.Razorpay(options);
+            paymentObject.open();
+
+        } catch (error) {
+            alert("Error initiating Razorpay checkout: " + error.message);
+        } finally {
+            setPaymentLoading(false);
+        }
+    };
+
     if (loading) return <div className="loading-page"><div className="spinner" /></div>;
     if (!order) return <div className="empty-state" style={{ minHeight: '60vh' }}><h3>Order not found</h3></div>;
 
@@ -89,6 +156,7 @@ export default function OrderDetailPage() {
 
             <div className="container section">
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '32px', alignItems: 'start' }}>
+
                     {/* Left - Order details */}
                     <div>
                         {/* Status Timeline */}
@@ -129,20 +197,6 @@ export default function OrderDetailPage() {
                             </div>
                         </div>
 
-                        {/* Design Choices */}
-                        {order.product?.designChoices && Object.values(order.product.designChoices).some(Boolean) && (
-                            <div className="card" style={{ marginBottom: '20px' }}>
-                                <div className="card-body">
-                                    <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '10px' }}>Design Choices</h3>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                                        {Object.entries(order.product.designChoices).filter(([, v]) => v).map(([k, v]) => (
-                                            <span key={k} className="badge badge-accent">{k}: {v}</span>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
                         {/* Actions */}
                         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                             {isCustomer && order.status === 'placed' && (
@@ -153,7 +207,7 @@ export default function OrderDetailPage() {
                             )}
                         </div>
 
-                        {/* Review Form */}
+                        {/* Review Form Component Block */}
                         {showReview && (
                             <div className="card" style={{ marginTop: '20px' }}>
                                 <div className="card-body">
@@ -181,10 +235,10 @@ export default function OrderDetailPage() {
 
                     {/* Right - Payment & Chat */}
                     <div>
-                        {/* Payment Summary */}
-                        <div className="card" style={{ marginBottom: '20px' }}>
+                        {/* Escrow Payment Gateway Block */}
+                        <div className="card" style={{ marginBottom: '20px', border: order.isEscrowFunded ? '2px solid #10B981' : (order.status === 'quoted' ? '2px solid #D4AF37' : 'none') }}>
                             <div className="card-body">
-                                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '14px' }}>💰 Payment</h3>
+                                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '14px' }}>💰 Escrow Payment</h3>
                                 {order.totalAmount > 0 ? (
                                     <>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '8px' }}>
@@ -196,15 +250,37 @@ export default function OrderDetailPage() {
                                             </div>
                                         )}
                                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1rem', fontWeight: 800, padding: '12px 0', borderTop: '1px solid var(--neutral-200)' }}>
-                                            <span>Total</span><span style={{ color: 'var(--primary-700)' }}>₹{order.totalAmount}</span>
+                                            <span>Total (100%)</span><span style={{ color: 'var(--primary-700)' }}>₹{order.totalAmount}</span>
                                         </div>
-                                        <div style={{ fontSize: '0.82rem', color: 'var(--text-tertiary)', marginTop: '8px' }}>
-                                            Advance: ₹{order.advancePaid || 0} · Balance: ₹{order.balancePaid || 0}
-                                        </div>
+
+                                        {/* Security Verification & Call to action */}
+                                        {order.isEscrowFunded ? (
+                                            <div style={{ marginTop: '12px', background: '#ecfdf5', padding: '12px', borderRadius: 'var(--radius-sm)', textAlign: 'center' }}>
+                                                <div style={{ fontSize: '1.2rem', marginBottom: '4px' }}>🛡️</div>
+                                                <div style={{ color: '#059669', fontWeight: 700, fontSize: '0.9rem' }}>100% Escrow Secured</div>
+                                                <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '2px' }}>Funds are held securely by Vastra until you safely receive the package.</div>
+                                            </div>
+                                        ) : (
+                                            isCustomer && order.status === 'quoted' && (
+                                                <div style={{ marginTop: '16px' }}>
+                                                    <button
+                                                        className="btn btn-primary"
+                                                        style={{ width: '100%', padding: '12px' }}
+                                                        onClick={handleEscrowPayment}
+                                                        disabled={paymentLoading}
+                                                    >
+                                                        {paymentLoading ? 'Connecting Gateway...' : `Pay ₹${order.totalAmount} to Escrow`}
+                                                    </button>
+                                                    <p style={{ textAlign: 'center', fontSize: '0.78rem', color: 'var(--text-tertiary)', marginTop: '8px' }}>
+                                                        Powered securely by <strong>Razorpay</strong>. Vastra holds your funds safely in escrow and only releases them when you are fully satisfied.
+                                                    </p>
+                                                </div>
+                                            )
+                                        )}
                                     </>
                                 ) : (
                                     <p style={{ fontSize: '0.88rem', color: 'var(--text-tertiary)' }}>
-                                        {order.status === 'placed' || order.status === 'accepted' ? 'Awaiting quote from tailor' : 'No payment required'}
+                                        {order.status === 'placed' || order.status === 'accepted' ? 'Awaiting final quote from tailor based on your measurements' : 'No payment required'}
                                     </p>
                                 )}
                             </div>
@@ -226,28 +302,27 @@ export default function OrderDetailPage() {
                             </div>
                         </div>
 
-                        {/* Chat */}
+                        {/* Chat Context */}
                         <div className="card">
                             <div className="card-body">
-                                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '12px' }}>💬 Messages</h3>
-                                <div style={{ maxHeight: '300px', overflowY: 'auto', marginBottom: '12px' }}>
+                                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '12px' }}>💬 Chat</h3>
+                                <div style={{ maxHeight: '250px', overflowY: 'auto', marginBottom: '12px' }}>
                                     {messages.length === 0 ? (
-                                        <p style={{ fontSize: '0.82rem', color: 'var(--text-tertiary)', textAlign: 'center', padding: '20px' }}>No messages yet. Start a conversation!</p>
+                                        <p style={{ fontSize: '0.82rem', color: 'var(--text-tertiary)', textAlign: 'center', padding: '12px' }}>Ask questions!</p>
                                     ) : messages.map((msg) => (
                                         <div key={msg._id} style={{
-                                            marginBottom: '10px', padding: '8px 12px', borderRadius: 'var(--radius-md)',
+                                            marginBottom: '8px', padding: '8px 12px', borderRadius: 'var(--radius-md)',
                                             background: msg.senderId?._id === user?._id || msg.senderId === user?._id ? 'var(--accent-50)' : 'var(--neutral-100)',
-                                            marginLeft: msg.senderId?._id === user?._id || msg.senderId === user?._id ? '30px' : '0',
-                                            marginRight: msg.senderId?._id === user?._id || msg.senderId === user?._id ? '0' : '30px',
+                                            marginLeft: msg.senderId?._id === user?._id || msg.senderId === user?._id ? '20px' : '0',
+                                            marginRight: msg.senderId?._id === user?._id || msg.senderId === user?._id ? '0' : '20px',
                                         }}>
-                                            <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-tertiary)' }}>{msg.senderId?.name || 'You'}</div>
-                                            <div style={{ fontSize: '0.88rem' }}>{msg.content}</div>
+                                            <div style={{ fontSize: '0.8rem' }}>{msg.content}</div>
                                         </div>
                                     ))}
                                 </div>
                                 <form onSubmit={sendMessage} style={{ display: 'flex', gap: '8px' }}>
-                                    <input type="text" className="form-input" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Type a message..." style={{ flex: 1 }} />
-                                    <button type="submit" className="btn btn-primary btn-sm">Send</button>
+                                    <input type="text" className="form-input" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="..." style={{ flex: 1 }} />
+                                    <button type="submit" className="btn btn-primary btn-sm">Sent</button>
                                 </form>
                             </div>
                         </div>

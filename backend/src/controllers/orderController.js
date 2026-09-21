@@ -228,6 +228,8 @@ exports.initiatePayment = async (req, res, next) => {
         let amount;
         if (paymentType === 'advance') {
             amount = Math.round((order.totalAmount * settings.advancePercentage) / 100);
+        } else if (paymentType === 'escrow') {
+            amount = order.totalAmount;
         } else {
             amount = order.totalAmount - order.advancePaid;
         }
@@ -284,7 +286,14 @@ exports.verifyPayment = async (req, res, next) => {
             payment.status = 'paid';
             payment.paidAt = new Date();
 
-            if (payment.type === 'advance') {
+            if (payment.type === 'escrow') {
+                order.isEscrowFunded = true;
+                order.escrowStatus = 'held';
+                if (order.status === 'quoted') {
+                    order.status = 'in_progress';
+                    order.statusHistory.push({ status: 'in_progress', note: '100% Escrow securely funded via Razorpay' });
+                }
+            } else if (payment.type === 'advance') {
                 order.advancePaid = payment.amount;
                 // Auto-move to in_progress after advance payment
                 if (order.status === 'quoted') {
