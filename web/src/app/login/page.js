@@ -65,7 +65,6 @@ function LoginContent() {
                     {[
                         { label: '👤 Customer', email: 'priya@example.com', pass: 'password123' },
                         { label: '🧵 Tailor', email: 'rajesh@example.com', pass: 'password123' },
-                        { label: '🔧 Admin', email: 'admin@vastra.com', pass: 'admin123' },
                     ].map((demo) => (
                         <button key={demo.email} onClick={(e) => { e.preventDefault(); setEmail(demo.email); setPassword(demo.pass); }} className="btn btn-outline btn-sm" style={{ fontSize: '0.78rem' }}>
                             {demo.label}
