@@ -9,7 +9,7 @@ const INDIAN_STATES = [
     'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Delhi', 'Goa', 'Gujarat',
     'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra',
     'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim',
-    'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
+    'Tamil Nadu', ' तेलंगाना', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
 ];
 
 function RegisterContent() {
@@ -19,6 +19,8 @@ function RegisterContent() {
     const defaultRole = searchParams.get('role') || 'customer';
 
     const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '', role: defaultRole, city: '', state: '' });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -106,13 +108,27 @@ function RegisterContent() {
                     </div>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                    <div className="form-group">
+                    <div className="form-group" style={{ position: 'relative' }}>
                         <label>Password</label>
-                        <input type="password" className="form-input" value={form.password} onChange={(e) => updateForm('password', e.target.value)} placeholder="Min 6 characters" required />
+                        <input type={showPassword ? 'text' : 'password'} className="form-input" value={form.password} onChange={(e) => updateForm('password', e.target.value)} placeholder="Min 6 chars" required style={{ paddingRight: '36px' }} />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} title="Toggle visibility" style={{ position: 'absolute', right: '10px', top: '35px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-tertiary)' }}>
+                            {showPassword ? (
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" /><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" /><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" /><line x1="2" x2="22" y1="2" y2="22" /></svg>
+                            ) : (
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                            )}
+                        </button>
                     </div>
-                    <div className="form-group">
-                        <label>Confirm Password</label>
-                        <input type="password" className="form-input" value={form.confirmPassword} onChange={(e) => updateForm('confirmPassword', e.target.value)} placeholder="Re-enter password" required />
+                    <div className="form-group" style={{ position: 'relative' }}>
+                        <label>Confirm</label>
+                        <input type={showConfirmPassword ? 'text' : 'password'} className="form-input" value={form.confirmPassword} onChange={(e) => updateForm('confirmPassword', e.target.value)} placeholder="Re-enter password" required style={{ paddingRight: '36px' }} />
+                        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} title="Toggle visibility" style={{ position: 'absolute', right: '10px', top: '35px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-tertiary)' }}>
+                            {showConfirmPassword ? (
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" /><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" /><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" /><line x1="2" x2="22" y1="2" y2="22" /></svg>
+                            ) : (
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                            )}
+                        </button>
                     </div>
                 </div>
                 <button type="submit" className="btn btn-primary btn-full" disabled={loading} style={{ marginTop: '8px' }}>
