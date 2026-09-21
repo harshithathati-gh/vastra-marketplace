@@ -97,12 +97,20 @@ const orderSchema = new mongoose.Schema({
     estimatedDelivery: {
         type: Date,
     },
+    isEscrowFunded: {
+        type: Boolean,
+        default: false,
+    },
+    escrowStatus: {
+        type: String,
+        enum: ['held', 'released', 'refunded'],
+    },
     // Razorpay payment tracking
     payments: [{
         razorpayOrderId: String,
         razorpayPaymentId: String,
         amount: Number,
-        type: { type: String, enum: ['advance', 'balance'] },
+        type: { type: String, enum: ['advance', 'balance', 'escrow'] },
         status: { type: String, enum: ['created', 'paid', 'failed'], default: 'created' },
         paidAt: Date,
     }],
