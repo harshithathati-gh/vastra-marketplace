@@ -4,11 +4,20 @@ import { useState, useRef, useEffect } from 'react';
 
 export default function ColourPanelPage() {
     const [hue, setHue] = useState(0);
+    const [vibe, setVibe] = useState('vivid');
     const [isDragging, setIsDragging] = useState(false);
     const wheelRef = useRef(null);
 
+    // Get saturation and lightness based on selected vibe
+    let s = 100;
+    let l = 50;
+
+    if (vibe === 'pastel') { s = 80; l = 80; }
+    else if (vibe === 'matte') { s = 40; l = 55; }
+    else if (vibe === 'deep') { s = 80; l = 25; }
+
     // Helper to generate HSL string
-    const getHSL = (h, s = 100, l = 50) => `hsl(${h}, ${s}%, ${l}%)`;
+    const getHSL = (h) => `hsl(${h}, ${s}%, ${l}%)`;
 
     // Mathematical harmonies based on hue
     const baseColor = getHSL(hue);
@@ -24,19 +33,13 @@ export default function ColourPanelPage() {
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
 
-        // Handle both mouse and touch events
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
         const dx = clientX - centerX;
         const dy = clientY - centerY;
 
-        // Math.atan2 gives angle from positive x-axis (right), CSS gradients start from top.
-        // We'll just map the raw geometric angle (0-360) to the hue directly.
         let angle = Math.atan2(dy, dx) * (180 / Math.PI);
-
-        // Shift angle so 0 is at the top matching standard conic gradients 
-        // (CSS 0deg is top, atan2 0 is right)
         angle = angle + 90;
         if (angle < 0) angle += 360;
 
@@ -50,7 +53,6 @@ export default function ColourPanelPage() {
         };
         const handleTouchMove = (e) => {
             if (isDragging) {
-                // Prevent scrolling when dragging wheel on mobile
                 e.preventDefault();
                 handleInteract(e);
             }
@@ -73,16 +75,16 @@ export default function ColourPanelPage() {
 
     return (
         <div className="container section" style={{ minHeight: '85vh' }}>
-            <h1 style={{ textAlign: 'center', marginBottom: '10px' }}>Interactive Colour Wheel</h1>
-            <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '50px' }}>
-                Drag the pointer on the rainbox wheel to generate perfectly balanced mathematical color harmonies.
+            <h1 style={{ textAlign: 'center', marginBottom: '10px' }}>Colour Matcher</h1>
+            <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '40px' }}>
+                Drag the pointer around the wheel to discover beautiful matching shades for your perfect outfit.
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(350px, 1fr) 2fr', gap: '40px', alignItems: 'start' }}>
 
                 {/* Left Side: The Interactive Wheel */}
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'white', padding: '30px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
-                    <h3 style={{ marginBottom: '30px' }}>Select Base Shade</h3>
+                    <h3 style={{ marginBottom: '30px' }}>Pick a Color Family</h3>
 
                     <div
                         ref={wheelRef}
@@ -98,7 +100,6 @@ export default function ColourPanelPage() {
                             boxShadow: 'inset 0 0 20px rgba(0,0,0,0.1), 0 10px 25px rgba(0,0,0,0.1)'
                         }}
                     >
-                        {/* The middle cutout to make it a ring (optional, but looks better) */}
                         <div style={{
                             position: 'absolute',
                             top: '50%', left: '50%',
@@ -109,7 +110,6 @@ export default function ColourPanelPage() {
                             boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.1)'
                         }}></div>
 
-                        {/* The Draggable Arrow/Pointer */}
                         <div style={{
                             position: 'absolute',
                             top: '50%', left: '50%',
@@ -117,7 +117,6 @@ export default function ColourPanelPage() {
                             transform: `translate(-50%, -50%) rotate(${hue}deg)`,
                             pointerEvents: 'none'
                         }}>
-                            {/* Arrow Head Pointing to the selected color */}
                             <div style={{
                                 position: 'absolute',
                                 top: '-10px',
@@ -125,71 +124,74 @@ export default function ColourPanelPage() {
                                 transform: 'translateX(-50%)',
                                 width: '20px',
                                 height: '20px',
-                                backgroundColor: 'white',
-                                border: '3px solid #333',
+                                backgroundColor: baseColor,
+                                border: '3px solid white',
                                 borderRadius: '50%',
-                                boxShadow: '0 2px 5px rgba(0,0,0,0.3)'
+                                boxShadow: '0 2px 5px rgba(0,0,0,0.5)'
                             }}></div>
                         </div>
                     </div>
 
-                    <div style={{ marginTop: '30px', textAlign: 'center' }}>
-                        <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Selected Hue Angle: {hue}°</span>
+                    <div style={{ width: '100%', marginTop: '40px' }}>
+                        <h4 style={{ marginBottom: '15px', textAlign: 'center' }}>Choose a Finish/Vibe:</h4>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                            <button onClick={() => setVibe('vivid')} className={`btn btn-sm ${vibe === 'vivid' ? 'btn-primary' : 'btn-outline'}`}>Bright & Vivid</button>
+                            <button onClick={() => setVibe('pastel')} className={`btn btn-sm ${vibe === 'pastel' ? 'btn-primary' : 'btn-outline'}`}>Soft Pastels</button>
+                            <button onClick={() => setVibe('matte')} className={`btn btn-sm ${vibe === 'matte' ? 'btn-primary' : 'btn-outline'}`}>Matte & Muted</button>
+                            <button onClick={() => setVibe('deep')} className={`btn btn-sm ${vibe === 'deep' ? 'btn-primary' : 'btn-outline'}`}>Deep & Dark</button>
+                        </div>
                     </div>
                 </div>
 
                 {/* Right Side: Generated Harmonies */}
                 <div style={{ padding: '30px', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', display: 'flex', flexDirection: 'column' }}>
-                    <h3 style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--neutral-200)' }}>Your Selected Shade</h3>
+                    <h3 style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--neutral-200)' }}>Your Base Shade</h3>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
                         <div style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', background: baseColor, boxShadow: 'var(--shadow-sm)', border: '1px solid var(--neutral-200)' }}></div>
                         <div>
-                            <h2 style={{ margin: 0, color: baseColor }}>{baseColor}</h2>
-                            <p style={{ color: 'var(--text-secondary)', margin: '5px 0 0 0' }}>Base Foundation Color</p>
+                            <h2 style={{ margin: 0, color: baseColor }}>Foundation Color</h2>
+                            <p style={{ color: 'var(--text-secondary)', margin: '5px 0 0 0' }}>This is the main color of your fabric.</p>
                         </div>
                     </div>
 
-                    <h3 style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--neutral-200)' }}>Matching Harmonies</h3>
+                    <h3 style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--neutral-200)' }}>Ideal Pairings & Combinations</h3>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
 
-                        {/* Contrast / Complementary */}
                         <div>
-                            <h4 style={{ marginBottom: '10px' }}>High Contrast / Complementary</h4>
-                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>Exact opposite on the wheel. Highly dynamic and makes elements pop.</p>
+                            <h4 style={{ marginBottom: '10px' }}>Pop & Contrast (Opposite Shades)</h4>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>These colors sit across from each other. They create a highly dynamic and eye-catching look that really pops.</p>
                             <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
                                 <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
-                                <div style={{ flex: 1, background: complementary, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>{complementary}</div>
+                                <div style={{ flex: 1, background: complementary, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>PAIR WITH THIS</div>
                             </div>
                         </div>
 
-                        {/* Analogous / Matching */}
                         <div>
-                            <h4 style={{ marginBottom: '10px' }}>Analogous / Smooth Matching</h4>
-                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>Neighboring colors on the wheel. Creates a serene, unified design.</p>
+                            <h4 style={{ marginBottom: '10px' }}>Smooth & Blended (Neighboring Shades)</h4>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>These are colors right next to each other on the wheel. They blend perfectly to create a serene, unified design.</p>
                             <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
-                                <div style={{ flex: 1, background: analogous1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>{analogous1}</div>
+                                <div style={{ flex: 1, background: analogous1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>ACCENT</div>
                                 <div style={{ flex: 1.5, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
-                                <div style={{ flex: 1, background: analogous2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>{analogous2}</div>
-                            </div>
+                                <div style={{ flex: 1, background: analogous2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', text.Shadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>ACCENT</div>
                         </div>
-
-                        {/* Triadic / Balanced */}
-                        <div>
-                            <h4 style={{ marginBottom: '10px' }}>Triadic / Boldly Balanced</h4>
-                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>Evenly spaced around the wheel. Rich colors while retaining harmony.</p>
-                            <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
-                                <div style={{ flex: 1, background: triadic1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>{triadic1}</div>
-                                <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
-                                <div style={{ flex: 1, background: triadic2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>{triadic2}</div>
-                            </div>
-                        </div>
-
                     </div>
-                </div>
 
+                    <div>
+                        <h4 style={{ marginBottom: '10px' }}>Bold & Rich (Evenly Balanced)</h4>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>Spaces out three colors evenly. Highly colorful and bold while still keeping a balanced, beautiful harmony.</p>
+                        <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
+                            <div style={{ flex: 1, background: triadic1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>HIGHLIGHT</div>
+                            <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
+                            <div style={{ flex: 1, background: triadic2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>HIGHLIGHT</div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
+
         </div>
+        </div >
     );
 }
