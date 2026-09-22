@@ -37,7 +37,6 @@ export default function Home() {
             <section className="hero">
                 <div className="container">
                     <div className="hero-content">
-                        <span className="overline" style={{ fontSize: '1.05rem', letterSpacing: '1.5px', color: 'var(--primary-400)', textTransform: 'lowercase', marginBottom: '16px', display: 'block' }}>vastra : from local hands to your homes !</span>
                         <h1>Your Style, <span className="highlight">Perfectly Tailored</span></h1>
                         <p>Connect with India's finest tailors. From everyday kurtas to bridal lehengas — get custom-fitted clothing crafted by skilled artisans, delivered to your doorstep.</p>
                         <div className="hero-actions">

@@ -16,9 +16,12 @@ export default function Navbar() {
     return (
         <nav className="navbar">
             <div className="container navbar-inner">
-                <Link href="/" className="navbar-logo">
-                    Va<span>stra</span>
-                </Link>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                    <Link href="/" className="navbar-logo">
+                        Va<span>stra</span>
+                    </Link>
+                    <span style={{ fontSize: '0.6rem', fontWeight: 600, fontStyle: 'italic', letterSpacing: '0.3px', color: 'var(--primary-500)', marginTop: '-6px' }}>vastra : from local hands to your homes !</span>
+                </div>>
 
                 <ul className="navbar-links" style={menuOpen ? { display: 'flex', position: 'absolute', top: '70px', left: 0, right: 0, background: 'white', flexDirection: 'column', padding: '20px', gap: '16px', borderBottom: '1px solid var(--neutral-200)', zIndex: 99 } : {}}>
                     <li><Link href="/colour-panel" className={isActive('/colour-panel')} onClick={() => setMenuOpen(false)}>Colour Panel</Link></li>
