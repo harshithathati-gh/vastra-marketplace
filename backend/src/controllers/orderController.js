@@ -7,8 +7,17 @@ const crypto = require('crypto');
 // @route   POST /api/orders
 exports.createOrder = async (req, res, next) => {
     try {
-        const { tailorId, product, measurements, measurementProfileName,
-            fabricPreference, specialInstructions, deliveryAddress, deliveryType, preferredDeliveryDate } = req.body;
+        const { tailorId, measurementProfileName, fabricPreference, specialInstructions, deliveryType, preferredDeliveryDate } = req.body;
+
+        // When using FormData, complex objects come as strings. We must parse them if necessary.
+        let product = typeof req.body.product === 'string' ? JSON.parse(req.body.product) : req.body.product;
+        const measurements = typeof req.body.measurements === 'string' ? JSON.parse(req.body.measurements) : req.body.measurements;
+        const deliveryAddress = typeof req.body.deliveryAddress === 'string' ? JSON.parse(req.body.deliveryAddress) : req.body.deliveryAddress;
+
+        // Handle Cloudinary file uploads
+        if (req.files && req.files.length > 0) {
+            product.referenceImages = req.files.map(file => file.path);
+        }
 
         // Verify tailor exists and is approved
         const tailor = await TailorProfile.findOne({ userId: tailorId, verificationStatus: 'approved', isActive: true });

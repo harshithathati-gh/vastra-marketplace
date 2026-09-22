@@ -28,6 +28,7 @@ function NewOrderContent() {
         street: '', city: user?.location?.city || '', state: user?.location?.state || '', pincode: '',
         deliveryType: 'shipping', preferredDeliveryDate: '',
     });
+    const [referenceImages, setReferenceImages] = useState([]);
 
     useEffect(() => {
         if (!user) { router.push('/login?redirect=/order/new'); return; }
@@ -52,18 +53,22 @@ function NewOrderContent() {
         setError('');
         setLoading(true);
         try {
-            const orderData = {
-                tailorId,
-                product: { type: form.productType, name: form.productName, designChoices: form.designChoices, referenceImages: [] },
-                measurements: form.measurements,
-                measurementProfileName: form.measurementProfileName,
-                fabricPreference: form.fabricPreference,
-                specialInstructions: form.garmentBrand ? `[Preferred Brand: ${form.garmentBrand}]\n${form.specialInstructions}` : form.specialInstructions,
-                deliveryAddress: { street: form.street, city: form.city, state: form.state, pincode: form.pincode },
-                deliveryType: form.deliveryType,
-                preferredDeliveryDate: form.preferredDeliveryDate || undefined,
-            };
-            const data = await api.post('/orders', orderData);
+            const formData = new FormData();
+            formData.append('tailorId', tailorId);
+            formData.append('product', JSON.stringify({ type: form.productType, name: form.productName, designChoices: form.designChoices, referenceImages: [] }));
+            formData.append('measurements', JSON.stringify(form.measurements));
+            formData.append('measurementProfileName', form.measurementProfileName);
+            formData.append('fabricPreference', form.fabricPreference);
+            formData.append('specialInstructions', form.garmentBrand ? `[Preferred Brand: ${form.garmentBrand}]\n${form.specialInstructions}` : form.specialInstructions);
+            formData.append('deliveryAddress', JSON.stringify({ street: form.street, city: form.city, state: form.state, pincode: form.pincode }));
+            formData.append('deliveryType', form.deliveryType);
+            if (form.preferredDeliveryDate) formData.append('preferredDeliveryDate', form.preferredDeliveryDate);
+
+            referenceImages.forEach(file => {
+                formData.append('referenceImages', file);
+            });
+
+            const data = await api.post('/orders', formData);
             router.push(`/dashboard/orders/${data.order._id}`);
         } catch (err) {
             setError(err.message || 'Failed to place order');
@@ -235,6 +240,27 @@ function NewOrderContent() {
                         <div className="form-group">
                             <label>Special Instructions</label>
                             <textarea className="form-textarea" value={form.specialInstructions} onChange={(e) => updateForm('specialInstructions', e.target.value)} placeholder="Any specific requirements, design references, or notes for the tailor..." />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Reference Images (Optional)</label>
+                            <p style={{ fontSize: '0.82rem', color: 'var(--text-tertiary)', marginBottom: '8px' }}>Got a Pinterest screenshot or a specific design aesthetic? Upload it here (Max 5).</p>
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                className="form-input"
+                                style={{ padding: '8px' }}
+                                onChange={(e) => {
+                                    const files = Array.from(e.target.files).slice(0, 5);
+                                    setReferenceImages(files);
+                                }}
+                            />
+                            {referenceImages.length > 0 && (
+                                <div style={{ fontSize: '0.85rem', color: 'var(--primary-600)', marginTop: '8px', fontWeight: 600 }}>
+                                    {referenceImages.length} image(s) selected
+                                </div>
+                            )}
                         </div>
 
                         <h3 style={{ fontSize: '1rem', fontWeight: 700, margin: '24px 0 12px' }}>Delivery Details</h3>
