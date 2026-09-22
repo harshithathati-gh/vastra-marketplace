@@ -193,7 +193,7 @@ export default function Home() {
                 <div className="container">
                     <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2.2rem', marginBottom: '14px' }}>Are You a Tailor?</h2>
                     <p style={{ color: 'rgba(255,255,255,0.65)', maxWidth: '500px', margin: '0 auto 32px', lineHeight: '1.7' }}>
-                        Join India's fastest growing tailoring marketplace. Reach customers across the country, manage orders digitally, and grow your business.
+                        Join Vastra's premier digital tailoring ecosystem. Reach customers across the country, manage orders digitally, and rapidly scale your bespoke business.
                     </p>
                     <Link href="/register?role=tailor" className="btn btn-primary btn-lg">
                         Join as a Tailor for Free →
