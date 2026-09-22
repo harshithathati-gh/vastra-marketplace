@@ -56,20 +56,20 @@ export default function TailorsPage() {
 
             <div className="container">
                 <div className="filters-bar">
-                    <form onSubmit={(e) => { e.preventDefault(); loadTailors(); }} className="search-input-wrapper">
+                    <form suppressHydrationWarning onSubmit={(e) => { e.preventDefault(); loadTailors(); }} className="search-input-wrapper">
                         <span className="search-icon">🔍</span>
-                        <input type="text" className="form-input" placeholder="Search by name or city..." value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
+                        <input suppressHydrationWarning type="text" className="form-input" placeholder="Search by name or city..." value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
                     </form>
-                    <select className="form-select" value={filters.specialization} onChange={(e) => setFilters({ ...filters, specialization: e.target.value })}>
+                    <select suppressHydrationWarning className="form-select" value={filters.specialization} onChange={(e) => setFilters({ ...filters, specialization: e.target.value })}>
                         <option value="">All Specializations</option>
                         {Object.entries(SPECIALIZATION_LABELS).map(([val, label]) => <option key={val} value={val}>{label}</option>)}
                     </select>
-                    <select className="form-select" value={filters.minRating} onChange={(e) => setFilters({ ...filters, minRating: e.target.value })}>
+                    <select suppressHydrationWarning className="form-select" value={filters.minRating} onChange={(e) => setFilters({ ...filters, minRating: e.target.value })}>
                         <option value="">Any Rating</option>
                         <option value="4">4+ Stars</option>
                         <option value="4.5">4.5+ Stars</option>
                     </select>
-                    <select className="form-select" value={filters.sortBy} onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}>
+                    <select suppressHydrationWarning className="form-select" value={filters.sortBy} onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}>
                         <option value="rating">Top Rated</option>
                         <option value="experience">Most Experienced</option>
                         <option value="reviews">Most Reviews</option>
