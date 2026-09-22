@@ -6,7 +6,7 @@ export default function Footer() {
             <div className="container">
                 <div className="footer-grid">
                     <div className="footer-brand">
-                        <h3>Va<span>stra</span></h3>
+                        <img src="/logo.png" alt="Vastra Logo" style={{ height: '70px', objectFit: 'contain', marginBottom: '12px' }} />
                         <p style={{ fontWeight: 600, fontStyle: 'italic', marginBottom: '10px', color: 'var(--primary-400)' }}>From local hands to your homes !</p>
                         <p>Connecting customers with skilled local tailors across India. Get custom-tailored clothing at affordable prices, delivered to your doorstep.</p>
                     </div>

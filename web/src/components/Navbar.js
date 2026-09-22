@@ -17,8 +17,8 @@ export default function Navbar() {
         <nav className="navbar">
             <div className="container navbar-inner">
                 <div className="navbar-brand-wrapper">
-                    <Link href="/" className="navbar-logo">
-                        Va<span>stra</span>
+                    <Link href="/" className="navbar-logo" style={{ display: 'flex', alignItems: 'center' }}>
+                        <img src="/logo.png" alt="Vastra Logo" style={{ height: '50px', objectFit: 'contain' }} />
                     </Link>
                     <span className="navbar-tagline">From local hands to your homes !</span>
                 </div>
