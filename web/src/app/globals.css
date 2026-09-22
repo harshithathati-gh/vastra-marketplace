@@ -1334,6 +1334,10 @@ select {
     display: block;
   }
 
+  .navbar-tagline {
+    display: none;
+  }
+
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 24px;
