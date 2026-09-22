@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 export default function ColourPanelPage() {
+    const [activeTab, setActiveTab] = useState('wheel');
     const [hue, setHue] = useState(0);
     const [vibe, setVibe] = useState('vivid');
     const [isDragging, setIsDragging] = useState(false);
@@ -94,184 +95,207 @@ export default function ColourPanelPage() {
 
     return (
         <div className="container section" style={{ minHeight: '85vh' }}>
-            <h1 style={{ textAlign: 'center', marginBottom: '10px' }}>Colour Matcher</h1>
-            <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '40px' }}>
-                Drag the pointer around the wheel to discover beautiful matching shades for your perfect outfit.
-            </p>
+            <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>Vastra Colour Intelligence</h1>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(350px, 1fr) 2fr', gap: '40px', alignItems: 'start' }}>
-
-                {/* Left Side: The Interactive Wheel */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'white', padding: '30px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
-                    <h3 style={{ marginBottom: '30px' }}>Pick a Color Family</h3>
-
-                    <div
-                        ref={wheelRef}
-                        onMouseDown={(e) => { setIsDragging(true); handleInteract(e); }}
-                        onTouchStart={(e) => { setIsDragging(true); handleInteract(e); }}
-                        style={{
-                            width: '280px',
-                            height: '280px',
-                            borderRadius: '50%',
-                            background: 'conic-gradient(from 0deg, red, #ff0, lime, cyan, blue, #f0f, red)',
-                            position: 'relative',
-                            cursor: 'crosshair',
-                            boxShadow: 'inset 0 0 20px rgba(0,0,0,0.1), 0 10px 25px rgba(0,0,0,0.1)'
-                        }}
-                    >
-                        <div style={{
-                            position: 'absolute',
-                            top: '50%', left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            width: '180px', height: '180px',
-                            backgroundColor: 'white',
-                            borderRadius: '50%',
-                            boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.1)'
-                        }}></div>
-
-                        <div style={{
-                            position: 'absolute',
-                            top: '50%', left: '50%',
-                            width: '100%', height: '100%',
-                            transform: `translate(-50%, -50%) rotate(${hue}deg)`,
-                            pointerEvents: 'none'
-                        }}>
-                            <div style={{
-                                position: 'absolute',
-                                top: '-10px',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                width: '20px',
-                                height: '20px',
-                                backgroundColor: baseColor,
-                                border: '3px solid white',
-                                borderRadius: '50%',
-                                boxShadow: '0 2px 5px rgba(0,0,0,0.5)'
-                            }}></div>
-                        </div>
-                    </div>
-
-                    <div style={{ width: '100%', marginTop: '40px' }}>
-                        <h4 style={{ marginBottom: '15px', textAlign: 'center' }}>Choose a Finish/Vibe:</h4>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                            <button onClick={() => setVibe('vivid')} className={`btn btn-sm ${vibe === 'vivid' ? 'btn-primary' : 'btn-outline'}`}>Bright & Vivid</button>
-                            <button onClick={() => setVibe('pastel')} className={`btn btn-sm ${vibe === 'pastel' ? 'btn-primary' : 'btn-outline'}`}>Soft Pastels</button>
-                            <button onClick={() => setVibe('matte')} className={`btn btn-sm ${vibe === 'matte' ? 'btn-primary' : 'btn-outline'}`}>Matte & Muted</button>
-                            <button onClick={() => setVibe('deep')} className={`btn btn-sm ${vibe === 'deep' ? 'btn-primary' : 'btn-outline'}`}>Deep & Dark</button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Right Side: Generated Harmonies */}
-                <div style={{ padding: '30px', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', display: 'flex', flexDirection: 'column' }}>
-                    <h3 style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--neutral-200)' }}>Your Base Shade</h3>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
-                        <div style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', background: baseColor, boxShadow: 'var(--shadow-sm)', border: '1px solid var(--neutral-200)' }}></div>
-                        <div>
-                            <h2 style={{ margin: 0, color: baseColor }}>Foundation Color</h2>
-                            <p style={{ color: 'var(--text-secondary)', margin: '5px 0 0 0' }}>This is the main color of your fabric.</p>
-                        </div>
-                    </div>
-
-                    <h3 style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--neutral-200)' }}>Ideal Pairings & Combinations</h3>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-
-                        <div>
-                            <h4 style={{ marginBottom: '10px' }}>Pop & Contrast (Opposite Shades)</h4>
-                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>These colors sit across from each other. They create a highly dynamic and eye-catching look that really pops.</p>
-                            <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
-                                <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
-                                <div style={{ flex: 1, background: complementary, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>PAIR WITH THIS</div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 style={{ marginBottom: '10px' }}>Smooth & Blended (Neighboring Shades)</h4>
-                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>These are colors right next to each other on the wheel. They blend perfectly to create a serene, unified design.</p>
-                            <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
-                                <div style={{ flex: 1, background: analogous1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>ACCENT</div>
-                                <div style={{ flex: 1.5, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
-                                <div style={{ flex: 1, background: analogous2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>ACCENT</div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 style={{ marginBottom: '10px' }}>Bold & Rich (Evenly Balanced)</h4>
-                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>Spaces out three colors evenly. Highly colorful and bold while still keeping a balanced, beautiful harmony.</p>
-                            <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
-                                <div style={{ flex: 1, background: triadic1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>HIGHLIGHT</div>
-                                <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
-                                <div style={{ flex: 1, background: triadic2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>HIGHLIGHT</div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
+            {/* Tab Selector */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '40px' }}>
+                <button
+                    onClick={() => setActiveTab('wheel')}
+                    className={`btn ${activeTab === 'wheel' ? 'btn-primary' : 'btn-outline'}`}
+                    style={{ minWidth: '200px', fontSize: '1.05rem', padding: '12px 24px' }}
+                >
+                    Interactive Colour Wheel
+                </button>
+                <button
+                    onClick={() => setActiveTab('skintone')}
+                    className={`btn ${activeTab === 'skintone' ? 'btn-primary' : 'btn-outline'}`}
+                    style={{ minWidth: '200px', fontSize: '1.05rem', padding: '12px 24px' }}
+                >
+                    Skin Tone Predictor
+                </button>
             </div>
+
+            {activeTab === 'wheel' && (
+                <div>
+                    <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '40px' }}>
+                        Drag the pointer around the wheel to discover beautiful matching shades for your perfect outfit.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(350px, 1fr) 2fr', gap: '40px', alignItems: 'start' }}>
+
+                        {/* Left Side: The Interactive Wheel */}
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'white', padding: '30px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
+                            <h3 style={{ marginBottom: '30px' }}>Pick a Color Family</h3>
+
+                            <div
+                                ref={wheelRef}
+                                onMouseDown={(e) => { setIsDragging(true); handleInteract(e); }}
+                                onTouchStart={(e) => { setIsDragging(true); handleInteract(e); }}
+                                style={{
+                                    width: '280px',
+                                    height: '280px',
+                                    borderRadius: '50%',
+                                    background: 'conic-gradient(from 0deg, red, #ff0, lime, cyan, blue, #f0f, red)',
+                                    position: 'relative',
+                                    cursor: 'crosshair',
+                                    boxShadow: 'inset 0 0 20px rgba(0,0,0,0.1), 0 10px 25px rgba(0,0,0,0.1)'
+                                }}
+                            >
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '50%', left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    width: '180px', height: '180px',
+                                    backgroundColor: 'white',
+                                    borderRadius: '50%',
+                                    boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.1)'
+                                }}></div>
+
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '50%', left: '50%',
+                                    width: '100%', height: '100%',
+                                    transform: `translate(-50%, -50%) rotate(${hue}deg)`,
+                                    pointerEvents: 'none'
+                                }}>
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '-10px',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        width: '20px',
+                                        height: '20px',
+                                        backgroundColor: baseColor,
+                                        border: '3px solid white',
+                                        borderRadius: '50%',
+                                        boxShadow: '0 2px 5px rgba(0,0,0,0.5)'
+                                    }}></div>
+                                </div>
+                            </div>
+
+                            <div style={{ width: '100%', marginTop: '40px' }}>
+                                <h4 style={{ marginBottom: '15px', textAlign: 'center' }}>Choose a Finish/Vibe:</h4>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                    <button onClick={() => setVibe('vivid')} className={`btn btn-sm ${vibe === 'vivid' ? 'btn-primary' : 'btn-outline'}`}>Bright & Vivid</button>
+                                    <button onClick={() => setVibe('pastel')} className={`btn btn-sm ${vibe === 'pastel' ? 'btn-primary' : 'btn-outline'}`}>Soft Pastels</button>
+                                    <button onClick={() => setVibe('matte')} className={`btn btn-sm ${vibe === 'matte' ? 'btn-primary' : 'btn-outline'}`}>Matte & Muted</button>
+                                    <button onClick={() => setVibe('deep')} className={`btn btn-sm ${vibe === 'deep' ? 'btn-primary' : 'btn-outline'}`}>Deep & Dark</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Side: Generated Harmonies */}
+                        <div style={{ padding: '30px', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', display: 'flex', flexDirection: 'column' }}>
+                            <h3 style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--neutral-200)' }}>Your Base Shade</h3>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
+                                <div style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', background: baseColor, boxShadow: 'var(--shadow-sm)', border: '1px solid var(--neutral-200)' }}></div>
+                                <div>
+                                    <h2 style={{ margin: 0, color: baseColor }}>Foundation Color</h2>
+                                    <p style={{ color: 'var(--text-secondary)', margin: '5px 0 0 0' }}>This is the main color of your fabric.</p>
+                                </div>
+                            </div>
+
+                            <h3 style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--neutral-200)' }}>Ideal Pairings & Combinations</h3>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+
+                                <div>
+                                    <h4 style={{ marginBottom: '10px' }}>Pop & Contrast (Opposite Shades)</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>These colors sit across from each other. They create a highly dynamic and eye-catching look that really pops.</p>
+                                    <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
+                                        <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
+                                        <div style={{ flex: 1, background: complementary, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>PAIR WITH THIS</div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 style={{ marginBottom: '10px' }}>Smooth & Blended (Neighboring Shades)</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>These are colors right next to each other on the wheel. They blend perfectly to create a serene, unified design.</p>
+                                    <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
+                                        <div style={{ flex: 1, background: analogous1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>ACCENT</div>
+                                        <div style={{ flex: 1.5, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
+                                        <div style={{ flex: 1, background: analogous2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>ACCENT</div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 style={{ marginBottom: '10px' }}>Bold & Rich (Evenly Balanced)</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>Spaces out three colors evenly. Highly colorful and bold while still keeping a balanced, beautiful harmony.</p>
+                                    <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
+                                        <div style={{ flex: 1, background: triadic1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>HIGHLIGHT</div>
+                                        <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
+                                        <div style={{ flex: 1, background: triadic2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>HIGHLIGHT</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Skin Tone Matcher Podium */}
-            <div style={{ marginTop: '60px', padding: '40px', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
-                <h2 style={{ textAlign: 'center', marginBottom: '15px' }}>Skin Tone Wardrobe Predictor</h2>
-                <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '35px', maxWidth: '600px', margin: '0 auto 35px auto' }}>
-                    Select your skin tone surface and undertone combination to instantly reveal the most flattering fabric colors that will perfectly complement your natural complexion.
-                </p>
+            {activeTab === 'skintone' && (
+                <div style={{ padding: '40px', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
+                    <h2 style={{ textAlign: 'center', marginBottom: '15px' }}>Skin Tone Wardrobe Predictor</h2>
+                    <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '35px', maxWidth: '600px', margin: '0 auto 35px auto' }}>
+                        Select your skin tone surface and undertone combination to instantly reveal the most flattering fabric colors that will perfectly complement your natural complexion.
+                    </p>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '40px', alignItems: 'start' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '40px', alignItems: 'start' }}>
 
-                    {/* Tone Selection */}
-                    <div>
-                        <h4 style={{ marginBottom: '20px' }}>Select Your Tone:</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            {skinTones.map(tone => (
-                                <button
-                                    key={tone.id}
-                                    onClick={() => setSkinTone(tone.id)}
-                                    style={{
-                                        display: 'flex', alignItems: 'center', gap: '15px',
-                                        padding: '12px', border: tone.id === skinTone ? '2px solid var(--primary-500)' : '1px solid var(--neutral-300)',
-                                        borderRadius: 'var(--radius-md)', background: tone.id === skinTone ? 'var(--primary-100)' : 'white',
-                                        cursor: 'pointer', transition: 'all 0.2s', textAlign: 'left'
-                                    }}
-                                >
-                                    <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: tone.bg, border: '1px solid rgba(0,0,0,0.1)' }}></div>
-                                    <span style={{ fontWeight: tone.id === skinTone ? '700' : '500', fontSize: '0.95rem' }}>{tone.label}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Flattering Colors Display */}
-                    <div style={{ background: 'var(--neutral-100)', padding: '30px', borderRadius: 'var(--radius-md)' }}>
-                        <h4 style={{ marginBottom: '10px' }}>Your Most Flattering Combinations</h4>
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '25px' }}>
-                            Based on your selection, these rich shades will seamlessly harmonize with your natural undertones, making your bespoke tailoring pop.
-                        </p>
-
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-                            {skinTones.find(t => t.id === skinTone)?.recommended.map(colorName => (
-                                <div key={colorName} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                                    <div style={{
-                                        width: '75px', height: '75px', borderRadius: 'var(--radius-md)',
-                                        background: exactHexes[colorName] || '#dddddd',
-                                        boxShadow: '0 4px 10px rgba(0,0,0,0.1)', border: exactHexes[colorName] === '#ffffff' ? '1px solid #ddd' : 'none'
-                                    }}></div>
-                                    <span style={{ fontSize: '0.8rem', fontWeight: '500', color: 'var(--text-strong)' }}>{colorName}</span>
-                                </div>
-                            ))}
+                        {/* Tone Selection */}
+                        <div>
+                            <h4 style={{ marginBottom: '20px' }}>Select Your Tone:</h4>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {skinTones.map(tone => (
+                                    <button
+                                        key={tone.id}
+                                        onClick={() => setSkinTone(tone.id)}
+                                        style={{
+                                            display: 'flex', alignItems: 'center', gap: '15px',
+                                            padding: '12px', border: tone.id === skinTone ? '2px solid var(--primary-500)' : '1px solid var(--neutral-300)',
+                                            borderRadius: 'var(--radius-md)', background: tone.id === skinTone ? 'var(--primary-100)' : 'white',
+                                            cursor: 'pointer', transition: 'all 0.2s', textAlign: 'left'
+                                        }}
+                                    >
+                                        <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: tone.bg, border: '1px solid rgba(0,0,0,0.1)' }}></div>
+                                        <span style={{ fontWeight: tone.id === skinTone ? '700' : '500', fontSize: '0.95rem' }}>{tone.label}</span>
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
-                        <div style={{ marginTop: '35px', padding: '15px', background: 'rgba(212, 175, 55, 0.1)', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--primary-500)' }}>
-                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-strong)' }}>
-                                <strong>Pro Tailor Tip:</strong> Always share your skin tone profile with your Vastra artisan. They can source specific fabric thread-counts tailored exactly to optimize these light-reflecting hues on you!
+                        {/* Flattering Colors Display */}
+                        <div style={{ background: 'var(--neutral-100)', padding: '30px', borderRadius: 'var(--radius-md)' }}>
+                            <h4 style={{ marginBottom: '10px' }}>Your Most Flattering Combinations</h4>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '25px' }}>
+                                Based on your selection, these rich shades will seamlessly harmonize with your natural undertones, making your bespoke tailoring pop.
                             </p>
-                        </div>
-                    </div>
 
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+                                {skinTones.find(t => t.id === skinTone)?.recommended.map(colorName => (
+                                    <div key={colorName} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                                        <div style={{
+                                            width: '75px', height: '75px', borderRadius: 'var(--radius-md)',
+                                            background: exactHexes[colorName] || '#dddddd',
+                                            boxShadow: '0 4px 10px rgba(0,0,0,0.1)', border: exactHexes[colorName] === '#ffffff' ? '1px solid #ddd' : 'none'
+                                        }}></div>
+                                        <span style={{ fontSize: '0.8rem', fontWeight: '500', color: 'var(--text-strong)' }}>{colorName}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div style={{ marginTop: '35px', padding: '15px', background: 'rgba(212, 175, 55, 0.1)', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--primary-500)' }}>
+                                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-strong)' }}>
+                                    <strong>Pro Tailor Tip:</strong> Always share your skin tone profile with your Vastra artisan. They can source specific fabric thread-counts tailored exactly to optimize these light-reflecting hues on you!
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
-        </div >
+            )}
+        </div>
     );
 }
