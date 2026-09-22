@@ -53,6 +53,7 @@ app.use('/api/messages', require('./src/routes/messages'));
 app.use('/api/measurements', require('./src/routes/measurements'));
 app.use('/api/admin', require('./src/routes/admin'));
 app.use('/api/colors', require('./src/routes/colorRoutes'));
+app.use('/api/contact', require('./src/routes/contact'));
 
 // Health check
 app.get('/api/health', (req, res) => {

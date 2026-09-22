@@ -17,6 +17,7 @@ export default function AdminDashboard() {
     const [orders, setOrders] = useState([]);
     const [reviews, setReviews] = useState([]);
     const [finance, setFinance] = useState(null);
+    const [contactMessages, setContactMessages] = useState([]);
 
     useEffect(() => {
         if (authLoading) return;
@@ -30,6 +31,7 @@ export default function AdminDashboard() {
         if (activeTab === 'orders') loadOrders();
         if (activeTab === 'reviews') loadReviews();
         if (activeTab === 'finances') loadFinance();
+        if (activeTab === 'support') loadContactMessages();
     }, [activeTab]);
 
     const loadDashboard = async () => {
@@ -58,6 +60,17 @@ export default function AdminDashboard() {
 
     const loadFinance = async () => {
         try { const data = await api.get('/admin/finance'); setFinance(data); } catch { }
+    };
+
+    const loadContactMessages = async () => {
+        try { const data = await api.get('/contact'); setContactMessages(data.messages || []); } catch { }
+    };
+
+    const updateContactStatus = async (id, status) => {
+        try {
+            await api.patch(`/contact/${id}/status`, { status });
+            loadContactMessages();
+        } catch (err) { alert(err.message); }
     };
 
     const verifyTailor = async (tailorId, status) => {
@@ -99,6 +112,7 @@ export default function AdminDashboard() {
                     { key: 'orders', icon: '📦', label: 'Orders' },
                     { key: 'finances', icon: '💰', label: 'Finances & Escrow' },
                     { key: 'reviews', icon: '⭐', label: 'Reviews' },
+                    { key: 'support', icon: '💬', label: 'Support Tickets' },
                 ].map(item => (
                     <a key={item.key} className={activeTab === item.key ? 'active' : ''} onClick={() => setActiveTab(item.key)} style={{ cursor: 'pointer' }}>
                         <span>{item.icon}</span> {item.label}
@@ -305,9 +319,37 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
                         ))}
-                    </>
-                )}
+                        {/* Support Tickets Tab */}
+                        {activeTab === 'support' && (
+                            <>
+                                <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '24px' }}>Support Tickets</h2>
+                                {contactMessages.length === 0 ? (
+                                    <div className="empty-state"><h3>No messages</h3></div>
+                                ) : contactMessages.map(msg => (
+                                    <div key={msg._id} className="card" style={{ padding: '16px 20px', marginBottom: '10px', borderLeft: msg.status === 'new' ? '4px solid var(--accent-500)' : 'none' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                            <div>
+                                                <div style={{ fontWeight: 600 }}>{msg.name} <span style={{ fontWeight: 400, color: 'var(--text-tertiary)', fontSize: '0.85rem' }}>({msg.email})</span></div>
+                                                <div style={{ fontSize: '0.82rem', color: 'var(--text-tertiary)', marginBottom: '10px' }}>{new Date(msg.createdAt).toLocaleString('en-IN')}</div>
+                                                <div style={{ fontSize: '0.92rem', background: 'var(--bg-secondary)', padding: '12px', borderRadius: 'var(--radius-sm)' }}>
+                                                    {msg.message}
+                                                </div>
+                                            </div>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end', marginLeft: '20px' }}>
+                                                <span className={`badge ${msg.status === 'new' ? 'badge-accent' : msg.status === 'archived' ? 'badge-error' : 'badge-info'}`}>{msg.status.toUpperCase()}</span>
+                                                {msg.status === 'new' && (
+                                                    <button onClick={() => updateContactStatus(msg._id, 'read')} className="btn btn-sm btn-outline" style={{ fontSize: '0.78rem' }}>Mark Read</button>
+                                                )}
+                                                {msg.status !== 'archived' && (
+                                                    <button onClick={() => updateContactStatus(msg._id, 'archived')} className="btn btn-sm" style={{ fontSize: '0.78rem', color: 'var(--error)' }}>Archive</button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </>
+                        )}
+                    </div>
             </div>
-        </div>
-    );
+            );
 }
