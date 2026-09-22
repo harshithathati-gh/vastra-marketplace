@@ -46,6 +46,7 @@ export function AuthProvider({ children }) {
     const logout = () => {
         localStorage.removeItem('vastra_token');
         setUser(null);
+        window.location.href = '/';
     };
 
     const updateUser = (updatedUser) => {
