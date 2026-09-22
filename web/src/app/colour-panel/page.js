@@ -6,24 +6,24 @@ export default function ColourPanelPage() {
     const [hue, setHue] = useState(0);
     const [vibe, setVibe] = useState('vivid');
     const [isDragging, setIsDragging] = useState(false);
-    const [skinTone, setSkinTone] = useState('warm_medium');
+    const [skinTone, setSkinTone] = useState('type_3');
     const wheelRef = useRef(null);
 
     const skinTones = [
-        { id: 'cool_light', label: 'Fair/Light (Cool Undertone)', bg: '#f9e4e1', recommended: ['Ruby Red', 'Emerald Green', 'Sapphire Blue', 'Cool Gray', 'Pure White'] },
-        { id: 'warm_light', label: 'Fair/Light (Warm Undertone)', bg: '#f5d5b7', recommended: ['Peach', 'Coral', 'Golden Yellow', 'Warm Red', 'Olive Green'] },
-        { id: 'neutral_medium', label: 'Medium (Neutral Undertone)', bg: '#e5ab84', recommended: ['Dusty Pink', 'Jade Green', 'Cornflower Blue', 'Soft Teal', 'Taupe'] },
-        { id: 'warm_medium', label: 'Medium/Tan (Warm Undertone)', bg: '#d08c5c', recommended: ['Mustard Yellow', 'Terracotta', 'Rust', 'Warm Olive', 'Rich Brown'] },
-        { id: 'cool_deep', label: 'Deep (Cool Undertone)', bg: '#5c3a21', recommended: ['Royal Blue', 'Deep Purple', 'Fuchsia', 'Icy Blue', 'Silver'] },
-        { id: 'warm_deep', label: 'Deep (Warm Undertone)', bg: '#3e2415', recommended: ['Copper', 'Golden Yellow', 'Rich Orange', 'Burgundy', 'Earth Green'] }
+        { id: 'type_1', label: 'Type 1 (Light, Pale White)', bg: '#f9d8c2', recommended: ['Emerald Green', 'Sapphire Blue', 'Ruby Red', 'Cool Gray', 'Pure White'] },
+        { id: 'type_2', label: 'Type 2 (White, Fair)', bg: '#eeba98', recommended: ['Coral', 'Peach', 'Warm Red', 'Olive Green', 'Cream'] },
+        { id: 'type_3', label: 'Type 3 (Medium, White to Olive)', bg: '#db9d71', recommended: ['Mustard Yellow', 'Jade Green', 'Cornflower Blue', 'Taupe', 'Dusty Pink'] },
+        { id: 'type_4', label: 'Type 4 (Olive, Moderate Brown)', bg: '#be7444', recommended: ['Terracotta', 'Rust', 'Warm Olive', 'Rich Brown', 'Golden Yellow'] },
+        { id: 'type_5', label: 'Type 5 (Brown, Dark Brown)', bg: '#8f4f2c', recommended: ['Copper', 'Burgundy', 'Earth Green', 'Deep Purple', 'Soft Teal'] },
+        { id: 'type_6', label: 'Type 6 (Black, Very Dark)', bg: '#472213', recommended: ['Royal Blue', 'Fuchsia', 'Silver', 'Gold', 'Icy Blue'] }
     ];
 
     const exactHexes = {
-        'Ruby Red': '#9b111e', 'Emerald Green': '#50c878', 'Sapphire Blue': '#0f52ba', 'Cool Gray': '#8c92ac', 'Pure White': '#ffffff',
+        'Ruby Red': '#9b111e', 'Emerald Green': '#50c878', 'Sapphire Blue': '#0f52ba', 'Cool Gray': '#8c92ac', 'Pure White': '#ffffff', 'Cream': '#fffdd0',
         'Peach': '#ffe5b4', 'Coral': '#ff7f50', 'Golden Yellow': '#ffdf00', 'Warm Red': '#ff4500', 'Olive Green': '#808000',
         'Dusty Pink': '#dcae96', 'Jade Green': '#00a86b', 'Cornflower Blue': '#6495ed', 'Soft Teal': '#4ca3dd', 'Taupe': '#483c32',
         'Mustard Yellow': '#ffdb58', 'Terracotta': '#e2725b', 'Rust': '#b7410e', 'Warm Olive': '#556b2f', 'Rich Brown': '#4b3621',
-        'Royal Blue': '#4169e1', 'Deep Purple': '#36013f', 'Fuchsia': '#ff00ff', 'Icy Blue': '#a5f2f3', 'Silver': '#c0c0c0',
+        'Royal Blue': '#4169e1', 'Deep Purple': '#36013f', 'Fuchsia': '#ff00ff', 'Icy Blue': '#a5f2f3', 'Silver': '#c0c0c0', 'Gold': '#ffd700',
         'Copper': '#b87333', 'Rich Orange': '#ff8c00', 'Burgundy': '#800020', 'Earth Green': '#4b5320'
     };
 
