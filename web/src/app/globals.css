@@ -358,9 +358,7 @@ select {
 }
 
 .navbar-brand-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  text-decoration: none;
 }
 
 .navbar-tagline {
@@ -1350,17 +1348,12 @@ select {
 
 
 
-  .navbar-brand-wrapper {
-    align-items: center;
-    /* Centers the Vastra text directly over the tagline without breaking normal layout flow */
-  }
-
   .navbar-tagline {
     display: block;
     font-size: 0.55rem;
     margin-top: -4px;
     white-space: normal;
-    text-align: center;
+    text-align: left;
     max-width: 140px;
     line-height: 1.2;
   }

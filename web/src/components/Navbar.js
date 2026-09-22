@@ -16,12 +16,15 @@ export default function Navbar() {
     return (
         <nav className="navbar">
             <div className="container navbar-inner">
-                <div className="navbar-brand-wrapper">
-                    <Link href="/" className="navbar-logo" style={{ display: 'flex', alignItems: 'center' }}>
-                        <img src="/logo.png" alt="Vastra Logo" style={{ height: '50px', objectFit: 'contain' }} />
-                    </Link>
-                    <span className="navbar-tagline">From local hands to your homes !</span>
-                </div>
+                <Link href="/" className="navbar-brand-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+                    <div style={{ width: '42px', height: '42px', borderRadius: '50%', overflow: 'hidden', flexShrink: 0, border: '2px solid var(--primary-100)' }}>
+                        <img src="/logo.png" alt="Vastra Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
+                        <span className="navbar-logo" style={{ lineHeight: 1 }}>Va<span>stra</span></span>
+                        <span className="navbar-tagline" style={{ marginTop: '4px' }}>From local hands to your homes !</span>
+                    </div>
+                </Link>
 
                 <ul className="navbar-links" style={menuOpen ? { display: 'flex', position: 'absolute', top: '70px', left: 0, right: 0, background: 'white', flexDirection: 'column', padding: '20px', gap: '16px', borderBottom: '1px solid var(--neutral-200)', zIndex: 99 } : {}}>
                     <li><Link href="/colour-panel" className={isActive('/colour-panel')} onClick={() => setMenuOpen(false)}>Colour Panel</Link></li>
