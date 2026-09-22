@@ -32,7 +32,7 @@ export default function ContactForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }} suppressHydrationWarning>
             {status === 'error' && (
                 <div style={{ padding: '10px', background: '#FEE2E2', color: '#991B1B', borderRadius: 'var(--radius-sm)' }}>
                     Failed to send message. Please try again.
