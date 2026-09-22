@@ -93,7 +93,18 @@ export default function TailorsPage() {
                             {tailors.map((tailor) => (
                                 <Link href={`/tailors/${tailor.userId?._id}`} key={tailor._id} className="tailor-card">
                                     <div className="tailor-card-header">
-                                        <img className="tailor-card-avatar" src={tailor.userId?.avatar || ''} alt={tailor.userId?.name} onError={(e) => { e.target.style.background = 'linear-gradient(135deg, var(--primary-200), var(--accent-200))'; e.target.src = ''; }} />
+                                        {tailor.userId?.avatar ? (
+                                            <img
+                                                className="tailor-card-avatar"
+                                                src={tailor.userId.avatar}
+                                                alt={tailor.userId?.name}
+                                                onError={(e) => { e.target.style.display = 'none'; }}
+                                            />
+                                        ) : (
+                                            <div className="tailor-card-avatar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary-100)', color: 'var(--primary-800)', fontWeight: 700, fontSize: '1.2rem' }}>
+                                                {tailor.userId?.name?.charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
                                         <div className="tailor-card-info">
                                             <h3>{tailor.userId?.name}</h3>
                                             <div className="tailor-card-location">📍 {tailor.userId?.location?.city}, {tailor.userId?.location?.state}</div>
