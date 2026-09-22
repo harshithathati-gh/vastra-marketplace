@@ -1348,24 +1348,26 @@ select {
     display: block;
   }
 
-  .navbar-inner {
-    position: relative;
-    /* allow the actions to stay on the right while brand is absolute center */
-  }
+
 
   .navbar-brand-wrapper {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
     align-items: center;
+    /* Centers the Vastra text directly over the tagline without breaking normal layout flow */
   }
 
   .navbar-tagline {
     display: block;
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     margin-top: -4px;
-    white-space: nowrap;
+    white-space: normal;
     text-align: center;
+    max-width: 140px;
+    line-height: 1.2;
+  }
+
+  .navbar-actions .btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
   }
 
   .footer-grid {
