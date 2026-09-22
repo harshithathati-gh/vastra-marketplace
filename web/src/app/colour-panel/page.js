@@ -6,7 +6,26 @@ export default function ColourPanelPage() {
     const [hue, setHue] = useState(0);
     const [vibe, setVibe] = useState('vivid');
     const [isDragging, setIsDragging] = useState(false);
+    const [skinTone, setSkinTone] = useState('warm_medium');
     const wheelRef = useRef(null);
+
+    const skinTones = [
+        { id: 'cool_light', label: 'Fair/Light (Cool Undertone)', bg: '#f9e4e1', recommended: ['Ruby Red', 'Emerald Green', 'Sapphire Blue', 'Cool Gray', 'Pure White'] },
+        { id: 'warm_light', label: 'Fair/Light (Warm Undertone)', bg: '#f5d5b7', recommended: ['Peach', 'Coral', 'Golden Yellow', 'Warm Red', 'Olive Green'] },
+        { id: 'neutral_medium', label: 'Medium (Neutral Undertone)', bg: '#e5ab84', recommended: ['Dusty Pink', 'Jade Green', 'Cornflower Blue', 'Soft Teal', 'Taupe'] },
+        { id: 'warm_medium', label: 'Medium/Tan (Warm Undertone)', bg: '#d08c5c', recommended: ['Mustard Yellow', 'Terracotta', 'Rust', 'Warm Olive', 'Rich Brown'] },
+        { id: 'cool_deep', label: 'Deep (Cool Undertone)', bg: '#5c3a21', recommended: ['Royal Blue', 'Deep Purple', 'Fuchsia', 'Icy Blue', 'Silver'] },
+        { id: 'warm_deep', label: 'Deep (Warm Undertone)', bg: '#3e2415', recommended: ['Copper', 'Golden Yellow', 'Rich Orange', 'Burgundy', 'Earth Green'] }
+    ];
+
+    const exactHexes = {
+        'Ruby Red': '#9b111e', 'Emerald Green': '#50c878', 'Sapphire Blue': '#0f52ba', 'Cool Gray': '#8c92ac', 'Pure White': '#ffffff',
+        'Peach': '#ffe5b4', 'Coral': '#ff7f50', 'Golden Yellow': '#ffdf00', 'Warm Red': '#ff4500', 'Olive Green': '#808000',
+        'Dusty Pink': '#dcae96', 'Jade Green': '#00a86b', 'Cornflower Blue': '#6495ed', 'Soft Teal': '#4ca3dd', 'Taupe': '#483c32',
+        'Mustard Yellow': '#ffdb58', 'Terracotta': '#e2725b', 'Rust': '#b7410e', 'Warm Olive': '#556b2f', 'Rich Brown': '#4b3621',
+        'Royal Blue': '#4169e1', 'Deep Purple': '#36013f', 'Fuchsia': '#ff00ff', 'Icy Blue': '#a5f2f3', 'Silver': '#c0c0c0',
+        'Copper': '#b87333', 'Rich Orange': '#ff8c00', 'Burgundy': '#800020', 'Earth Green': '#4b5320'
+    };
 
     // Get saturation and lightness based on selected vibe
     let s = 100;
@@ -191,6 +210,67 @@ export default function ColourPanelPage() {
                     </div>
                 </div>
 
+            </div>
+
+            {/* Skin Tone Matcher Podium */}
+            <div style={{ marginTop: '60px', padding: '40px', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
+                <h2 style={{ textAlign: 'center', marginBottom: '15px' }}>Skin Tone Wardrobe Predictor</h2>
+                <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '35px', maxWidth: '600px', margin: '0 auto 35px auto' }}>
+                    Select your skin tone surface and undertone combination to instantly reveal the most flattering fabric colors that will perfectly complement your natural complexion.
+                </p>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '40px', alignItems: 'start' }}>
+
+                    {/* Tone Selection */}
+                    <div>
+                        <h4 style={{ marginBottom: '20px' }}>Select Your Tone:</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            {skinTones.map(tone => (
+                                <button
+                                    key={tone.id}
+                                    onClick={() => setSkinTone(tone.id)}
+                                    style={{
+                                        display: 'flex', alignItems: 'center', gap: '15px',
+                                        padding: '12px', border: tone.id === skinTone ? '2px solid var(--primary-500)' : '1px solid var(--neutral-300)',
+                                        borderRadius: 'var(--radius-md)', background: tone.id === skinTone ? 'var(--primary-100)' : 'white',
+                                        cursor: 'pointer', transition: 'all 0.2s', textAlign: 'left'
+                                    }}
+                                >
+                                    <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: tone.bg, border: '1px solid rgba(0,0,0,0.1)' }}></div>
+                                    <span style={{ fontWeight: tone.id === skinTone ? '700' : '500', fontSize: '0.95rem' }}>{tone.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Flattering Colors Display */}
+                    <div style={{ background: 'var(--neutral-100)', padding: '30px', borderRadius: 'var(--radius-md)' }}>
+                        <h4 style={{ marginBottom: '10px' }}>Your Most Flattering Combinations</h4>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '25px' }}>
+                            Based on your selection, these rich shades will seamlessly harmonize with your natural undertones, making your bespoke tailoring pop.
+                        </p>
+
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+                            {skinTones.find(t => t.id === skinTone)?.recommended.map(colorName => (
+                                <div key={colorName} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{
+                                        width: '75px', height: '75px', borderRadius: 'var(--radius-md)',
+                                        background: exactHexes[colorName] || '#dddddd',
+                                        boxShadow: '0 4px 10px rgba(0,0,0,0.1)', border: exactHexes[colorName] === '#ffffff' ? '1px solid #ddd' : 'none'
+                                    }}></div>
+                                    <span style={{ fontSize: '0.8rem', fontWeight: '500', color: 'var(--text-strong)' }}>{colorName}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div style={{ marginTop: '35px', padding: '15px', background: 'rgba(212, 175, 55, 0.1)', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--primary-500)' }}>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-strong)' }}>
+                                <strong>Pro Tailor Tip:</strong> Always share your skin tone profile with your Vastra artisan. They can source specific fabric thread-counts tailored exactly to optimize these light-reflecting hues on you!
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div >
     );
