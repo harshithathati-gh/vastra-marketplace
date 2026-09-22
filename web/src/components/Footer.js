@@ -7,7 +7,7 @@ export default function Footer() {
                 <div className="footer-grid">
                     <div className="footer-brand">
                         <h3>Va<span>stra</span></h3>
-                        <p style={{ fontWeight: 600, fontStyle: 'italic', marginBottom: '10px', color: 'var(--primary-400)' }}>vastra : from local hands to your homes !</p>
+                        <p style={{ fontWeight: 600, fontStyle: 'italic', marginBottom: '10px', color: 'var(--primary-400)' }}>from local hands to your homes !</p>
                         <p>Connecting customers with skilled local tailors across India. Get custom-tailored clothing at affordable prices, delivered to your doorstep.</p>
                     </div>
                     <div className="footer-col">
