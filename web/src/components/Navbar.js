@@ -20,7 +20,7 @@ export default function Navbar() {
                     <Link href="/" className="navbar-logo">
                         Va<span>stra</span>
                     </Link>
-                    <span style={{ fontSize: '0.85rem', fontFamily: 'var(--font-display)', fontStyle: 'italic', color: 'var(--primary-500)', marginTop: '-8px' }}>from local hands to your homes !</span>
+                    <span style={{ fontSize: '0.85rem', fontFamily: 'var(--font-display)', fontStyle: 'italic', color: 'var(--primary-500)', marginTop: '-8px' }}>From local hands to your homes !</span>
                 </div>
 
                 <ul className="navbar-links" style={menuOpen ? { display: 'flex', position: 'absolute', top: '70px', left: 0, right: 0, background: 'white', flexDirection: 'column', padding: '20px', gap: '16px', borderBottom: '1px solid var(--neutral-200)', zIndex: 99 } : {}}>

@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 export const metadata = {
-    title: 'Vastra | from local hands to your homes !',
+    title: 'Vastra | From local hands to your homes !',
     description: 'Connect with skilled local tailors across India. Browse designs, order custom-tailored clothing, and get it delivered to your doorstep at affordable prices.',
     keywords: 'tailoring, custom clothing, tailor near me, Indian fashion, bespoke, kurta, lehenga, sherwani, blouse stitching',
 };
