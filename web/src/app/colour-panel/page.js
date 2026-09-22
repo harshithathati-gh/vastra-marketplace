@@ -39,6 +39,24 @@ export default function ColourPanelPage() {
     // Helper to generate HSL string
     const getHSL = (h) => `hsl(${h}, ${s}%, ${l}%)`;
 
+    // Semantic brand naming for mathematical hues
+    const getColourName = (h, currentVibe) => {
+        let baseName = '';
+        if (h < 15 || h >= 345) baseName = 'Red';
+        else if (h < 45) baseName = 'Orange';
+        else if (h < 65) baseName = 'Yellow';
+        else if (h < 95) baseName = 'Lime';
+        else if (h < 145) baseName = 'Green';
+        else if (h < 175) baseName = 'Teal';
+        else if (h < 200) baseName = 'Aqua';
+        else if (h < 245) baseName = 'Blue';
+        else if (h < 275) baseName = 'Purple';
+        else if (h < 315) baseName = 'Magenta';
+        else baseName = 'Pink';
+        const prefix = currentVibe === 'vivid' ? 'Vibrant' : currentVibe === 'pastel' ? 'Soft' : currentVibe === 'matte' ? 'Muted' : 'Deep';
+        return `${prefix} ${baseName}`;
+    };
+
     // Mathematical harmonies based on hue
     const baseColor = getHSL(hue);
     const complementary = getHSL((hue + 180) % 360);
@@ -190,8 +208,8 @@ export default function ColourPanelPage() {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
                                 <div style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', background: baseColor, boxShadow: 'var(--shadow-sm)', border: '1px solid var(--neutral-200)' }}></div>
                                 <div>
-                                    <h2 style={{ margin: 0, color: baseColor }}>Foundation Color</h2>
-                                    <p style={{ color: 'var(--text-secondary)', margin: '5px 0 0 0' }}>This is the main color of your fabric.</p>
+                                    <h2 style={{ margin: 0, color: baseColor }}>{getColourName(hue, vibe)}</h2>
+                                    <p style={{ color: 'var(--text-secondary)', margin: '5px 0 0 0' }}>This is the main foundation color of your fabric.</p>
                                 </div>
                             </div>
 
@@ -203,8 +221,8 @@ export default function ColourPanelPage() {
                                     <h4 style={{ marginBottom: '10px' }}>Pop & Contrast (Opposite Shades)</h4>
                                     <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>These colors sit across from each other. They create a highly dynamic and eye-catching look that really pops.</p>
                                     <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
-                                        <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
-                                        <div style={{ flex: 1, background: complementary, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>PAIR WITH THIS</div>
+                                        <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>{getColourName(hue, vibe)}</div>
+                                        <div style={{ flex: 1, background: complementary, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>{getColourName((hue + 180) % 360, vibe)}</div>
                                     </div>
                                 </div>
 
@@ -212,9 +230,9 @@ export default function ColourPanelPage() {
                                     <h4 style={{ marginBottom: '10px' }}>Smooth & Blended (Neighboring Shades)</h4>
                                     <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>These are colors right next to each other on the wheel. They blend perfectly to create a serene, unified design.</p>
                                     <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
-                                        <div style={{ flex: 1, background: analogous1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>ACCENT</div>
-                                        <div style={{ flex: 1.5, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
-                                        <div style={{ flex: 1, background: analogous2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>ACCENT</div>
+                                        <div style={{ flex: 1, background: analogous1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem', textAlign: 'center', padding: '0 5px' }}>{getColourName((hue + 30) % 360, vibe)}</div>
+                                        <div style={{ flex: 1.5, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', textAlign: 'center', padding: '0 5px' }}>{getColourName(hue, vibe)}</div>
+                                        <div style={{ flex: 1, background: analogous2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem', textAlign: 'center', padding: '0 5px' }}>{getColourName((hue - 30 + 360) % 360, vibe)}</div>
                                     </div>
                                 </div>
 
@@ -222,9 +240,9 @@ export default function ColourPanelPage() {
                                     <h4 style={{ marginBottom: '10px' }}>Bold & Rich (Evenly Balanced)</h4>
                                     <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>Spaces out three colors evenly. Highly colorful and bold while still keeping a balanced, beautiful harmony.</p>
                                     <div style={{ display: 'flex', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '60px', boxShadow: 'var(--shadow-sm)' }}>
-                                        <div style={{ flex: 1, background: triadic1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>HIGHLIGHT</div>
-                                        <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold' }}>BASE</div>
-                                        <div style={{ flex: 1, background: triadic2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem' }}>HIGHLIGHT</div>
+                                        <div style={{ flex: 1, background: triadic1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem', textAlign: 'center', padding: '0 5px' }}>{getColourName((hue + 120) % 360, vibe)}</div>
+                                        <div style={{ flex: 1, background: baseColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', textAlign: 'center', padding: '0 5px' }}>{getColourName(hue, vibe)}</div>
+                                        <div style={{ flex: 1, background: triadic2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', fontWeight: 'bold', fontSize: '0.9rem', textAlign: 'center', padding: '0 5px' }}>{getColourName((hue + 240) % 360, vibe)}</div>
                                     </div>
                                 </div>
 
