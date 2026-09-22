@@ -16,11 +16,11 @@ export default function Navbar() {
     return (
         <nav className="navbar">
             <div className="container navbar-inner">
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                <div className="navbar-brand-wrapper">
                     <Link href="/" className="navbar-logo">
                         Va<span>stra</span>
                     </Link>
-                    <span className="navbar-tagline" style={{ fontSize: '0.85rem', fontFamily: 'var(--font-display)', fontStyle: 'italic', color: 'var(--primary-500)', marginTop: '-8px' }}>From local hands to your homes !</span>
+                    <span className="navbar-tagline">From local hands to your homes !</span>
                 </div>
 
                 <ul className="navbar-links" style={menuOpen ? { display: 'flex', position: 'absolute', top: '70px', left: 0, right: 0, background: 'white', flexDirection: 'column', padding: '20px', gap: '16px', borderBottom: '1px solid var(--neutral-200)', zIndex: 99 } : {}}>

@@ -357,6 +357,20 @@ select {
   color: var(--primary-500);
 }
 
+.navbar-brand-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.navbar-tagline {
+  font-size: 0.85rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--primary-500);
+  margin-top: -8px;
+}
+
 .navbar-links {
   display: flex;
   align-items: center;
@@ -1334,8 +1348,24 @@ select {
     display: block;
   }
 
+  .navbar-inner {
+    position: relative;
+    /* allow the actions to stay on the right while brand is absolute center */
+  }
+
+  .navbar-brand-wrapper {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+  }
+
   .navbar-tagline {
-    display: none;
+    display: block;
+    font-size: 0.6rem;
+    margin-top: -4px;
+    white-space: nowrap;
+    text-align: center;
   }
 
   .footer-grid {
