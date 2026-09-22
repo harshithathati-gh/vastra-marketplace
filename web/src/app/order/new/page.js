@@ -24,7 +24,7 @@ function NewOrderContent() {
     const [form, setForm] = useState({
         productId: '', productType: '', productName: '', designChoices: {},
         measurementProfileName: '', measurements: {},
-        fabricPreference: 'tailor_provided', specialInstructions: '',
+        fabricPreference: 'tailor_provided', garmentBrand: '', specialInstructions: '',
         street: '', city: user?.location?.city || '', state: user?.location?.state || '', pincode: '',
         deliveryType: 'shipping', preferredDeliveryDate: '',
     });
@@ -58,7 +58,7 @@ function NewOrderContent() {
                 measurements: form.measurements,
                 measurementProfileName: form.measurementProfileName,
                 fabricPreference: form.fabricPreference,
-                specialInstructions: form.specialInstructions,
+                specialInstructions: form.garmentBrand ? `[Preferred Brand: ${form.garmentBrand}]\n${form.specialInstructions}` : form.specialInstructions,
                 deliveryAddress: { street: form.street, city: form.city, state: form.state, pincode: form.pincode },
                 deliveryType: form.deliveryType,
                 preferredDeliveryDate: form.preferredDeliveryDate || undefined,
@@ -213,6 +213,26 @@ function NewOrderContent() {
                         </div>
 
                         <div className="form-group">
+                            <label>Preferred Fabric Brand</label>
+                            <select className="form-select" value={form.garmentBrand} onChange={(e) => updateForm('garmentBrand', e.target.value)}>
+                                <option value="">No Preference / Tailor's Choice</option>
+                                <optgroup label="Budget & Affordable Brands">
+                                    <option value="Siyaram's">Siyaram's</option>
+                                    <option value="Vimal">Vimal</option>
+                                </optgroup>
+                                <optgroup label="Mid-Range & Premium Brands">
+                                    <option value="Arvind Limited">Arvind Limited</option>
+                                    <option value="Linen Club">Linen Club</option>
+                                    <option value="Cottonworld">Cottonworld</option>
+                                </optgroup>
+                                <optgroup label="Luxury & High-End Brands">
+                                    <option value="Raymond">Raymond</option>
+                                    <option value="Morarjee">Morarjee</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div className="form-group">
                             <label>Special Instructions</label>
                             <textarea className="form-textarea" value={form.specialInstructions} onChange={(e) => updateForm('specialInstructions', e.target.value)} placeholder="Any specific requirements, design references, or notes for the tailor..." />
                         </div>
@@ -291,6 +311,12 @@ function NewOrderContent() {
                                     {Object.entries(form.designChoices).filter(([, v]) => v).map(([k, v]) => (
                                         <span key={k} className="badge badge-accent" style={{ marginRight: '6px', marginTop: '4px' }}>{k}: {v}</span>
                                     ))}
+                                </div>
+                            )}
+                            {form.garmentBrand && (
+                                <div style={{ marginBottom: '16px' }}>
+                                    <div style={{ fontSize: '0.82rem', color: 'var(--text-tertiary)' }}>Brand Preference</div>
+                                    <div style={{ fontWeight: 600, color: 'var(--primary-700)' }}>{form.garmentBrand}</div>
                                 </div>
                             )}
                             {form.specialInstructions && (
