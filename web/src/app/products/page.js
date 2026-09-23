@@ -41,21 +41,31 @@ export default function ProductsPage() {
                     p.category = 'Women';
                     p.subCategory = 'Ethnic';
                     p.name = 'Short Kurti';
-                } else if (p.type && p.type.toLowerCase().includes('anarkali')) {
+                } else if ((p.type && p.type.toLowerCase().includes('anarkali')) || (p.name && p.name.toLowerCase().includes('anarkali'))) {
                     p.baseImage = 'https://i.pinimg.com/736x/f0/c0/16/f0c01698833dce7ddd481692b3b8945a.jpg';
                     p.category = 'Women';
                     p.subCategory = 'Ethnic';
                     p.name = 'Anarkali';
-                } else if (p.type && p.type.toLowerCase().includes('half saree')) {
+                } else if ((p.type && p.type.toLowerCase().includes('salwar suit')) || (p.name && p.name.toLowerCase().includes('salwar suit'))) {
+                    p.baseImage = 'https://i.pinimg.com/736x/09/f3/34/09f3340a331e5afb171c9a5f30e2866d.jpg';
+                    p.category = 'Women';
+                    p.subCategory = 'Ethnic';
+                    p.name = 'Salwar Suit';
+                } else if ((p.type && p.type.toLowerCase().includes('half saree')) || (p.name && p.name.toLowerCase().includes('half saree'))) {
                     p.baseImage = 'https://i.pinimg.com/736x/59/61/65/596165f685556d117ac3772b6d365114.jpg';
                     p.category = 'Women';
                     p.subCategory = 'Ethnic';
                     p.name = 'Half Saree';
-                } else if (p.type && p.type.toLowerCase().includes('lehenga')) {
+                } else if ((p.type && p.type.toLowerCase().includes('lehenga')) || (p.name && p.name.toLowerCase().includes('lehenga'))) {
                     p.baseImage = 'https://i.pinimg.com/736x/5e/33/8b/5e338b5b1879403d62debf567c0815ac.jpg';
                     p.category = 'Women';
                     p.subCategory = 'Ethnic';
                     p.name = 'Lehenga';
+                } else if ((p.type && p.type.toLowerCase().includes('kids kurta')) || (p.name && p.name.toLowerCase().includes('kids kurta'))) {
+                    p.baseImage = 'https://i.pinimg.com/736x/53/7a/9a/537a9a645807af620561f68b803b6a68.jpg';
+                    p.category = 'Men and Women';
+                    p.subCategory = 'Ethnic';
+                    p.name = 'Kids Kurta Set';
                 } else if (p.type && p.type.toLowerCase().includes('kurta')) {
                     p.baseImage = 'https://i.pinimg.com/736x/66/29/df/6629df3409765ea18978413656a578fb.jpg';
                 } else if (p.type && p.type.toLowerCase().includes('shirt')) {

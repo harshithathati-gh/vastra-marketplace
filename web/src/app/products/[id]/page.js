@@ -76,7 +76,7 @@ export default function ProductDetailPage() {
                 p.category = 'Women';
                 p.subCategory = 'Ethnic';
                 p.name = 'Short Kurti';
-            } else if (p && p.type && p.type.toLowerCase().includes('anarkali')) {
+            } else if ((p && p.type && p.type.toLowerCase().includes('anarkali')) || (p && p.name && p.name.toLowerCase().includes('anarkali'))) {
                 p.images = [
                     'https://i.pinimg.com/736x/f0/c0/16/f0c01698833dce7ddd481692b3b8945a.jpg',
                     'https://i.pinimg.com/736x/f3/26/45/f32645bbb642d578734387f057eec9fb.jpg',
@@ -88,7 +88,19 @@ export default function ProductDetailPage() {
                 p.category = 'Women';
                 p.subCategory = 'Ethnic';
                 p.name = 'Anarkali';
-            } else if (p && p.type && p.type.toLowerCase().includes('half saree')) {
+            } else if ((p && p.type && p.type.toLowerCase().includes('salwar suit')) || (p && p.name && p.name.toLowerCase().includes('salwar suit'))) {
+                p.images = [
+                    'https://i.pinimg.com/736x/09/f3/34/09f3340a331e5afb171c9a5f30e2866d.jpg',
+                    'https://i.pinimg.com/736x/e2/87/1d/e2871dd91f8ceed3170386c8808a18d7.jpg',
+                    'https://i.pinimg.com/736x/2a/0d/a6/2a0da67f925e1c6ef1cd98c827111fb0.jpg',
+                    'https://i.pinimg.com/736x/28/c0/d8/28c0d8339e5bb652f271675ba79c34ed.jpg',
+                    'https://i.pinimg.com/736x/99/c7/a9/99c7a937255c1040e591ff2b6b1fd95b.jpg'
+                ];
+                p.baseImage = p.images[0];
+                p.category = 'Women';
+                p.subCategory = 'Ethnic';
+                p.name = 'Salwar Suit';
+            } else if ((p && p.type && p.type.toLowerCase().includes('half saree')) || (p && p.name && p.name.toLowerCase().includes('half saree'))) {
                 p.images = [
                     'https://i.pinimg.com/736x/59/61/65/596165f685556d117ac3772b6d365114.jpg',
                     'https://i.pinimg.com/736x/c9/8b/64/c98b6412c339d308eef8980181134da8.jpg',
@@ -100,7 +112,7 @@ export default function ProductDetailPage() {
                 p.category = 'Women';
                 p.subCategory = 'Ethnic';
                 p.name = 'Half Saree';
-            } else if (p && p.type && p.type.toLowerCase().includes('lehenga')) {
+            } else if ((p && p.type && p.type.toLowerCase().includes('lehenga')) || (p && p.name && p.name.toLowerCase().includes('lehenga'))) {
                 p.images = [
                     'https://i.pinimg.com/736x/5e/33/8b/5e338b5b1879403d62debf567c0815ac.jpg',
                     'https://i.pinimg.com/736x/c9/87/58/c98758417d002c776550e3d1ca38834e.jpg',
@@ -112,6 +124,18 @@ export default function ProductDetailPage() {
                 p.category = 'Women';
                 p.subCategory = 'Ethnic';
                 p.name = 'Lehenga';
+            } else if ((p && p.type && p.type.toLowerCase().includes('kids kurta')) || (p && p.name && p.name.toLowerCase().includes('kids kurta'))) {
+                p.images = [
+                    'https://i.pinimg.com/736x/53/7a/9a/537a9a645807af620561f68b803b6a68.jpg',
+                    'https://i.pinimg.com/736x/f8/79/bc/f879bcc01a1b96a277847fad2cb4c8d7.jpg',
+                    'https://i.pinimg.com/736x/a8/3f/3c/a83f3c05bb8fd7dd0db3f20de900087c.jpg',
+                    'https://i.pinimg.com/736x/d3/12/41/d3124105eb6cf3d7543620382c222dcb.jpg',
+                    'https://i.pinimg.com/736x/e5/82/32/e582320cd0b9c9de51c98b5e36f3f0e7.jpg'
+                ];
+                p.baseImage = p.images[0];
+                p.category = 'Men and Women';
+                p.subCategory = 'Ethnic';
+                p.name = 'Kids Kurta Set';
             } else if (p && p.type && p.type.toLowerCase().includes('kurta')) {
                 p.images = [
                     'https://i.pinimg.com/736x/66/29/df/6629df3409765ea18978413656a578fb.jpg',
