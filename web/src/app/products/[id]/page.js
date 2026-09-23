@@ -45,8 +45,8 @@ export default function ProductDetailPage() {
                 p.images = [
                     'https://offduty.in/cdn/shop/files/709492DD-63BB-47DE-AD1B-09616FDE2AB1_1400x.jpg?v=1708772536',
                     'https://i.pinimg.com/236x/9e/65/75/9e65759819549f2ce2385cb8509c0402.jpg',
-                    '/trousers_1.png',
-                    '/trousers_2.png',
+                    'https://i.pinimg.com/originals/5d/ff/a0/5dffa0ca31b0ed43e5e9e1bad3cfbe9b.jpg',
+                    'https://i.pinimg.com/originals/33/e0/84/33e084e0138da0a43ec2cc14b9a9f9c9.jpg',
                     'https://down-ph.img.susercontent.com/file/sg-11134201-7rbm5-ln6ltbar2cz03a'
                 ];
                 p.baseImage = p.images[0];
