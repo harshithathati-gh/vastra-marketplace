@@ -27,8 +27,8 @@ export default function ProductsPage() {
                     p.baseImage = 'https://designerblouse.co/blog/wp-content/uploads/2024/07/cotton-printed-blouse.jpg';
                 } else if (p.type && p.type.toLowerCase().includes('dress')) {
                     p.baseImage = 'https://i.pinimg.com/736x/43/5c/cd/435ccdef1ce3d36b1055d997a7feebf6.jpg';
-                } else if (p.type && (p.type.toLowerCase().includes('trouser') || p.type.toLowerCase().includes('pant'))) {
-                    p.baseImage = 'https://offduty.in/cdn/shop/files/709492DD-63BB-47DE-AD1B-09616FDE2AB1_1400x.jpg?v=1708772536';
+                } else if ((p.type && (p.type.toLowerCase().includes('trouser') || p.type.toLowerCase().includes('pant'))) || (p.name && (p.name.toLowerCase().includes('trouser') || p.name.toLowerCase().includes('pant')))) {
+                    p.baseImage = 'https://i.pinimg.com/736x/10/93/10/1093108140833387077.jpg';
                     p.category = 'Women and Men';
                     p.subCategory = 'Western';
                 } else if (p.type && p.type.toLowerCase().includes('long kurti')) {

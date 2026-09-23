@@ -41,13 +41,13 @@ export default function ProductDetailPage() {
                     'https://i.pinimg.com/736x/be/68/d7/be68d76ddfd76938ef9bcc549aee8c48.jpg'
                 ];
                 p.baseImage = p.images[0];
-            } else if (p && p.type && (p.type.toLowerCase().includes('trouser') || p.type.toLowerCase().includes('pant'))) {
+            } else if ((p && p.type && (p.type.toLowerCase().includes('trouser') || p.type.toLowerCase().includes('pant'))) || (p && p.name && (p.name.toLowerCase().includes('trouser') || p.name.toLowerCase().includes('pant')))) {
                 p.images = [
-                    'https://offduty.in/cdn/shop/files/709492DD-63BB-47DE-AD1B-09616FDE2AB1_1400x.jpg?v=1708772536',
-                    'https://i.pinimg.com/236x/9e/65/75/9e65759819549f2ce2385cb8509c0402.jpg',
-                    'https://i.pinimg.com/originals/5d/ff/a0/5dffa0ca31b0ed43e5e9e1bad3cfbe9b.jpg',
-                    'https://i.pinimg.com/originals/33/e0/84/33e084e0138da0a43ec2cc14b9a9f9c9.jpg',
-                    'https://down-ph.img.susercontent.com/file/sg-11134201-7rbm5-ln6ltbar2cz03a'
+                    'https://i.pinimg.com/736x/10/93/10/1093108140833387077.jpg',
+                    'https://i.pinimg.com/736x/92/35/19/923519467372385574.jpg',
+                    'https://i.pinimg.com/736x/55/2f/23/552f23546bc2d85028bb1819b7f38112.jpg',
+                    'https://i.pinimg.com/736x/60/48/19/604819424993694307.jpg',
+                    'https://i.pinimg.com/736x/83/37/99/833799318558899313.jpg'
                 ];
                 p.baseImage = p.images[0];
                 p.category = 'Women and Men';
