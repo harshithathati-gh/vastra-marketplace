@@ -41,17 +41,17 @@ export default function ProductsPage() {
 
             <div className="container">
                 <div className="filters-bar">
-                    <form onSubmit={handleSearch} className="search-input-wrapper">
+                    <form suppressHydrationWarning onSubmit={handleSearch} className="search-input-wrapper">
                         <span className="search-icon">🔍</span>
-                        <input type="text" className="form-input" placeholder="Search products..." value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
+                        <input suppressHydrationWarning type="text" className="form-input" placeholder="Search products..." value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
                     </form>
-                    <select className="form-select" value={filters.category} onChange={(e) => setFilters({ ...filters, category: e.target.value })}>
+                    <select suppressHydrationWarning className="form-select" value={filters.category} onChange={(e) => setFilters({ ...filters, category: e.target.value })}>
                         <option value="">All Categories</option>
                         <option value="men">Men</option>
                         <option value="women">Women</option>
                         <option value="kids">Kids</option>
                     </select>
-                    <select className="form-select" value={filters.subCategory} onChange={(e) => setFilters({ ...filters, subCategory: e.target.value })}>
+                    <select suppressHydrationWarning className="form-select" value={filters.subCategory} onChange={(e) => setFilters({ ...filters, subCategory: e.target.value })}>
                         <option value="">All Styles</option>
                         <option value="ethnic">Ethnic</option>
                         <option value="western">Western</option>
