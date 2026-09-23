@@ -61,7 +61,8 @@ export default function ProductDetailPage() {
                     'https://i.pinimg.com/736x/65/1a/ca/651acaf25d77755205a497cda4fdd41a.jpg'
                 ];
                 p.baseImage = p.images[0];
-                p.category = 'Long Kurtis';
+                p.category = 'Women';
+                p.subCategory = 'Ethnic';
                 p.name = 'Long Kurti';
             } else if (p && p.type && p.type.toLowerCase().includes('kurti')) {
                 p.images = [
@@ -72,7 +73,8 @@ export default function ProductDetailPage() {
                     'https://i.pinimg.com/736x/4b/6a/04/4b6a0414bff7b713462859159af76479.jpg'
                 ];
                 p.baseImage = p.images[0];
-                p.category = 'Short Kurtis';
+                p.category = 'Women';
+                p.subCategory = 'Ethnic';
                 p.name = 'Short Kurti';
             } else if (p && p.type && p.type.toLowerCase().includes('kurta')) {
                 p.images = [

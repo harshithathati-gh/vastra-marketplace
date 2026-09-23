@@ -33,11 +33,13 @@ export default function ProductsPage() {
                     p.subCategory = 'Western';
                 } else if (p.type && p.type.toLowerCase().includes('long kurti')) {
                     p.baseImage = 'https://i.pinimg.com/736x/da/e8/8d/dae88d148a7c8d0e933e1b58a042e5e3.jpg';
-                    p.category = 'Long Kurtis';
+                    p.category = 'Women';
+                    p.subCategory = 'Ethnic';
                     p.name = 'Long Kurti';
                 } else if (p.type && p.type.toLowerCase().includes('kurti')) {
                     p.baseImage = 'https://i.pinimg.com/736x/e5/13/e6/e513e678c13bde8ac5c08fe8cf12aadf.jpg';
-                    p.category = 'Short Kurtis';
+                    p.category = 'Women';
+                    p.subCategory = 'Ethnic';
                     p.name = 'Short Kurti';
                 } else if (p.type && p.type.toLowerCase().includes('kurta')) {
                     p.baseImage = 'https://i.pinimg.com/736x/66/29/df/6629df3409765ea18978413656a578fb.jpg';
