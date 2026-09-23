@@ -52,6 +52,26 @@ export default function ProductDetailPage() {
                 p.baseImage = p.images[0];
                 p.category = 'Women and Men';
                 p.subCategory = 'Western';
+            } else if (p && p.type && p.type.toLowerCase().includes('kurti')) {
+                p.images = [
+                    'https://i.pinimg.com/736x/e5/13/e6/e513e678c13bde8ac5c08fe8cf12aadf.jpg',
+                    'https://i.pinimg.com/736x/16/cf/0d/16cf0df40ffc10e5ecb56310fefa5171.jpg',
+                    'https://i.pinimg.com/736x/17/c6/50/17c650f944b744ba9819210b53844b32.jpg',
+                    'https://i.pinimg.com/736x/b6/9c/e6/b69ce675e7692e3461e47081a4c827ad.jpg',
+                    'https://i.pinimg.com/736x/4b/6a/04/4b6a0414bff7b713462859159af76479.jpg'
+                ];
+                p.baseImage = p.images[0];
+                p.category = 'Short Kurtis';
+                p.name = 'Short Kurti';
+            } else if (p && p.type && p.type.toLowerCase().includes('kurta')) {
+                p.images = [
+                    'https://i.pinimg.com/736x/66/29/df/6629df3409765ea18978413656a578fb.jpg',
+                    'https://i.pinimg.com/736x/50/ea/67/50ea673373376398d4eb383c61612170.jpg',
+                    'https://i.pinimg.com/736x/f5/be/35/f5be3564d449a957ceae2b78add3217c.jpg',
+                    'https://i.pinimg.com/736x/73/b2/18/73b21866a386fed2e446b9529906cc16.jpg',
+                    'https://i.pinimg.com/736x/be/f6/27/bef6271c7ca7e6767e1c4e35b56fd442.jpg'
+                ];
+                p.baseImage = p.images[0];
             }
             setProduct(p);
             if (p) setActiveImg(p.baseImage || (p.images && p.images[0]));
