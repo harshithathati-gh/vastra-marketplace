@@ -41,6 +41,13 @@ export default function ProductDetailPage() {
                     'https://i.pinimg.com/736x/be/68/d7/be68d76ddfd76938ef9bcc549aee8c48.jpg'
                 ];
                 p.baseImage = p.images[0];
+            } else if (p && p.type && (p.type.toLowerCase().includes('trouser') || p.type.toLowerCase().includes('pant'))) {
+                p.images = [
+                    'https://offduty.in/cdn/shop/files/709492DD-63BB-47DE-AD1B-09616FDE2AB1_1400x.jpg?v=1708772536',
+                    'https://i.pinimg.com/236x/9e/65/75/9e65759819549f2ce2385cb8509c0402.jpg',
+                    'https://down-ph.img.susercontent.com/file/sg-11134201-7rbm5-ln6ltbar2cz03a'
+                ];
+                p.baseImage = p.images[0];
             }
             setProduct(p);
             if (p) setActiveImg(p.baseImage || (p.images && p.images[0]));

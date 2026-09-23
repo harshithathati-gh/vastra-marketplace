@@ -27,6 +27,8 @@ export default function ProductsPage() {
                     p.baseImage = 'https://designerblouse.co/blog/wp-content/uploads/2024/07/cotton-printed-blouse.jpg';
                 } else if (p.type && p.type.toLowerCase().includes('dress')) {
                     p.baseImage = 'https://i.pinimg.com/736x/43/5c/cd/435ccdef1ce3d36b1055d997a7feebf6.jpg';
+                } else if (p.type && (p.type.toLowerCase().includes('trouser') || p.type.toLowerCase().includes('pant'))) {
+                    p.baseImage = 'https://offduty.in/cdn/shop/files/709492DD-63BB-47DE-AD1B-09616FDE2AB1_1400x.jpg?v=1708772536';
                 } else if (p.type && p.type.toLowerCase().includes('shirt')) {
                     p.baseImage = 'https://cdn.shopify.com/s/files/1/0266/6276/4597/files/Group_1-03_28e7cab7-92f1-46f0-a5c0-30194b1ae35e.jpg?v=1665137073';
                 }
