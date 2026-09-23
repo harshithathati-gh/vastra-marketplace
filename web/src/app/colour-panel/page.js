@@ -116,18 +116,18 @@ export default function ColourPanelPage() {
             <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>Vastra Colour Intelligence</h1>
 
             {/* Tab Selector */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '40px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '15px', marginBottom: '40px' }}>
                 <button
                     onClick={() => setActiveTab('wheel')}
                     className={`btn ${activeTab === 'wheel' ? 'btn-primary' : 'btn-outline'}`}
-                    style={{ minWidth: '200px', fontSize: '1.05rem', padding: '12px 24px' }}
+                    style={{ flex: '1 1 250px', fontSize: '1.05rem', padding: '12px 24px' }}
                 >
                     Interactive Colour Wheel
                 </button>
                 <button
                     onClick={() => setActiveTab('skintone')}
                     className={`btn ${activeTab === 'skintone' ? 'btn-primary' : 'btn-outline'}`}
-                    style={{ minWidth: '200px', fontSize: '1.05rem', padding: '12px 24px' }}
+                    style={{ flex: '1 1 250px', fontSize: '1.05rem', padding: '12px 24px' }}
                 >
                     Skin Tone Predictor
                 </button>
@@ -141,7 +141,7 @@ export default function ColourPanelPage() {
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', alignItems: 'flex-start' }}>
 
                         {/* Left Side: The Interactive Wheel */}
-                        <div style={{ flex: '1 1 350px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'white', padding: '30px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
+                        <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'white', padding: 'clamp(20px, 4vw, 30px)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
                             <h3 style={{ marginBottom: '30px' }}>Pick a Color Family</h3>
 
                             <div
@@ -203,7 +203,7 @@ export default function ColourPanelPage() {
                         </div>
 
                         {/* Right Side: Generated Harmonies */}
-                        <div style={{ flex: '2 1 400px', padding: '30px', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                        <div style={{ flex: '2 1 300px', padding: 'clamp(20px, 4vw, 30px)', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                             <h3 style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--neutral-200)' }}>Your Base Shade</h3>
 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
@@ -255,7 +255,7 @@ export default function ColourPanelPage() {
 
             {/* Skin Tone Matcher Podium */}
             {activeTab === 'skintone' && (
-                <div style={{ padding: '40px', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
+                <div style={{ padding: 'clamp(20px, 4vw, 40px)', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
                     <h2 style={{ textAlign: 'center', marginBottom: '15px' }}>Skin Tone Wardrobe Predictor</h2>
                     <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '35px', maxWidth: '600px', margin: '0 auto 35px auto' }}>
                         Select your skin tone surface and undertone combination to instantly reveal the most flattering fabric colors that will perfectly complement your natural complexion.
@@ -264,7 +264,7 @@ export default function ColourPanelPage() {
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', alignItems: 'flex-start' }}>
 
                         {/* Tone Selection */}
-                        <div style={{ flex: '1 1 300px' }}>
+                        <div style={{ flex: '1 1 250px' }}>
                             <h4 style={{ marginBottom: '20px' }}>Select Your Tone:</h4>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 {skinTones.map(tone => (
@@ -286,7 +286,7 @@ export default function ColourPanelPage() {
                         </div>
 
                         {/* Flattering Colors Display */}
-                        <div style={{ flex: '2 1 350px', background: 'var(--neutral-100)', padding: '30px', borderRadius: 'var(--radius-md)' }}>
+                        <div style={{ flex: '2 1 250px', background: 'var(--neutral-100)', padding: 'clamp(20px, 4vw, 30px)', borderRadius: 'var(--radius-md)' }}>
                             <h4 style={{ marginBottom: '10px' }}>Your Most Flattering Combinations</h4>
                             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '25px' }}>
                                 Based on your selection, these rich shades will seamlessly harmonize with your natural undertones, making your bespoke tailoring pop.
