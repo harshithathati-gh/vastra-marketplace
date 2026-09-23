@@ -43,11 +43,11 @@ export default function ProductDetailPage() {
                 p.baseImage = p.images[0];
             } else if ((p && p.type && (p.type.toLowerCase().includes('trouser') || p.type.toLowerCase().includes('pant'))) || (p && p.name && (p.name.toLowerCase().includes('trouser') || p.name.toLowerCase().includes('pant')))) {
                 p.images = [
-                    'https://in.pinterest.com/pin/1093108140833387077/',
-                    'https://in.pinterest.com/pin/923519467372385574/',
                     'https://i.pinimg.com/736x/55/2f/23/552f23546bc2d85028bb1819b7f38112.jpg',
-                    'https://in.pinterest.com/pin/604819424993694307/',
-                    'https://in.pinterest.com/pin/833799318558899313/'
+                    'https://i.pinimg.com/736x/1f/df/5a/1fdf5a33c2bcb082b082dd3b951cfeca0387.jpg',
+                    'https://i.pinimg.com/736x/8b/d5/25/8bd5258c997ad8f0d8f0de63003c1fc79529.jpg',
+                    'https://i.pinimg.com/736x/55/2f/23/552f23546bc2d85028bb1819b7f38112.jpg',
+                    'https://i.pinimg.com/736x/1f/df/5a/1fdf5a33c2bcb082b082dd3b951cfeca0387.jpg'
                 ];
                 p.baseImage = p.images[0];
                 p.category = 'Women and Men';
