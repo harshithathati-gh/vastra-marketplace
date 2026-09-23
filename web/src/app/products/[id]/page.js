@@ -76,6 +76,18 @@ export default function ProductDetailPage() {
                 p.category = 'Women';
                 p.subCategory = 'Ethnic';
                 p.name = 'Short Kurti';
+            } else if (p && p.type && p.type.toLowerCase().includes('anarkali')) {
+                p.images = [
+                    'https://i.pinimg.com/736x/f0/c0/16/f0c01698833dce7ddd481692b3b8945a.jpg',
+                    'https://i.pinimg.com/736x/f3/26/45/f32645bbb642d578734387f057eec9fb.jpg',
+                    'https://i.pinimg.com/736x/4b/e7/f5/4be7f55da121b2186ad2934cf6e668f3.jpg',
+                    'https://i.pinimg.com/736x/20/de/6d/20de6d110fe131ca7cf4e59d4b9b73ec.jpg',
+                    'https://i.pinimg.com/736x/0d/42/e7/0d42e73300ec837dd4fe97821d309a30.jpg'
+                ];
+                p.baseImage = p.images[0];
+                p.category = 'Women';
+                p.subCategory = 'Ethnic';
+                p.name = 'Anarkali';
             } else if (p && p.type && p.type.toLowerCase().includes('kurta')) {
                 p.images = [
                     'https://i.pinimg.com/736x/66/29/df/6629df3409765ea18978413656a578fb.jpg',
