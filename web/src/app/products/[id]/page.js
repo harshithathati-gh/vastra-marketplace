@@ -52,6 +52,17 @@ export default function ProductDetailPage() {
                 p.baseImage = p.images[0];
                 p.category = 'Women and Men';
                 p.subCategory = 'Western';
+            } else if (p && p.type && p.type.toLowerCase().includes('long kurti')) {
+                p.images = [
+                    'https://i.pinimg.com/736x/da/e8/8d/dae88d148a7c8d0e933e1b58a042e5e3.jpg',
+                    'https://i.pinimg.com/736x/f7/94/e4/f794e44c1b78be501b4e6d8e37330614.jpg',
+                    'https://i.pinimg.com/736x/86/8c/ac/868cacc690924811468575180c2b6a62.jpg',
+                    'https://i.pinimg.com/736x/60/6f/2f/606f2f5cb9fe973e27334973be8d7ff4.jpg',
+                    'https://i.pinimg.com/736x/65/1a/ca/651acaf25d77755205a497cda4fdd41a.jpg'
+                ];
+                p.baseImage = p.images[0];
+                p.category = 'Long Kurtis';
+                p.name = 'Long Kurti';
             } else if (p && p.type && p.type.toLowerCase().includes('kurti')) {
                 p.images = [
                     'https://i.pinimg.com/736x/e5/13/e6/e513e678c13bde8ac5c08fe8cf12aadf.jpg',
