@@ -32,6 +32,15 @@ export default function ProductDetailPage() {
                     'https://www.weddingforward.com/wp-content/uploads/2023/03/ball-gown-wedding-dresses-nicole-milano.jpg'
                 ];
                 p.baseImage = p.images[0];
+            } else if (p && p.type && p.type.toLowerCase().includes('shirt')) {
+                p.images = [
+                    'https://cdn.shopify.com/s/files/1/0266/6276/4597/files/Group_1-03_28e7cab7-92f1-46f0-a5c0-30194b1ae35e.jpg?v=1665137073',
+                    'https://m.media-amazon.com/images/I/610NaWLzXvL._AC_SL1500_.jpg',
+                    'https://www.gulahmedshop.com/cdn/shop/files/Men-Dress-Shirts-Color-Black-100_-Cotton-Modern-Fit-FS-PLN25-335-Half-Front_940x.jpg?v=1766746917',
+                    'https://i.etsystatic.com/54837021/r/il/2c4135/7814821425/il_fullxfull.7814821425_kch0.jpg',
+                    'https://i.pinimg.com/736x/be/68/d7/be68d76ddfd76938ef9bcc549aee8c48.jpg'
+                ];
+                p.baseImage = p.images[0];
             }
             setProduct(p);
             if (p) setActiveImg(p.baseImage || (p.images && p.images[0]));
