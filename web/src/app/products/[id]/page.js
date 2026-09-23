@@ -19,17 +19,10 @@ export default function ProductDetailPage() {
 
     return (
         <>
-            <div className="page-header">
-                <div className="container">
-                    <h1>{product.name}</h1>
-                    <p>{product.category} • {product.subCategory}</p>
-                </div>
-            </div>
-
             <div className="container section">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'start' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '48px', alignItems: 'flex-start' }}>
                     {/* Image */}
-                    <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--neutral-100)' }}>
+                    <div style={{ flex: '1 1 min(100%, 400px)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--neutral-100)' }}>
                         {product.baseImage ? (
                             <img src={product.baseImage} alt={product.name} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover' }} />
                         ) : (
@@ -38,7 +31,7 @@ export default function ProductDetailPage() {
                     </div>
 
                     {/* Details */}
-                    <div>
+                    <div style={{ flex: '1 1 min(100%, 400px)' }}>
                         <span className="badge badge-primary" style={{ marginBottom: '12px' }}>{product.category} • {product.subCategory}</span>
                         <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', marginBottom: '12px' }}>{product.name}</h2>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', marginBottom: '24px' }}>{product.description}</p>
