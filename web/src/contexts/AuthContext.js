@@ -21,9 +21,11 @@ export function AuthProvider({ children }) {
             }
             const data = await api.get('/auth/me');
             setUser(data.user);
-        } catch {
-            localStorage.removeItem('vastra_token');
-            setUser(null);
+        } catch (error) {
+            if (error?.status === 401) {
+                localStorage.removeItem('vastra_token');
+                setUser(null);
+            }
         } finally {
             setLoading(false);
         }

@@ -35,7 +35,9 @@ class ApiClient {
         const data = await res.json();
 
         if (!res.ok) {
-            throw new Error(data.message || 'Something went wrong');
+            const error = new Error(data.message || 'Something went wrong');
+            error.status = res.status;
+            throw error;
         }
 
         return data;
