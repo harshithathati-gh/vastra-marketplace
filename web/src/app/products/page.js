@@ -20,7 +20,18 @@ export default function ProductsPage() {
             if (filters.search) params.set('search', filters.search);
             params.set('limit', '50');
             const data = await api.get(`/products?${params}`);
-            setProducts(data.products || []);
+
+            // Apply aesthetic image overrides directly into the grid array logic globally to bypass DB defaults
+            const mappedProducts = (data.products || []).map(p => {
+                if (p.type && p.type.toLowerCase().includes('blouse')) {
+                    p.baseImage = 'https://designerblouse.co/blog/wp-content/uploads/2024/07/cotton-printed-blouse.jpg';
+                } else if (p.type && p.type.toLowerCase().includes('dress')) {
+                    p.baseImage = 'https://i.pinimg.com/736x/43/5c/cd/435ccdef1ce3d36b1055d997a7feebf6.jpg';
+                }
+                return p;
+            });
+
+            setProducts(mappedProducts);
         } catch { setProducts([]); }
         setLoading(false);
     };

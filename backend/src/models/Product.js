@@ -29,6 +29,9 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    images: [{
+        type: String,
+    }],
     designOptions: {
         collarTypes: [{ type: String }],
         sleeveStyles: [{ type: String }],
