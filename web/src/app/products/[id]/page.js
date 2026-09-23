@@ -50,6 +50,8 @@ export default function ProductDetailPage() {
                     'https://down-ph.img.susercontent.com/file/sg-11134201-7rbm5-ln6ltbar2cz03a'
                 ];
                 p.baseImage = p.images[0];
+                p.category = 'Women and Men';
+                p.subCategory = 'Western';
             }
             setProduct(p);
             if (p) setActiveImg(p.baseImage || (p.images && p.images[0]));
