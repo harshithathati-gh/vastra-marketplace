@@ -52,7 +52,7 @@ export default function ProductDetailPage() {
                 p.baseImage = p.images[0];
                 p.category = 'Women and Men';
                 p.subCategory = 'Western';
-            } else if (p && p.type && p.type.toLowerCase().includes('long kurti')) {
+            } else if ((p && p.type && p.type.toLowerCase().includes('long kurti')) || (p && p.name && p.name.toLowerCase().includes('long kurti'))) {
                 p.images = [
                     'https://i.pinimg.com/736x/da/e8/8d/dae88d148a7c8d0e933e1b58a042e5e3.jpg',
                     'https://i.pinimg.com/736x/f7/94/e4/f794e44c1b78be501b4e6d8e37330614.jpg',
@@ -64,7 +64,7 @@ export default function ProductDetailPage() {
                 p.category = 'Women';
                 p.subCategory = 'Ethnic';
                 p.name = 'Long Kurti';
-            } else if (p && p.type && p.type.toLowerCase().includes('kurti')) {
+            } else if ((p && p.type && p.type.toLowerCase().includes('kurti')) || (p && p.name && p.name.toLowerCase().includes('kurti'))) {
                 p.images = [
                     'https://i.pinimg.com/736x/e5/13/e6/e513e678c13bde8ac5c08fe8cf12aadf.jpg',
                     'https://i.pinimg.com/736x/16/cf/0d/16cf0df40ffc10e5ecb56310fefa5171.jpg',
