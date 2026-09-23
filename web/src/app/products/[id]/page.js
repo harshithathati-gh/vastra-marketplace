@@ -88,6 +88,30 @@ export default function ProductDetailPage() {
                 p.category = 'Women';
                 p.subCategory = 'Ethnic';
                 p.name = 'Anarkali';
+            } else if (p && p.type && p.type.toLowerCase().includes('half saree')) {
+                p.images = [
+                    'https://i.pinimg.com/736x/59/61/65/596165f685556d117ac3772b6d365114.jpg',
+                    'https://i.pinimg.com/736x/c9/8b/64/c98b6412c339d308eef8980181134da8.jpg',
+                    'https://i.pinimg.com/736x/d8/81/eb/d881ebdf64b967f6e6aa2bfb6f899cfa.jpg',
+                    'https://i.pinimg.com/736x/95/8c/33/958c33882191210f927853f0ba9aab9f.jpg',
+                    'https://i.pinimg.com/736x/bd/29/f5/bd29f50404de41ed595a98165b4cff73.jpg'
+                ];
+                p.baseImage = p.images[0];
+                p.category = 'Women';
+                p.subCategory = 'Ethnic';
+                p.name = 'Half Saree';
+            } else if (p && p.type && p.type.toLowerCase().includes('lehenga')) {
+                p.images = [
+                    'https://i.pinimg.com/736x/5e/33/8b/5e338b5b1879403d62debf567c0815ac.jpg',
+                    'https://i.pinimg.com/736x/c9/87/58/c98758417d002c776550e3d1ca38834e.jpg',
+                    'https://i.pinimg.com/736x/31/6d/0b/316d0b59aea1e70d04f2fd9b31dace6f.jpg',
+                    'https://i.pinimg.com/736x/c9/fa/6a/c9fa6acb7400324dc8cfeae9e894e70c.jpg',
+                    'https://i.pinimg.com/736x/76/7e/eb/767eeb2238732b18801b933dc9e838df.jpg'
+                ];
+                p.baseImage = p.images[0];
+                p.category = 'Women';
+                p.subCategory = 'Ethnic';
+                p.name = 'Lehenga';
             } else if (p && p.type && p.type.toLowerCase().includes('kurta')) {
                 p.images = [
                     'https://i.pinimg.com/736x/66/29/df/6629df3409765ea18978413656a578fb.jpg',

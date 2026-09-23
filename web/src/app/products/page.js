@@ -46,6 +46,16 @@ export default function ProductsPage() {
                     p.category = 'Women';
                     p.subCategory = 'Ethnic';
                     p.name = 'Anarkali';
+                } else if (p.type && p.type.toLowerCase().includes('half saree')) {
+                    p.baseImage = 'https://i.pinimg.com/736x/59/61/65/596165f685556d117ac3772b6d365114.jpg';
+                    p.category = 'Women';
+                    p.subCategory = 'Ethnic';
+                    p.name = 'Half Saree';
+                } else if (p.type && p.type.toLowerCase().includes('lehenga')) {
+                    p.baseImage = 'https://i.pinimg.com/736x/5e/33/8b/5e338b5b1879403d62debf567c0815ac.jpg';
+                    p.category = 'Women';
+                    p.subCategory = 'Ethnic';
+                    p.name = 'Lehenga';
                 } else if (p.type && p.type.toLowerCase().includes('kurta')) {
                     p.baseImage = 'https://i.pinimg.com/736x/66/29/df/6629df3409765ea18978413656a578fb.jpg';
                 } else if (p.type && p.type.toLowerCase().includes('shirt')) {
