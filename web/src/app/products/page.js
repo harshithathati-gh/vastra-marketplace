@@ -28,7 +28,7 @@ export default function ProductsPage() {
                 } else if (p.type && p.type.toLowerCase().includes('dress')) {
                     p.baseImage = 'https://i.pinimg.com/736x/43/5c/cd/435ccdef1ce3d36b1055d997a7feebf6.jpg';
                 } else if ((p.type && (p.type.toLowerCase().includes('trouser') || p.type.toLowerCase().includes('pant'))) || (p.name && (p.name.toLowerCase().includes('trouser') || p.name.toLowerCase().includes('pant')))) {
-                    p.baseImage = 'https://i.pinimg.com/736x/10/93/10/1093108140833387077.jpg';
+                    p.baseImage = 'https://in.pinterest.com/pin/1093108140833387077/';
                     p.category = 'Women and Men';
                     p.subCategory = 'Western';
                 } else if ((p.type && p.type.toLowerCase().includes('long kurti')) || (p.name && p.name.toLowerCase().includes('long kurti'))) {

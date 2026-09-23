@@ -50,7 +50,7 @@ export default function TailorProfilePage() {
 
             <div className="container">
                 <div className="profile-header">
-                    <img className="profile-avatar" src={u.avatar || ''} alt={u.name} onError={(e) => { e.target.style.background = 'linear-gradient(135deg, var(--primary-200), var(--accent-200))'; e.target.src = ''; }} />
+                    <img className="profile-avatar" src={u.avatar || undefined} alt={u.name} onError={(e) => { e.target.style.background = 'linear-gradient(135deg, var(--primary-200), var(--accent-200))'; e.target.removeAttribute('src'); }} />
                     <div style={{ flex: 1 }}>
                         <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', marginBottom: '6px' }}>{u.name}</h1>
                         <div className="profile-meta">
