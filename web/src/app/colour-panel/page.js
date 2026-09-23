@@ -138,10 +138,10 @@ export default function ColourPanelPage() {
                     <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '40px' }}>
                         Drag the pointer around the wheel to discover beautiful matching shades for your perfect outfit.
                     </p>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(350px, 1fr) 2fr', gap: '40px', alignItems: 'start' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', alignItems: 'flex-start' }}>
 
                         {/* Left Side: The Interactive Wheel */}
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'white', padding: '30px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
+                        <div style={{ flex: '1 1 350px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'white', padding: '30px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
                             <h3 style={{ marginBottom: '30px' }}>Pick a Color Family</h3>
 
                             <div
@@ -155,6 +155,7 @@ export default function ColourPanelPage() {
                                     background: 'conic-gradient(from 0deg, red, #ff0, lime, cyan, blue, #f0f, red)',
                                     position: 'relative',
                                     cursor: 'crosshair',
+                                    touchAction: 'none',
                                     boxShadow: 'inset 0 0 20px rgba(0,0,0,0.1), 0 10px 25px rgba(0,0,0,0.1)'
                                 }}
                             >
@@ -202,7 +203,7 @@ export default function ColourPanelPage() {
                         </div>
 
                         {/* Right Side: Generated Harmonies */}
-                        <div style={{ padding: '30px', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ flex: '2 1 400px', padding: '30px', background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                             <h3 style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--neutral-200)' }}>Your Base Shade</h3>
 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
@@ -260,10 +261,10 @@ export default function ColourPanelPage() {
                         Select your skin tone surface and undertone combination to instantly reveal the most flattering fabric colors that will perfectly complement your natural complexion.
                     </p>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '40px', alignItems: 'start' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', alignItems: 'flex-start' }}>
 
                         {/* Tone Selection */}
-                        <div>
+                        <div style={{ flex: '1 1 300px' }}>
                             <h4 style={{ marginBottom: '20px' }}>Select Your Tone:</h4>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 {skinTones.map(tone => (
@@ -285,7 +286,7 @@ export default function ColourPanelPage() {
                         </div>
 
                         {/* Flattering Colors Display */}
-                        <div style={{ background: 'var(--neutral-100)', padding: '30px', borderRadius: 'var(--radius-md)' }}>
+                        <div style={{ flex: '2 1 350px', background: 'var(--neutral-100)', padding: '30px', borderRadius: 'var(--radius-md)' }}>
                             <h4 style={{ marginBottom: '10px' }}>Your Most Flattering Combinations</h4>
                             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '25px' }}>
                                 Based on your selection, these rich shades will seamlessly harmonize with your natural undertones, making your bespoke tailoring pop.
