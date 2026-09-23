@@ -149,8 +149,8 @@ export default function ColourPanelPage() {
                                 onMouseDown={(e) => { setIsDragging(true); handleInteract(e); }}
                                 onTouchStart={(e) => { setIsDragging(true); handleInteract(e); }}
                                 style={{
-                                    width: '280px',
-                                    height: '280px',
+                                    width: 'clamp(240px, 70vw, 280px)',
+                                    height: 'clamp(240px, 70vw, 280px)',
                                     borderRadius: '50%',
                                     background: 'conic-gradient(from 0deg, red, #ff0, lime, cyan, blue, #f0f, red)',
                                     position: 'relative',
@@ -163,7 +163,8 @@ export default function ColourPanelPage() {
                                     position: 'absolute',
                                     top: '50%', left: '50%',
                                     transform: 'translate(-50%, -50%)',
-                                    width: '180px', height: '180px',
+                                    width: 'clamp(160px, 45vw, 180px)',
+                                    height: 'clamp(160px, 45vw, 180px)',
                                     backgroundColor: 'white',
                                     borderRadius: '50%',
                                     boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.1)'
