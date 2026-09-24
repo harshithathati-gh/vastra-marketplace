@@ -45,9 +45,7 @@ export default function ProductDetailPage() {
                 p.images = [
                     'https://i.pinimg.com/736x/55/2f/23/552f23546bc2d85028bb1819b7f38112.jpg',
                     'https://i.pinimg.com/736x/1f/df/5a/1fdf5a33c2bcb082b082dd3b951cfeca0387.jpg',
-                    'https://i.pinimg.com/736x/8b/d5/25/8bd5258c997ad8f0d8f0de63003c1fc79529.jpg',
-                    'https://i.pinimg.com/736x/55/2f/23/552f23546bc2d85028bb1819b7f38112.jpg',
-                    'https://i.pinimg.com/736x/1f/df/5a/1fdf5a33c2bcb082b082dd3b951cfeca0387.jpg'
+                    'https://i.pinimg.com/736x/8b/d5/25/8bd5258c997ad8f0d8f0de63003c1fc79529.jpg'
                 ];
                 p.baseImage = p.images[0];
                 p.category = 'Women and Men';
@@ -163,11 +161,7 @@ export default function ProductDetailPage() {
                     <div style={{ flex: '1 1 min(100%, 400px)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--neutral-100)' }}>
                             {activeImg ? (
-                                activeImg.includes('pinterest.com/pin') ? (
-                                    <iframe src={`https://assets.pinterest.com/ext/embed.html?id=${activeImg.split('/pin/')[1].replace('/', '')}`} style={{ width: '100%', aspectRatio: '4/5', display: 'block', border: 'none' }} scrolling="no"></iframe>
-                                ) : (
-                                    <img src={activeImg} alt={product.name} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover' }} />
-                                )
+                                <img src={activeImg} alt={product.name} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover' }} />
                             ) : (
                                 <div style={{ width: '100%', aspectRatio: '4/5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '5rem', background: 'linear-gradient(135deg, var(--primary-100), var(--accent-100))' }}>🧵</div>
                             )}
@@ -191,11 +185,7 @@ export default function ProductDetailPage() {
                                         }}
                                         onClick={() => setActiveImg(img)}
                                     >
-                                        {img.includes('pinterest.com/pin') ? (
-                                            <iframe src={`https://assets.pinterest.com/ext/embed.html?id=${img.split('/pin/')[1].replace('/', '')}`} style={{ width: '100%', height: '100%', display: 'block', border: 'none', pointerEvents: 'none' }} scrolling="no"></iframe>
-                                        ) : (
-                                            <img src={img} alt={`${product.name} design ${i}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                        )}
+                                        <img src={img} alt={`${product.name} thumbnail ${i + 1}`} style={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover' }} onError={(e) => e.target.style.display = 'none'} />
                                     </div>
                                 ))}
                             </div>

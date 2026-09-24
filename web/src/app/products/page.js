@@ -127,11 +127,7 @@ export default function ProductsPage() {
                             <Link href={`/products/${product._id}`} key={product._id} className="product-card">
                                 <div className="product-card-image">
                                     {product.baseImage ? (
-                                        product.baseImage.includes('pinterest.com/pin') ? (
-                                            <iframe src={`https://assets.pinterest.com/ext/embed.html?id=${product.baseImage.split('/pin/')[1].replace('/', '')}`} style={{ width: '100%', aspectRatio: '1/1', border: 'none', display: 'block', overflow: 'hidden', pointerEvents: 'none' }} scrolling="no"></iframe>
-                                        ) : (
-                                            <img src={product.baseImage} alt={product.name} />
-                                        )
+                                        <img src={product.baseImage} alt={product.name} />
                                     ) : (
                                         <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, var(--primary-100), var(--accent-100))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>🧵</div>
                                     )}
