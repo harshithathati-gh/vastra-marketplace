@@ -25,7 +25,7 @@ export default function ContactUsPage() {
                                 <div style={{ fontSize: '1.5rem' }}>📍</div>
                                 <div>
                                     <h4 style={{ margin: '0 0 5px 0', fontSize: '1.1rem' }}>Our Office</h4>
-                                    <p style={{ margin: 0, color: 'var(--text-secondary)' }}>Vastra HQ<br />123 Fabric Lane, Textile District<br />Mumbai, MH 400001<br />India</p>
+                                    <p style={{ margin: 0, color: 'var(--text-secondary)' }}>Vastra HQ<br />Hyderabad, Telangana<br />India</p>
                                 </div>
                             </div>
 
@@ -33,7 +33,9 @@ export default function ContactUsPage() {
                                 <div style={{ fontSize: '1.5rem' }}>📞</div>
                                 <div>
                                     <h4 style={{ margin: '0 0 5px 0', fontSize: '1.1rem' }}>Phone</h4>
-                                    <p style={{ margin: 0, color: 'var(--text-secondary)' }}>+91 98765 43210</p>
+                                    <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
+                                        <a href="tel:+919490216284" style={{ color: 'inherit', textDecoration: 'none' }}>+91 94902 16284</a>, <a href="tel:+918247504843" style={{ color: 'inherit', textDecoration: 'none' }}>+91 82475 04843</a>
+                                    </p>
                                     <p style={{ margin: '5px 0 0 0', fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>Mon-Fri from 9am to 6pm</p>
                                 </div>
                             </div>
@@ -42,7 +44,7 @@ export default function ContactUsPage() {
                                 <div style={{ fontSize: '1.5rem' }}>✉️</div>
                                 <div>
                                     <h4 style={{ margin: '0 0 5px 0', fontSize: '1.1rem' }}>Email</h4>
-                                    <p style={{ margin: 0, color: 'var(--text-secondary)' }}><a href="mailto:support@vastra.com" style={{ color: 'var(--accent-500)', textDecoration: 'none' }}>support@vastra.com</a></p>
+                                    <p style={{ margin: 0, color: 'var(--text-secondary)' }}><a href="mailto:vastra123.connect@gmail.com" style={{ color: 'var(--accent-500)', textDecoration: 'none' }}>vastra123.connect@gmail.com</a></p>
                                     <p style={{ margin: '5px 0 0 0', fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>Our friendly team is here to help.</p>
                                 </div>
                             </div>
