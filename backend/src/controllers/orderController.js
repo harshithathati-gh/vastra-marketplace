@@ -12,7 +12,16 @@ exports.createOrder = async (req, res, next) => {
         // When using FormData, complex objects come as strings. We must parse them if necessary.
         let product = typeof req.body.product === 'string' ? JSON.parse(req.body.product) : req.body.product;
         const measurements = typeof req.body.measurements === 'string' ? JSON.parse(req.body.measurements) : req.body.measurements;
-        const deliveryAddress = typeof req.body.deliveryAddress === 'string' ? JSON.parse(req.body.deliveryAddress) : req.body.deliveryAddress;
+        let deliveryAddress = typeof req.body.deliveryAddress === 'string' ? JSON.parse(req.body.deliveryAddress) : (req.body.deliveryAddress || {});
+
+        if (deliveryType === 'self_pickup') {
+            deliveryAddress = {
+                street: deliveryAddress.street || 'Self Pickup at Tailor Workshop',
+                city: deliveryAddress.city || 'Self Pickup',
+                state: deliveryAddress.state || 'N/A',
+                pincode: deliveryAddress.pincode || '000000',
+            };
+        }
 
         // Handle Cloudinary file uploads
         if (req.files && req.files.length > 0) {

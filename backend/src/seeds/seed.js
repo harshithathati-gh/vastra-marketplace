@@ -280,7 +280,7 @@ const seedDB = async () => {
                 subCategory: 'western',
                 type: 'trousers',
                 description: 'Perfectly tailored trousers for work and casual occasions.',
-                baseImage: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=800',
+                baseImage: '/images/products/trouser_1.jpg',
                 designOptions: {
                     fitTypes: ['Regular', 'Slim', 'Tapered', 'Straight'],
                     fabricTypes: ['Cotton', 'Poly-Cotton', 'Linen', 'Wool Blend', 'Chino'],

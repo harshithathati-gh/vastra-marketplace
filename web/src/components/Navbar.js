@@ -30,8 +30,9 @@ export default function Navbar() {
                     <li><Link href="/colour-panel" className={isActive('/colour-panel')} onClick={() => setMenuOpen(false)}>Colour Panel</Link></li>
                     {(!user || user.role === 'customer') && (
                         <>
-                            <li><Link href="/products" className={isActive('/products')}>Products</Link></li>
-                            <li><Link href="/tailors" className={isActive('/tailors')}>Find Tailors</Link></li>
+                            <li><Link href="/products" className={isActive('/products')} onClick={() => setMenuOpen(false)}>Products</Link></li>
+                            <li><Link href="/tailors" className={isActive('/tailors')} onClick={() => setMenuOpen(false)}>Find Tailors</Link></li>
+                            <li><Link href="/contact-us" className={isActive('/contact-us')} onClick={() => setMenuOpen(false)}>Contact Us</Link></li>
                         </>
                     )}
                     {user && user.role === 'customer' && (

@@ -12,7 +12,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
         await Product.updateOne({ name: 'Bridal Lehenga' }, { baseImage: '/images/products/lehenga.png' });
         await Product.updateOne({ name: 'Wedding Sherwani' }, { baseImage: '/images/products/sherwani.png' });
         await Product.updateOne({ name: 'Two-Piece Suit' }, { baseImage: '/images/products/two_piece_suit.png' });
-        await Product.updateOne({ name: 'Formal Trousers' }, { baseImage: '/images/products/trousers.png' });
+        await Product.updateMany({ $or: [{ name: /trouser/i }, { type: 'trousers' }] }, { baseImage: '/images/products/trouser_1.jpg' });
         console.log('Finished updating product images in DB!');
         process.exit(0);
     })

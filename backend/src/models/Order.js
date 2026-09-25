@@ -45,9 +45,21 @@ const orderSchema = new mongoose.Schema({
     },
     deliveryAddress: {
         street: { type: String, default: '' },
-        city: { type: String, required: true },
-        state: { type: String, required: true },
-        pincode: { type: String, required: true },
+        city: {
+            type: String,
+            required: function () { return this.deliveryType === 'shipping'; },
+            default: '',
+        },
+        state: {
+            type: String,
+            required: function () { return this.deliveryType === 'shipping'; },
+            default: '',
+        },
+        pincode: {
+            type: String,
+            required: function () { return this.deliveryType === 'shipping'; },
+            default: '',
+        },
     },
     deliveryType: {
         type: String,

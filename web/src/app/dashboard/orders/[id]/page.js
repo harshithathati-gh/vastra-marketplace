@@ -136,7 +136,7 @@ export default function OrderDetailPage() {
             </div>
 
             <div className="container section">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '32px', alignItems: 'start' }}>
+                <div className="order-details-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '32px', alignItems: 'start' }}>
 
                     {/* Left - Order details */}
                     <div>
@@ -174,6 +174,31 @@ export default function OrderDetailPage() {
                                         <span style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem' }}>Special Instructions:</span>
                                         <p style={{ marginTop: '4px', fontSize: '0.9rem' }}>{order.specialInstructions}</p>
                                     </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Measurements Section */}
+                        <div className="card" style={{ marginBottom: '20px' }}>
+                            <div className="card-body">
+                                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    📏 {order.measurementProfileName ? `Measurements (${order.measurementProfileName})` : 'Customer Measurements'}
+                                </h3>
+                                {order.measurements && Object.keys(order.measurements).length > 0 ? (
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '10px', fontSize: '0.9rem' }}>
+                                        {Object.entries(
+                                            typeof order.measurements.entries === 'function'
+                                                ? Object.fromEntries(order.measurements)
+                                                : order.measurements
+                                        ).map(([key, val]) => (
+                                            <div key={key} style={{ background: 'var(--bg-secondary)', padding: '8px 12px', borderRadius: 'var(--radius-sm)' }}>
+                                                <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', textTransform: 'capitalize' }}>{key.replace(/_/g, ' ')}</div>
+                                                <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{val}"</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p style={{ fontSize: '0.88rem', color: 'var(--text-tertiary)' }}>No custom measurement values attached to this order.</p>
                                 )}
                             </div>
                         </div>

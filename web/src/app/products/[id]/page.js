@@ -43,12 +43,14 @@ export default function ProductDetailPage() {
                 p.baseImage = p.images[0];
             } else if ((p && p.type && (p.type.toLowerCase().includes('trouser') || p.type.toLowerCase().includes('pant'))) || (p && p.name && (p.name.toLowerCase().includes('trouser') || p.name.toLowerCase().includes('pant')))) {
                 p.images = [
-                    'https://i.pinimg.com/736x/55/2f/23/552f23546bc2d85028bb1819b7f38112.jpg',
-                    'https://i.pinimg.com/736x/1f/df/5a/1fdf5a33c2bcb082b082dd3b951cfeca0387.jpg',
-                    'https://i.pinimg.com/736x/8b/d5/25/8bd5258c997ad8f0d8f0de63003c1fc79529.jpg'
+                    '/images/products/trouser_1.jpg',
+                    '/images/products/trouser_2.jpg',
+                    '/images/products/trouser_3.jpg',
+                    '/images/products/trouser_4.jpg',
+                    '/images/products/trouser_5.jpg'
                 ];
                 p.baseImage = p.images[0];
-                p.category = 'Women and Men';
+                p.category = 'Men and Women';
                 p.subCategory = 'Western';
             } else if ((p && p.type && p.type.toLowerCase().includes('long kurti')) || (p && p.name && p.name.toLowerCase().includes('long kurti'))) {
                 p.images = [
@@ -153,39 +155,43 @@ export default function ProductDetailPage() {
     if (loading) return <div className="loading-page"><div className="spinner" /></div>;
     if (!product) return <div className="empty-state" style={{ minHeight: '60vh' }}><h3>Product not found</h3></div>;
 
+    const displayImages = product.images && product.images.length > 0
+        ? product.images
+        : [product.baseImage || '/images/products/trouser_1.jpg'];
+
     return (
         <>
             <div className="container section">
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '48px', alignItems: 'flex-start' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px', alignItems: 'flex-start' }}>
                     {/* Images Gallery */}
-                    <div style={{ flex: '1 1 min(100%, 400px)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--neutral-100)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: '#FAFAF9', border: '1px solid var(--neutral-200)', height: '480px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             {activeImg ? (
-                                <img src={activeImg} alt={product.name} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover' }} />
+                                <img src={activeImg} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                             ) : (
-                                <div style={{ width: '100%', aspectRatio: '4/5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '5rem', background: 'linear-gradient(135deg, var(--primary-100), var(--accent-100))' }}>🧵</div>
+                                <div style={{ fontSize: '5rem' }}>🧵</div>
                             )}
                         </div>
 
                         {/* Gallery Thumbnails */}
-                        {product.images && product.images.length > 0 && (
-                            <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'thin' }}>
-                                {(product.baseImage && !product.images.includes(product.baseImage) ? [product.baseImage, ...product.images] : product.images).map((img, i) => (
+                        {displayImages.length > 0 && (
+                            <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'thin' }}>
+                                {displayImages.map((img, i) => (
                                     <div
                                         key={i}
                                         style={{
-                                            flex: '0 0 calc(33.333% - 8px)',
+                                            flex: '0 0 76px',
+                                            height: '90px',
                                             borderRadius: 'var(--radius-md)',
                                             overflow: 'hidden',
-                                            aspectRatio: '4/5',
-                                            boxShadow: 'var(--shadow-sm)',
+                                            background: '#FAFAF9',
                                             cursor: 'pointer',
-                                            border: activeImg === img ? '2px solid var(--primary-500)' : '2px solid transparent',
+                                            border: activeImg === img ? '2px solid var(--primary-500)' : '2px solid var(--neutral-200)',
                                             transition: 'border-color 0.2s ease'
                                         }}
                                         onClick={() => setActiveImg(img)}
                                     >
-                                        <img src={img} alt={`${product.name} thumbnail ${i + 1}`} style={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover' }} onError={(e) => e.target.style.display = 'none'} />
+                                        <img src={img} alt={`${product.name} thumbnail ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                     </div>
                                 ))}
                             </div>

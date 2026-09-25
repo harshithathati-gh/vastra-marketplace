@@ -17,12 +17,16 @@ export default function MeasurementsPage() {
     }, []);
 
     const loadTemplate = async (type) => {
-        setForm({ ...form, garmentType: type });
-        if (type === 'general') { setGarmentTemplate(null); return; }
+        setForm(prev => ({ ...prev, garmentType: type }));
         try {
             const data = await api.get(`/measurements/templates/${type}`);
             setGarmentTemplate(data.template);
         } catch { setGarmentTemplate(null); }
+    };
+
+    const handleOpenForm = () => {
+        setShowForm(true);
+        loadTemplate('general');
     };
 
     const saveProfile = async () => {
@@ -50,7 +54,7 @@ export default function MeasurementsPage() {
             <div className="page-header">
                 <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div><h1>My Measurements</h1><p>Save measurement profiles for quick ordering</p></div>
-                    <button className="btn btn-primary" onClick={() => setShowForm(true)}>+ New Profile</button>
+                    <button className="btn btn-primary" onClick={handleOpenForm}>+ New Profile</button>
                 </div>
             </div>
 
@@ -59,7 +63,7 @@ export default function MeasurementsPage() {
                     <div className="card" style={{ marginBottom: '24px' }}>
                         <div className="card-body">
                             <h3 style={{ fontWeight: 700, marginBottom: '16px' }}>New Measurement Profile</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '16px' }}>
                                 <div className="form-group">
                                     <label>Profile Name</label>
                                     <input type="text" className="form-input" value={form.profileName} onChange={(e) => setForm({ ...form, profileName: e.target.value })} placeholder='e.g. "Self", "Mom", "Wife"' />
@@ -73,15 +77,19 @@ export default function MeasurementsPage() {
                                         <option value="kurta">Kurta</option>
                                         <option value="blouse">Blouse</option>
                                         <option value="lehenga">Lehenga</option>
+                                        <option value="salwar_suit">Salwar Suit</option>
+                                        <option value="anarkali">Anarkali</option>
+                                        <option value="kurti">Kurti</option>
+                                        <option value="suit">Suit / Blazer</option>
                                     </select>
                                 </div>
                             </div>
 
                             {garmentTemplate && (
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px', marginTop: '8px' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(135px, 1fr))', gap: '12px', marginTop: '12px' }}>
                                     {garmentTemplate.fields.map(field => (
-                                        <div key={field.name} className="form-group">
-                                            <label>{field.label} ({field.unit})</label>
+                                        <div key={field.name} className="form-group" style={{ marginBottom: '10px' }}>
+                                            <label style={{ fontSize: '0.82rem', fontWeight: 600 }}>{field.label} ({field.unit})</label>
                                             <input type="number" className="form-input" step="0.5" value={form.measurements[field.name] || ''} onChange={(e) => setForm({ ...form, measurements: { ...form.measurements, [field.name]: parseFloat(e.target.value) } })} placeholder={field.helpText} />
                                         </div>
                                     ))}

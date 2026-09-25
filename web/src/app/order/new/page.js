@@ -46,7 +46,10 @@ function NewOrderContent() {
         try {
             const data = await api.get(`/measurements/templates/${product.type}`);
             setMeasurementTemplate(data.template);
-        } catch { setMeasurementTemplate(null); }
+        } catch {
+            const fallback = await api.get('/measurements/templates/general').catch(() => null);
+            setMeasurementTemplate(fallback?.template || null);
+        }
     };
 
     const handleSubmit = async () => {
@@ -60,7 +63,11 @@ function NewOrderContent() {
             formData.append('measurementProfileName', form.measurementProfileName);
             formData.append('fabricPreference', form.fabricPreference);
             formData.append('specialInstructions', form.garmentBrand ? `[Preferred Brand: ${form.garmentBrand}]\n${form.specialInstructions}` : form.specialInstructions);
-            formData.append('deliveryAddress', JSON.stringify({ street: form.street, city: form.city, state: form.state, pincode: form.pincode }));
+            const addressPayload = form.deliveryType === 'self_pickup'
+                ? { street: 'Self Pickup at Tailor Workshop', city: form.city || 'Self Pickup', state: form.state || 'N/A', pincode: form.pincode || '000000' }
+                : { street: form.street, city: form.city, state: form.state, pincode: form.pincode };
+
+            formData.append('deliveryAddress', JSON.stringify(addressPayload));
             formData.append('deliveryType', form.deliveryType);
             if (form.preferredDeliveryDate) formData.append('preferredDeliveryDate', form.preferredDeliveryDate);
 
@@ -91,17 +98,15 @@ function NewOrderContent() {
 
             <div className="container section" style={{ maxWidth: '720px', margin: '0 auto' }}>
                 {/* Progress Steps */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '36px' }}>
+                <div className="progress-steps-bar">
                     {['Product', 'Measurements', 'Details', 'Confirm'].map((label, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <div style={{
-                                width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                fontSize: '0.82rem', fontWeight: 700,
+                        <div key={i} className="step-item">
+                            <div className="step-circle" style={{
                                 background: step > i + 1 ? 'var(--success)' : step === i + 1 ? 'var(--accent-500)' : 'var(--neutral-200)',
                                 color: step >= i + 1 ? 'white' : 'var(--text-tertiary)',
                             }}>{step > i + 1 ? '✓' : i + 1}</div>
-                            <span style={{ fontSize: '0.82rem', fontWeight: step === i + 1 ? 700 : 400, color: step === i + 1 ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>{label}</span>
-                            {i < 3 && <div style={{ width: 24, height: 2, background: step > i + 1 ? 'var(--success)' : 'var(--neutral-200)' }} />}
+                            <span className="step-label" style={{ fontWeight: step === i + 1 ? 700 : 400, color: step === i + 1 ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>{label}</span>
+                            {i < 3 && <div className="step-line" style={{ background: step > i + 1 ? 'var(--success)' : 'var(--neutral-200)' }} />}
                         </div>
                     ))}
                 </div>
@@ -171,10 +176,10 @@ function NewOrderContent() {
                         )}
 
                         {measurementTemplate ? (
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                            <div className="measurement-fields-grid">
                                 {measurementTemplate.fields.map(field => (
-                                    <div key={field.name} className="form-group">
-                                        <label>{field.label} ({field.unit}){field.required ? ' *' : ''}</label>
+                                    <div key={field.name} className="form-group" style={{ marginBottom: '10px' }}>
+                                        <label style={{ fontSize: '0.82rem', fontWeight: 600 }}>{field.label} ({field.unit}){field.required ? ' *' : ''}</label>
                                         <input type="number" className="form-input" step="0.5" value={form.measurements[field.name] || ''} onChange={(e) => setForm({ ...form, measurements: { ...form.measurements, [field.name]: parseFloat(e.target.value) } })} placeholder={field.helpText} />
                                     </div>
                                 ))}

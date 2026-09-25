@@ -167,13 +167,55 @@ exports.getTemplate = async (req, res, next) => {
                     { name: 'sleeve_length', label: 'Sleeve Length', unit: 'inches', required: false, helpText: 'Measure from shoulder to desired sleeve end' },
                 ],
             },
+            general: {
+                fields: [
+                    { name: 'chest_bust', label: 'Chest / Bust', unit: 'inches', required: true, helpText: 'Measure around the fullest part of chest or bust' },
+                    { name: 'waist', label: 'Waist', unit: 'inches', required: true, helpText: 'Measure around your natural waistline' },
+                    { name: 'hip', label: 'Hips', unit: 'inches', required: false, helpText: 'Measure around the fullest part of your hips' },
+                    { name: 'shoulder', label: 'Shoulder Width', unit: 'inches', required: true, helpText: 'Measure from shoulder tip to shoulder tip' },
+                    { name: 'sleeve_length', label: 'Sleeve Length', unit: 'inches', required: false, helpText: 'Measure from shoulder edge to wrist or elbow' },
+                    { name: 'total_length', label: 'Garment Length', unit: 'inches', required: true, helpText: 'Top to bottom length' },
+                ],
+            },
+            salwar_suit: {
+                fields: [
+                    { name: 'bust', label: 'Kameez Bust', unit: 'inches', required: true, helpText: 'Fullest part of bust' },
+                    { name: 'waist', label: 'Waist', unit: 'inches', required: true, helpText: 'Natural waistline' },
+                    { name: 'kameez_length', label: 'Kameez Length', unit: 'inches', required: true, helpText: 'Shoulder to bottom of kameez' },
+                    { name: 'salwar_waist', label: 'Salwar / Bottom Waist', unit: 'inches', required: true, helpText: 'Where you wear your bottom' },
+                    { name: 'salwar_length', label: 'Salwar Length', unit: 'inches', required: true, helpText: 'Waist to ankle' },
+                    { name: 'sleeve_length', label: 'Sleeve Length', unit: 'inches', required: false, helpText: 'Shoulder to sleeve end' },
+                ],
+            },
+            anarkali: {
+                fields: [
+                    { name: 'bust', label: 'Bust', unit: 'inches', required: true, helpText: 'Fullest part of bust' },
+                    { name: 'under_bust', label: 'Under Bust', unit: 'inches', required: true, helpText: 'Just below bust line' },
+                    { name: 'waist', label: 'Waist', unit: 'inches', required: true, helpText: 'Natural waistline' },
+                    { name: 'anarkali_length', label: 'Anarkali Length', unit: 'inches', required: true, helpText: 'Shoulder to floor or ankle' },
+                    { name: 'shoulder', label: 'Shoulder Width', unit: 'inches', required: true, helpText: 'Shoulder edge to edge' },
+                    { name: 'sleeve_length', label: 'Sleeve Length', unit: 'inches', required: false, helpText: 'Shoulder to wrist' },
+                ],
+            },
+            half_saree: {
+                fields: [
+                    { name: 'bust', label: 'Blouse Bust', unit: 'inches', required: true, helpText: 'Fullest part of bust' },
+                    { name: 'blouse_length', label: 'Blouse Length', unit: 'inches', required: true, helpText: 'Shoulder to bottom of blouse' },
+                    { name: 'skirt_waist', label: 'Skirt Waist', unit: 'inches', required: true, helpText: 'Waist where skirt is tied' },
+                    { name: 'skirt_length', label: 'Skirt Length', unit: 'inches', required: true, helpText: 'Waist to floor' },
+                ],
+            },
+            kids_kurta: {
+                fields: [
+                    { name: 'chest', label: 'Chest', unit: 'inches', required: true, helpText: 'Chest circumference' },
+                    { name: 'shoulder', label: 'Shoulder', unit: 'inches', required: true, helpText: 'Shoulder to shoulder' },
+                    { name: 'kurta_length', label: 'Kurta Length', unit: 'inches', required: true, helpText: 'Shoulder to knee' },
+                    { name: 'pyjama_length', label: 'Pyjama Length', unit: 'inches', required: true, helpText: 'Waist to ankle' },
+                ],
+            },
         };
 
-        const template = templates[req.params.garmentType];
-        if (!template) {
-            return res.status(404).json({ success: false, message: 'Template not found for this garment type' });
-        }
-
+        const template = templates[req.params.garmentType] || templates.general;
         res.json({ success: true, garmentType: req.params.garmentType, template });
     } catch (error) {
         next(error);
