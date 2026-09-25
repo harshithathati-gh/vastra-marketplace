@@ -53,7 +53,7 @@ async function seed() {
             startingPrices: { shirt: 400 + (i * 100), suit: 2500, lehenga: 4000 },
             portfolio: [],
             verificationStatus: 'approved',
-            averageRating: (Math.random() * (5.0 - 4.2) + 4.2).toFixed(1),
+            averageRating: [5.0, 4.7, 4.2, 3.8, 3.2, 2.7, 2.2, 1.8, 4.9, 3.5][i % 10],
             totalReviews: Math.floor(Math.random() * 80) + 10,
             isActive: true
         });
