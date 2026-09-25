@@ -153,7 +153,7 @@ export default function ColourPanelPage() {
                                     maxWidth: '280px',
                                     aspectRatio: '1 / 1',
                                     borderRadius: '50%',
-                                    background: 'conic-gradient(from 0deg, red, #ff0, lime, cyan, blue, #f0f, red)',
+                                    background: `conic-gradient(from 0deg, ${getHSL(0)}, ${getHSL(60)}, ${getHSL(120)}, ${getHSL(180)}, ${getHSL(240)}, ${getHSL(300)}, ${getHSL(360)})`,
                                     position: 'relative',
                                     cursor: 'crosshair',
                                     touchAction: 'none',
