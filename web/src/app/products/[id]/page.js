@@ -89,11 +89,11 @@ export default function ProductDetailPage() {
                 p.name = 'Anarkali';
             } else if ((p && p.type && p.type.toLowerCase().includes('salwar suit')) || (p && p.name && p.name.toLowerCase().includes('salwar suit'))) {
                 p.images = [
-                    'https://i.pinimg.com/736x/09/f3/34/09f3340a331e5afb171c9a5f30e2866d.jpg',
-                    'https://i.pinimg.com/736x/e2/87/1d/e2871dd91f8ceed3170386c8808a18d7.jpg',
-                    'https://i.pinimg.com/736x/2a/0d/a6/2a0da67f925e1c6ef1cd98c827111fb0.jpg',
-                    'https://i.pinimg.com/736x/28/c0/d8/28c0d8339e5bb652f271675ba79c34ed.jpg',
-                    'https://i.pinimg.com/736x/99/c7/a9/99c7a937255c1040e591ff2b6b1fd95b.jpg'
+                    '/images/products/salwar_suit_1.jpg',
+                    '/images/products/salwar_suit_2.jpg',
+                    '/images/products/salwar_suit_3.jpg',
+                    '/images/products/salwar_suit_4.jpg',
+                    '/images/products/salwar_suit_5.jpg'
                 ];
                 p.baseImage = p.images[0];
                 p.category = 'Women';

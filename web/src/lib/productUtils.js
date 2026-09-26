@@ -26,7 +26,7 @@ export function mapProductImage(p) {
         item.subCategory = 'Ethnic';
         item.name = 'Anarkali';
     } else if ((item.type && item.type.toLowerCase().includes('salwar suit')) || (item.name && item.name.toLowerCase().includes('salwar suit'))) {
-        item.baseImage = '/images/products/salwar_suit.png';
+        item.baseImage = '/images/products/salwar_suit_1.jpg';
         item.category = 'Women';
         item.subCategory = 'Ethnic';
         item.name = 'Salwar Suit';
