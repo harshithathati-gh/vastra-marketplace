@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api';
 
+import { mapProductImage } from '@/lib/productUtils';
+
 export default function ProductsPage() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -21,63 +23,7 @@ export default function ProductsPage() {
             params.set('limit', '50');
             const data = await api.get(`/products?${params}`);
 
-            // Apply aesthetic local image overrides to guarantee fast & working product images
-            const mappedProducts = (data.products || []).map(p => {
-                if (p.type && p.type.toLowerCase().includes('blouse')) {
-                    p.baseImage = '/images/products/blouse.png';
-                } else if (p.type && p.type.toLowerCase().includes('dress')) {
-                    p.baseImage = '/images/products/dress.jpg';
-                } else if ((p.type && (p.type.toLowerCase().includes('trouser') || p.type.toLowerCase().includes('pant'))) || (p.name && (p.name.toLowerCase().includes('trouser') || p.name.toLowerCase().includes('pant')))) {
-                    p.baseImage = '/images/products/trouser_1.jpg';
-                    p.category = 'Men and Women';
-                    p.subCategory = 'Western';
-                } else if ((p.type && p.type.toLowerCase().includes('long kurti')) || (p.name && p.name.toLowerCase().includes('long kurti'))) {
-                    p.baseImage = '/images/products/long_kurti.jpg';
-                    p.category = 'Women';
-                    p.subCategory = 'Ethnic';
-                    p.name = 'Long Kurti';
-                } else if ((p.type && p.type.toLowerCase().includes('kurti')) || (p.name && p.name.toLowerCase().includes('kurti'))) {
-                    p.baseImage = '/images/products/kurti.png';
-                    p.category = 'Women';
-                    p.subCategory = 'Ethnic';
-                    p.name = 'Short Kurti';
-                } else if ((p.type && p.type.toLowerCase().includes('anarkali')) || (p.name && p.name.toLowerCase().includes('anarkali'))) {
-                    p.baseImage = '/images/products/anarkali.png';
-                    p.category = 'Women';
-                    p.subCategory = 'Ethnic';
-                    p.name = 'Anarkali';
-                } else if ((p.type && p.type.toLowerCase().includes('salwar suit')) || (p.name && p.name.toLowerCase().includes('salwar suit'))) {
-                    p.baseImage = '/images/products/salwar_suit.png';
-                    p.category = 'Women';
-                    p.subCategory = 'Ethnic';
-                    p.name = 'Salwar Suit';
-                } else if ((p.type && p.type.toLowerCase().includes('half saree')) || (p.name && p.name.toLowerCase().includes('half saree'))) {
-                    p.baseImage = '/images/products/half_saree.png';
-                    p.category = 'Women';
-                    p.subCategory = 'Ethnic';
-                    p.name = 'Half Saree';
-                } else if ((p.type && p.type.toLowerCase().includes('lehenga')) || (p.name && p.name.toLowerCase().includes('lehenga'))) {
-                    p.baseImage = '/images/products/lehenga.png';
-                    p.category = 'Women';
-                    p.subCategory = 'Ethnic';
-                    p.name = 'Lehenga';
-                } else if ((p.type && p.type.toLowerCase().includes('kids kurta')) || (p.name && p.name.toLowerCase().includes('kids kurta'))) {
-                    p.baseImage = '/images/products/kurta_kids.png';
-                    p.category = 'Men and Women';
-                    p.subCategory = 'Ethnic';
-                    p.name = 'Kids Kurta Set';
-                } else if (p.type && p.type.toLowerCase().includes('kurta')) {
-                    p.baseImage = '/images/products/kurta_mens.png';
-                } else if (p.type && p.type.toLowerCase().includes('shirt')) {
-                    p.baseImage = '/images/products/formal_shirt.png';
-                } else if (p.type && p.type.toLowerCase().includes('sherwani')) {
-                    p.baseImage = '/images/products/sherwani.png';
-                } else if (p.type && p.type.toLowerCase().includes('suit')) {
-                    p.baseImage = '/images/products/two_piece_suit.png';
-                }
-                return p;
-            });
-
+            const mappedProducts = (data.products || []).map(mapProductImage);
             setProducts(mappedProducts);
         } catch { setProducts([]); }
         setLoading(false);

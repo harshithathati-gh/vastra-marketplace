@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 
+import { mapProductImage } from '@/lib/productUtils';
+
 export default function Home() {
     const [featuredTailors, setFeaturedTailors] = useState([]);
     const [products, setProducts] = useState([]);
@@ -19,7 +21,8 @@ export default function Home() {
                 api.get('/products?limit=8').catch(() => ({ products: [] })),
             ]);
             setFeaturedTailors(tailorRes.tailors || []);
-            setProducts(productRes.products || []);
+            const mapped = (productRes.products || []).map(mapProductImage);
+            setProducts(mapped);
         } catch { /* ignore */ }
     };
 
