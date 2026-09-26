@@ -42,7 +42,7 @@ export default function ProductsPage() {
                     p.subCategory = 'Ethnic';
                     p.name = 'Short Kurti';
                 } else if ((p.type && p.type.toLowerCase().includes('anarkali')) || (p.name && p.name.toLowerCase().includes('anarkali'))) {
-                    p.baseImage = '/images/products/anarkali.jpg';
+                    p.baseImage = '/images/products/anarkali.png';
                     p.category = 'Women';
                     p.subCategory = 'Ethnic';
                     p.name = 'Anarkali';
@@ -52,7 +52,7 @@ export default function ProductsPage() {
                     p.subCategory = 'Ethnic';
                     p.name = 'Salwar Suit';
                 } else if ((p.type && p.type.toLowerCase().includes('half saree')) || (p.name && p.name.toLowerCase().includes('half saree'))) {
-                    p.baseImage = '/images/products/half_saree.jpg';
+                    p.baseImage = '/images/products/half_saree.png';
                     p.category = 'Women';
                     p.subCategory = 'Ethnic';
                     p.name = 'Half Saree';
