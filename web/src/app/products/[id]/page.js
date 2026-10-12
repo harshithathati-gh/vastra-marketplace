@@ -16,11 +16,11 @@ export default function ProductDetailPage() {
             const p = data.product;
             if (p && p.type && p.type.toLowerCase().includes('blouse')) {
                 p.images = [
+                    '/images/products/blouse.jpg',
                     'https://designerblouse.co/blog/wp-content/uploads/2024/07/cotton-printed-blouse.jpg',
                     'https://designerblouse.co/blog/wp-content/uploads/2024/04/Embellished-puff-sleeve.webp',
                     'https://i.pinimg.com/736x/d1/c2/2a/d1c22a08045399045d148067cbb5df38.jpg',
-                    'https://i.pinimg.com/originals/86/cf/9e/86cf9e9124eb0cae2cc0009dd27710d9.jpg',
-                    'https://tse1.explicit.bing.net/th/id/OIP.skM9KldSGM2xl80YI4MtSAHaL2?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'
+                    'https://i.pinimg.com/originals/86/cf/9e/86cf9e9124eb0cae2cc0009dd27710d9.jpg'
                 ];
                 p.baseImage = p.images[0];
             } else if (p && p.type && p.type.toLowerCase().includes('dress')) {

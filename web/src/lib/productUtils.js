@@ -3,7 +3,7 @@ export function mapProductImage(p) {
     const item = { ...p };
     
     if (item.type && item.type.toLowerCase().includes('blouse')) {
-        item.baseImage = '/images/products/blouse.png';
+        item.baseImage = '/images/products/blouse.jpg';
     } else if (item.type && item.type.toLowerCase().includes('dress')) {
         item.baseImage = '/images/products/dress.jpg';
     } else if ((item.type && (item.type.toLowerCase().includes('trouser') || item.type.toLowerCase().includes('pant'))) || (item.name && (item.name.toLowerCase().includes('trouser') || item.name.toLowerCase().includes('pant')))) {
