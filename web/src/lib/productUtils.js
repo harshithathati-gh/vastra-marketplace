@@ -40,9 +40,9 @@ export function mapProductImage(p) {
         item.category = 'Women';
         item.subCategory = 'Ethnic';
         item.name = 'Lehenga';
-    } else if ((item.type && item.type.toLowerCase().includes('kids kurta')) || (item.name && item.name.toLowerCase().includes('kids kurta'))) {
-        item.baseImage = '/images/products/kurta_kids.png';
-        item.category = 'Men and Women';
+    } else if ((item.type && (item.type.toLowerCase().includes('kids kurta') || item.type.toLowerCase().includes('kids men kurta'))) || (item.name && (item.name.toLowerCase().includes('kids kurta') || item.name.toLowerCase().includes('kids men kurta')))) {
+        item.baseImage = '/images/products/kids_kurta_1.jpg';
+        item.category = 'Kids';
         item.subCategory = 'Ethnic';
         item.name = 'Kids Kurta Set';
     } else if (item.type && item.type.toLowerCase().includes('kurta')) {

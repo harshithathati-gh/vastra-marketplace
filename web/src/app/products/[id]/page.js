@@ -124,16 +124,16 @@ export default function ProductDetailPage() {
                 p.category = 'Women';
                 p.subCategory = 'Ethnic';
                 p.name = 'Lehenga';
-            } else if ((p && p.type && p.type.toLowerCase().includes('kids kurta')) || (p && p.name && p.name.toLowerCase().includes('kids kurta'))) {
+            } else if ((p && p.type && (p.type.toLowerCase().includes('kids kurta') || p.type.toLowerCase().includes('kids men kurta'))) || (p && p.name && (p.name.toLowerCase().includes('kids kurta') || p.name.toLowerCase().includes('kids men kurta')))) {
                 p.images = [
-                    'https://i.pinimg.com/736x/53/7a/9a/537a9a645807af620561f68b803b6a68.jpg',
-                    'https://i.pinimg.com/736x/f8/79/bc/f879bcc01a1b96a277847fad2cb4c8d7.jpg',
-                    'https://i.pinimg.com/736x/a8/3f/3c/a83f3c05bb8fd7dd0db3f20de900087c.jpg',
-                    'https://i.pinimg.com/736x/d3/12/41/d3124105eb6cf3d7543620382c222dcb.jpg',
-                    'https://i.pinimg.com/736x/e5/82/32/e582320cd0b9c9de51c98b5e36f3f0e7.jpg'
+                    '/images/products/kids_kurta_1.jpg',
+                    '/images/products/kids_kurta_2.jpg',
+                    '/images/products/kids_kurta_3.jpg',
+                    '/images/products/kids_kurta_4.jpg',
+                    '/images/products/kids_kurta_5.jpg'
                 ];
                 p.baseImage = p.images[0];
-                p.category = 'Men and Women';
+                p.category = 'Kids';
                 p.subCategory = 'Ethnic';
                 p.name = 'Kids Kurta Set';
             } else if (p && p.type && p.type.toLowerCase().includes('kurta')) {
