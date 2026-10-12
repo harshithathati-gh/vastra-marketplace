@@ -102,10 +102,11 @@ export default function ProductDetailPage() {
                 p.name = 'Salwar Suit';
             } else if ((p && p.type && p.type.toLowerCase().includes('half saree')) || (p && p.name && p.name.toLowerCase().includes('half saree'))) {
                 p.images = [
-                    '/images/products/half_saree.png',
-                    'https://i.pinimg.com/736x/59/61/65/596165f685556d117ac3772b6d365114.jpg',
-                    'https://i.pinimg.com/736x/c9/8b/64/c98b6412c339d308eef8980181134da8.jpg',
-                    'https://i.pinimg.com/736x/d8/81/eb/d881ebdf64b967f6e6aa2bfb6f899cfa.jpg'
+                    '/images/products/half_saree_1.jpg',
+                    '/images/products/half_saree_2.jpg',
+                    '/images/products/half_saree_3.jpg',
+                    '/images/products/half_saree_4.jpg',
+                    '/images/products/half_saree_5.jpg'
                 ];
                 p.baseImage = p.images[0];
                 p.category = 'Women';

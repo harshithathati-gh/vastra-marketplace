@@ -31,7 +31,7 @@ export function mapProductImage(p) {
         item.subCategory = 'Ethnic';
         item.name = 'Salwar Suit';
     } else if ((item.type && item.type.toLowerCase().includes('half saree')) || (item.name && item.name.toLowerCase().includes('half saree'))) {
-        item.baseImage = '/images/products/half_saree.png';
+        item.baseImage = '/images/products/half_saree_1.jpg';
         item.category = 'Women';
         item.subCategory = 'Ethnic';
         item.name = 'Half Saree';
