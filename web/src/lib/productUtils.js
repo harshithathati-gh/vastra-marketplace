@@ -21,7 +21,7 @@ export function mapProductImage(p) {
         item.subCategory = 'Ethnic';
         item.name = 'Short Kurti';
     } else if ((item.type && item.type.toLowerCase().includes('anarkali')) || (item.name && item.name.toLowerCase().includes('anarkali'))) {
-        item.baseImage = '/images/products/anarkali.png';
+        item.baseImage = '/images/products/anarkali_1.jpg';
         item.category = 'Women';
         item.subCategory = 'Ethnic';
         item.name = 'Anarkali';

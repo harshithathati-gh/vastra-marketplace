@@ -78,7 +78,11 @@ export default function ProductDetailPage() {
                 p.name = 'Short Kurti';
             } else if ((p && p.type && p.type.toLowerCase().includes('anarkali')) || (p && p.name && p.name.toLowerCase().includes('anarkali'))) {
                 p.images = [
-                    '/images/products/anarkali.png'
+                    '/images/products/anarkali_1.jpg',
+                    '/images/products/anarkali_2.jpg',
+                    '/images/products/anarkali_3.jpg',
+                    '/images/products/anarkali_4.jpg',
+                    '/images/products/anarkali_5.jpg'
                 ];
                 p.baseImage = p.images[0];
                 p.category = 'Women';
