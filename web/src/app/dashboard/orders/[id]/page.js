@@ -543,11 +543,54 @@ export default function OrderDetailPage() {
                                 <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '10px' }}>{isCustomer ? '🧵 Tailor' : '👤 Customer'}</h3>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <div className="navbar-avatar">{(isCustomer ? order.tailorId?.name : order.customerId?.name)?.charAt(0)}</div>
-                                    <div>
+                                    <div style={{ flex: 1 }}>
                                         <div style={{ fontWeight: 600 }}>{isCustomer ? order.tailorId?.name : order.customerId?.name}</div>
                                         <div style={{ fontSize: '0.82rem', color: 'var(--text-tertiary)' }}>
                                             📍 {(isCustomer ? order.tailorId?.location : order.customerId?.location)?.city || 'India'}
                                         </div>
+                                    </div>
+                                </div>
+
+                                {(() => {
+                                    const orderNum = order._id?.slice(-6)?.toUpperCase();
+                                    const targetPhone = isCustomer ? (order.tailorId?.phone || '9490216284') : (order.customerId?.phone || '9490216284');
+                                    const cleanDigits = targetPhone.replace(/[^0-9]/g, '');
+                                    const fullPhone = cleanDigits.length === 10 ? `91${cleanDigits}` : cleanDigits;
+                                    const msg = isCustomer 
+                                        ? `Namaste ${order.tailorId?.name || 'Master Tailor'}! Inquiring about my Vastra Order #${orderNum} (${order.product?.name}).`
+                                        : `Namaste ${order.customerId?.name || 'Customer'}! Update on your Vastra Order #${orderNum}: Current status is ${STATUS_LABELS[order.status] || order.status}.`;
+                                    return (
+                                        <a
+                                            href={`https://wa.me/${fullPhone}?text=${encodeURIComponent(msg)}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="btn btn-outline btn-sm"
+                                            style={{ marginTop: '14px', width: '100%', borderColor: '#25D366', color: '#075E54', background: '#F0FDF4', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+                                        >
+                                            <span>💬</span> WhatsApp {isCustomer ? 'Tailor' : 'Customer'}
+                                        </a>
+                                    );
+                                })()}
+                            </div>
+                        </div>
+
+                        {/* Automated Order Notifications Card */}
+                        <div className="card" style={{ marginBottom: '20px', background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                            <div className="card-body" style={{ padding: '16px' }}>
+                                <h4 style={{ fontSize: '0.88rem', fontWeight: 700, margin: '0 0 10px', color: '#334155', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span>🔔</span> Automated Alerts
+                                </h4>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.8rem', color: '#64748B' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span>✉️</span>
+                                        <span><strong>Email:</strong> {order.customerId?.email || 'Customer email on file'}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span>📱</span>
+                                        <span><strong>SMS:</strong> {order.customerId?.phone ? `+91 ${order.customerId.phone}` : 'Customer phone on file'}</span>
+                                    </div>
+                                    <div style={{ fontSize: '0.74rem', color: '#94A3B8', marginTop: '4px', borderTop: '1px dashed #CBD5E1', paddingTop: '6px' }}>
+                                        ✓ Real-time Email and SMS dispatches on order placement, price quotes, escrow payments, and courier dispatch.
                                     </div>
                                 </div>
                             </div>
@@ -686,6 +729,9 @@ export default function OrderDetailPage() {
                             <button type="submit" className="btn btn-primary btn-full" style={{ marginTop: '12px' }}>
                                 Confirm Shipment & Notify Customer
                             </button>
+                            <p style={{ fontSize: '0.75rem', color: '#0891B2', margin: '8px 0 0', textAlign: 'center' }}>
+                                📲 An SMS & Email tracking link will be automatically dispatched to the customer.
+                            </p>
                         </form>
                     </div>
                 </div>
@@ -821,6 +867,9 @@ export default function OrderDetailPage() {
                             <button type="submit" className="btn btn-primary btn-full" style={{ marginTop: '12px', background: '#059669', borderColor: '#059669' }}>
                                 Submit Quote to Customer
                             </button>
+                            <p style={{ fontSize: '0.75rem', color: '#059669', margin: '8px 0 0', textAlign: 'center' }}>
+                                📲 An instant Email & SMS with a 1-click UPI checkout link will be delivered to the customer.
+                            </p>
                         </form>
                     </div>
                 </div>

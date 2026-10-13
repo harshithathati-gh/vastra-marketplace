@@ -1,9 +1,17 @@
 const Order = require('../models/Order');
+const User = require('../models/User');
 const TailorProfile = require('../models/TailorProfile');
 const PlatformSettings = require('../models/PlatformSettings');
 const razorpay = require('../config/razorpay');
 const crypto = require('crypto');
-const { sendOrderConfirmationEmail } = require('../services/notificationService');
+const { 
+    sendOrderPlacedEmail,
+    sendTailorNewOrderEmail,
+    sendOrderQuotedEmail,
+    sendOrderConfirmationEmail, 
+    sendOrderStatusUpdateEmail,
+    sendSmsOrWhatsApp 
+} = require('../services/notificationService');
 
 // @route   POST /api/orders
 exports.createOrder = async (req, res, next) => {
@@ -53,6 +61,48 @@ exports.createOrder = async (req, res, next) => {
         // Notify tailor via socket if online
         const io = req.app.get('io');
         io.to(`user_${tailorId}`).emit('newOrder', { orderId: order._id, message: 'New order received!' });
+
+        // Dispatch Email & SMS notifications asynchronously
+        (async () => {
+            try {
+                const tailorUser = await User.findById(tailorId);
+                const customerUser = req.user;
+
+                // 1. Send Order Confirmation Email & SMS to Customer
+                if (customerUser?.email) {
+                    sendOrderPlacedEmail({
+                        to: customerUser.email,
+                        customerName: customerUser.name,
+                        order,
+                        tailorName: tailorUser?.name || 'Master Tailor'
+                    }).catch(e => console.error('[Order Email Error]', e.message));
+                }
+                if (customerUser?.phone) {
+                    sendSmsOrWhatsApp({
+                        phone: customerUser.phone,
+                        message: `Namaste ${customerUser.name}! Your Vastra order #${order._id.toString().slice(-6).toUpperCase()} for "${order.product?.name}" has been placed. We will notify you once tailor ${tailorUser?.name || ''} confirms.`
+                    }).catch(e => console.error('[Order SMS Error]', e.message));
+                }
+
+                // 2. Send New Order Alert Email & SMS to Tailor
+                if (tailorUser?.email) {
+                    sendTailorNewOrderEmail({
+                        to: tailorUser.email,
+                        tailorName: tailorUser.name,
+                        order,
+                        customerName: customerUser?.name || 'Customer'
+                    }).catch(e => console.error('[Tailor Email Error]', e.message));
+                }
+                if (tailorUser?.phone) {
+                    sendSmsOrWhatsApp({
+                        phone: tailorUser.phone,
+                        message: `Namaste ${tailorUser.name}! New custom tailoring order #${order._id.toString().slice(-6).toUpperCase()} received from ${customerUser?.name || 'Customer'}. Review and accept on your Vastra dashboard.`
+                    }).catch(e => console.error('[Tailor SMS Error]', e.message));
+                }
+            } catch (notifyErr) {
+                console.error('[Notification Trigger Error]', notifyErr.message);
+            }
+        })();
 
         res.status(201).json({ success: true, order });
     } catch (error) {
@@ -197,6 +247,57 @@ exports.updateOrderStatus = async (req, res, next) => {
             message: `Order status updated to ${status}`,
         });
 
+        // Dispatch Email & SMS notifications asynchronously to the customer
+        (async () => {
+            try {
+                const customerUser = await User.findById(order.customerId);
+                const tailorUser = await User.findById(order.tailorId);
+                const orderNum = order._id.toString().slice(-6).toUpperCase();
+
+                if (customerUser?.email) {
+                    sendOrderStatusUpdateEmail({
+                        to: customerUser.email,
+                        customerName: customerUser.name,
+                        order,
+                        newStatus: status,
+                        tailorName: tailorUser?.name,
+                        note,
+                        trackingInfo: status === 'shipped' ? {
+                            courierPartner: order.courierPartner,
+                            trackingNumber: order.trackingNumber,
+                            trackingUrl: order.trackingUrl
+                        } : null
+                    }).catch(e => console.error('[Status Email Error]', e.message));
+                }
+
+                if (customerUser?.phone) {
+                    let smsMsg = `Namaste ${customerUser.name}! Order #${orderNum} update: `;
+                    if (status === 'accepted') {
+                        smsMsg += `Tailor ${tailorUser?.name || 'Master Tailor'} accepted your custom order!`;
+                    } else if (status === 'in_progress') {
+                        smsMsg += `Stitching has begun! Your outfit is currently being tailored.`;
+                    } else if (status === 'shipped') {
+                        smsMsg += `Your outfit has been dispatched via ${order.courierPartner || 'Courier'} (Tracking #${order.trackingNumber || 'Available in Dashboard'}). Track: ${order.trackingUrl || 'https://vastra-marketplace.vercel.app/dashboard/orders/' + order._id}`;
+                    } else if (status === 'delivered') {
+                        smsMsg += `Your order has been delivered! We hope you love the fit. Rate your tailor in your dashboard.`;
+                    } else if (status === 'rejected') {
+                        smsMsg += `The tailor was unable to accept your request at this time.`;
+                    } else if (status === 'cancelled') {
+                        smsMsg += `Your order has been cancelled.`;
+                    } else {
+                        smsMsg += `Status updated to ${status}.`;
+                    }
+
+                    sendSmsOrWhatsApp({
+                        phone: customerUser.phone,
+                        message: smsMsg
+                    }).catch(e => console.error('[Status SMS Error]', e.message));
+                }
+            } catch (err) {
+                console.error('[Status Notification Error]', err.message);
+            }
+        })();
+
         res.json({ success: true, order });
     } catch (error) {
         next(error);
@@ -228,13 +329,44 @@ exports.sendQuote = async (req, res, next) => {
 
         await order.save();
 
-        // Notify customer
+        // Notify customer via socket
         const io = req.app.get('io');
         io.to(`user_${order.customerId}`).emit('orderUpdate', {
             orderId: order._id,
             status: 'quoted',
             message: `Tailor has quoted ₹${quotedPrice} for your order`,
         });
+
+        // Dispatch Email & SMS notifications to customer
+        (async () => {
+            try {
+                const customerUser = await User.findById(order.customerId);
+                const tailorUser = await User.findById(order.tailorId);
+                const orderNum = order._id.toString().slice(-6).toUpperCase();
+                const totalCost = quotedPrice + (shippingCost || 0);
+
+                if (customerUser?.email) {
+                    sendOrderQuotedEmail({
+                        to: customerUser.email,
+                        customerName: customerUser.name,
+                        order,
+                        tailorName: tailorUser?.name || 'Master Tailor',
+                        quotedPrice,
+                        shippingCost: shippingCost || 0,
+                        estimatedDelivery
+                    }).catch(e => console.error('[Quote Email Error]', e.message));
+                }
+
+                if (customerUser?.phone) {
+                    sendSmsOrWhatsApp({
+                        phone: customerUser.phone,
+                        message: `Namaste ${customerUser.name}! Tailor ${tailorUser?.name || 'Master Tailor'} provided a quote of ₹${totalCost} for Order #${orderNum}. Review and pay via UPI on Vastra to start stitching.`
+                    }).catch(e => console.error('[Quote SMS Error]', e.message));
+                }
+            } catch (err) {
+                console.error('[Quote Notification Error]', err.message);
+            }
+        })();
 
         res.json({ success: true, order });
     } catch (error) {
@@ -407,6 +539,22 @@ exports.verifyPayment = async (req, res, next) => {
                     order,
                     tailorName: order.tailorId?.name || 'Master Tailor'
                 }).catch(err => console.error('Failed to send order email:', err.message));
+            }
+
+            // Send SMS Confirmation to Customer
+            if (order.customerId?.phone) {
+                sendSmsOrWhatsApp({
+                    phone: order.customerId.phone,
+                    message: `Namaste ${order.customerId.name}! Payment of ₹${payment.amount} for Vastra Order #${order._id.toString().slice(-6).toUpperCase()} is verified & secured in Escrow. Your tailor has begun stitching!`
+                }).catch(err => console.error('[Payment SMS Error]', err.message));
+            }
+
+            // Send Alert SMS to Tailor
+            if (order.tailorId?.phone) {
+                sendSmsOrWhatsApp({
+                    phone: order.tailorId.phone,
+                    message: `Namaste ${order.tailorId.name}! Payment of ₹${payment.amount} for Order #${order._id.toString().slice(-6).toUpperCase()} is secured in Escrow. Please start stitching.`
+                }).catch(err => console.error('[Tailor Payment SMS Error]', err.message));
             }
         }
 
