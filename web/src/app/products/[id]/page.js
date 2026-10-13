@@ -66,10 +66,10 @@ export default function ProductDetailPage() {
                 p.name = 'Long Kurti';
             } else if ((p && p.type && p.type.toLowerCase().includes('kurti')) || (p && p.name && p.name.toLowerCase().includes('kurti'))) {
                 p.images = [
+                    '/images/products/kurti.jpg',
                     'https://i.pinimg.com/736x/e5/13/e6/e513e678c13bde8ac5c08fe8cf12aadf.jpg',
                     'https://i.pinimg.com/736x/16/cf/0d/16cf0df40ffc10e5ecb56310fefa5171.jpg',
                     'https://i.pinimg.com/736x/17/c6/50/17c650f944b744ba9819210b53844b32.jpg',
-                    'https://i.pinimg.com/736x/b6/9c/e6/b69ce675e7692e3461e47081a4c827ad.jpg',
                     'https://i.pinimg.com/736x/4b/6a/04/4b6a0414bff7b713462859159af76479.jpg'
                 ];
                 p.baseImage = p.images[0];

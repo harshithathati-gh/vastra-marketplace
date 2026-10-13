@@ -16,7 +16,7 @@ export function mapProductImage(p) {
         item.subCategory = 'Ethnic';
         item.name = 'Long Kurti';
     } else if ((item.type && item.type.toLowerCase().includes('kurti')) || (item.name && item.name.toLowerCase().includes('kurti'))) {
-        item.baseImage = '/images/products/kurti.png';
+        item.baseImage = '/images/products/kurti.jpg';
         item.category = 'Women';
         item.subCategory = 'Ethnic';
         item.name = 'Short Kurti';
