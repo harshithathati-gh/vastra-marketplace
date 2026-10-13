@@ -40,13 +40,18 @@ export function mapProductImage(p) {
         item.category = 'Women';
         item.subCategory = 'Ethnic';
         item.name = 'Lehenga';
+    } else if ((item.type && item.type.toLowerCase().includes('kids women kurta')) || (item.name && item.name.toLowerCase().includes('kids women kurta'))) {
+        item.baseImage = '/images/products/kids_women_kurta_1.jpg';
+        item.category = 'Women';
+        item.subCategory = 'Ethnic';
+        item.name = 'Kids Women Kurta Set';
     } else if ((item.type && (item.type.toLowerCase().includes('kids kurta') || item.type.toLowerCase().includes('kids men kurta'))) || (item.name && (item.name.toLowerCase().includes('kids kurta') || item.name.toLowerCase().includes('kids men kurta')))) {
         item.baseImage = '/images/products/kids_kurta_1.jpg';
         item.category = 'Kids';
         item.subCategory = 'Ethnic';
         item.name = 'Kids Kurta Set';
     } else if (item.type && item.type.toLowerCase().includes('kurta')) {
-        item.baseImage = '/images/products/kurta_mens.png';
+        item.baseImage = '/images/products/kurta_mens.jpg';
     } else if (item.type && item.type.toLowerCase().includes('shirt')) {
         item.baseImage = '/images/products/formal_shirt.png';
     } else if (item.type && item.type.toLowerCase().includes('sherwani')) {
