@@ -91,7 +91,7 @@ exports.getTailor = async (req, res, next) => {
 // @route   PUT /api/tailors/profile
 exports.updateProfile = async (req, res, next) => {
     try {
-        const allowed = ['bio', 'specializations', 'experience', 'serviceArea', 'startingPrices'];
+        const allowed = ['bio', 'specializations', 'experience', 'serviceArea', 'startingPrices', 'upiId', 'bankAccount', 'workshopAddress', 'aadhaarOrPan'];
         const updates = {};
         allowed.forEach((field) => {
             if (req.body[field] !== undefined) updates[field] = req.body[field];

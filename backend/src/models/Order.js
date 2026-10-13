@@ -117,7 +117,35 @@ const orderSchema = new mongoose.Schema({
         type: String,
         enum: ['held', 'released', 'refunded'],
     },
-    // Razorpay payment tracking
+    // Razorpay / UPI payment tracking
+    paymentMethod: {
+        type: String,
+        default: 'UPI',
+    },
+    upiTransactionId: {
+        type: String,
+        default: '',
+    },
+    invoiceNumber: {
+        type: String,
+        default: '',
+    },
+    courierPartner: {
+        type: String,
+        default: '',
+    },
+    trackingUrl: {
+        type: String,
+        default: '',
+    },
+    fabricPickupStatus: {
+        type: String,
+        enum: ['not_required', 'pending', 'scheduled', 'picked_up', 'received_by_tailor'],
+        default: 'not_required',
+    },
+    fabricPickupDate: Date,
+    fabricPickupTrackingNumber: String,
+    fabricPickupCourier: String,
     payments: [{
         razorpayOrderId: String,
         razorpayPaymentId: String,
@@ -125,6 +153,7 @@ const orderSchema = new mongoose.Schema({
         type: { type: String, enum: ['advance', 'balance', 'escrow'] },
         status: { type: String, enum: ['created', 'paid', 'failed'], default: 'created' },
         paidAt: Date,
+        method: String,
     }],
     statusHistory: [{
         status: String,

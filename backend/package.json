@@ -9,7 +9,11 @@
     "test": "jest --forceExit --detectOpenHandles",
     "seed": "node src/seeds/seed.js"
   },
-  "keywords": ["tailoring", "marketplace", "india"],
+  "keywords": [
+    "tailoring",
+    "marketplace",
+    "india"
+  ],
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -23,6 +27,7 @@
     "mongoose": "^8.9.5",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
+    "nodemailer": "^10.1.0",
     "razorpay": "^2.9.5",
     "socket.io": "^4.8.1"
   },

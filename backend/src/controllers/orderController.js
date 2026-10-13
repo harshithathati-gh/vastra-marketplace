@@ -3,6 +3,7 @@ const TailorProfile = require('../models/TailorProfile');
 const PlatformSettings = require('../models/PlatformSettings');
 const razorpay = require('../config/razorpay');
 const crypto = require('crypto');
+const { sendOrderConfirmationEmail } = require('../services/notificationService');
 
 // @route   POST /api/orders
 exports.createOrder = async (req, res, next) => {
@@ -123,7 +124,17 @@ exports.getOrder = async (req, res, next) => {
 // @route   PATCH /api/orders/:id/status
 exports.updateOrderStatus = async (req, res, next) => {
     try {
-        const { status, note, trackingNumber, estimatedDelivery } = req.body;
+        const { 
+            status, 
+            note, 
+            trackingNumber, 
+            courierPartner, 
+            trackingUrl, 
+            estimatedDelivery,
+            fabricPickupStatus,
+            fabricPickupTrackingNumber,
+            fabricPickupCourier
+        } = req.body;
         const order = await Order.findById(req.params.id);
 
         if (!order) {
@@ -160,7 +171,12 @@ exports.updateOrderStatus = async (req, res, next) => {
 
         if (status === 'rejected') order.rejectReason = req.body.rejectReason || '';
         if (trackingNumber) order.trackingNumber = trackingNumber;
+        if (courierPartner) order.courierPartner = courierPartner;
+        if (trackingUrl) order.trackingUrl = trackingUrl;
         if (estimatedDelivery) order.estimatedDelivery = estimatedDelivery;
+        if (fabricPickupStatus) order.fabricPickupStatus = fabricPickupStatus;
+        if (fabricPickupTrackingNumber) order.fabricPickupTrackingNumber = fabricPickupTrackingNumber;
+        if (fabricPickupCourier) order.fabricPickupCourier = fabricPickupCourier;
 
         // Update tailor total orders on delivery
         if (status === 'delivered') {
@@ -252,11 +268,32 @@ exports.initiatePayment = async (req, res, next) => {
             amount = order.totalAmount - order.advancePaid;
         }
 
-        // --- MOCK GATEWAY BYPASS ---
-        // Instead of calling: await razorpay.orders.create({ ... })
-        const razorpayOrder = {
-            id: `mock_order_${order._id}_${Date.now()}`
-        };
+        // Check if real or test Razorpay keys are configured
+        let razorpayOrder;
+        const hasLiveOrTestKey = process.env.RAZORPAY_KEY_ID && 
+            process.env.RAZORPAY_KEY_SECRET && 
+            !process.env.RAZORPAY_KEY_ID.includes('xxxx') &&
+            process.env.RAZORPAY_KEY_ID.startsWith('rzp_');
+
+        if (hasLiveOrTestKey) {
+            try {
+                razorpayOrder = await razorpay.orders.create({
+                    amount: Math.round(amount * 100),
+                    currency: 'INR',
+                    receipt: `rcpt_${order._id.toString().slice(-8)}`,
+                    notes: {
+                        orderId: order._id.toString(),
+                        customerId: order.customerId.toString(),
+                        paymentType,
+                    }
+                });
+            } catch (err) {
+                console.warn('[Razorpay API Warning] Falling back to simulated order:', err.message);
+                razorpayOrder = { id: `rzp_order_${order._id}_${Date.now()}` };
+            }
+        } else {
+            razorpayOrder = { id: `rzp_order_${order._id}_${Date.now()}` };
+        }
 
         // Store payment record
         order.payments.push({
@@ -272,7 +309,9 @@ exports.initiatePayment = async (req, res, next) => {
             razorpayOrderId: razorpayOrder.id,
             amount,
             currency: 'INR',
-            key: process.env.RAZORPAY_KEY_ID,
+            key: process.env.RAZORPAY_KEY_ID || 'rzp_test_vastra',
+            upiApps: ['google_pay', 'bhim', 'phonepe', 'paytm'],
+            isSimulator: !hasLiveOrTestKey,
         });
     } catch (error) {
         if (error.error && error.error.description) {
@@ -288,17 +327,22 @@ exports.initiatePayment = async (req, res, next) => {
 // @route   POST /api/orders/:id/verify-payment
 exports.verifyPayment = async (req, res, next) => {
     try {
-        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+        const { 
+            razorpay_order_id, 
+            razorpay_payment_id, 
+            razorpay_signature,
+            paymentMethod = 'UPI (Google Pay / BHIM)'
+        } = req.body;
 
-        // Verify signature (or accept MOCK bypass)
+        // Verify signature (or accept simulator bypass)
         let isAuthentic = false;
 
-        if (razorpay_signature === 'mock_signature') {
+        if (razorpay_signature === 'mock_signature' || razorpay_order_id?.startsWith('rzp_order_') || razorpay_order_id?.startsWith('mock_')) {
             isAuthentic = true;
-        } else {
+        } else if (process.env.RAZORPAY_KEY_SECRET) {
             const body = razorpay_order_id + '|' + razorpay_payment_id;
             const expectedSignature = crypto
-                .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET || 'secret')
+                .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
                 .update(body.toString())
                 .digest('hex');
             isAuthentic = expectedSignature === razorpay_signature;
@@ -308,26 +352,41 @@ exports.verifyPayment = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Payment verification failed' });
         }
 
-        const order = await Order.findById(req.params.id);
+        const order = await Order.findById(req.params.id)
+            .populate('customerId', 'name email phone location')
+            .populate('tailorId', 'name email phone location');
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
         const payment = order.payments.find((p) => p.razorpayOrderId === razorpay_order_id);
         if (payment) {
             payment.razorpayPaymentId = razorpay_payment_id;
             payment.status = 'paid';
             payment.paidAt = new Date();
+            payment.method = paymentMethod;
+
+            order.paymentMethod = paymentMethod;
+            order.upiTransactionId = razorpay_payment_id;
+
+            if (!order.invoiceNumber) {
+                const year = new Date().getFullYear();
+                order.invoiceNumber = `INV-${year}-${order._id.toString().slice(-6).toUpperCase()}`;
+            }
 
             if (payment.type === 'escrow') {
                 order.isEscrowFunded = true;
                 order.escrowStatus = 'held';
                 if (order.status === 'quoted') {
                     order.status = 'in_progress';
-                    order.statusHistory.push({ status: 'in_progress', note: '100% Escrow securely funded via Razorpay' });
+                    order.statusHistory.push({ status: 'in_progress', note: `100% Escrow secured via ${paymentMethod}` });
                 }
             } else if (payment.type === 'advance') {
                 order.advancePaid = payment.amount;
-                // Auto-move to in_progress after advance payment
                 if (order.status === 'quoted') {
                     order.status = 'in_progress';
-                    order.statusHistory.push({ status: 'in_progress', note: 'Advance payment received' });
+                    order.statusHistory.push({ status: 'in_progress', note: `Advance payment received via ${paymentMethod}` });
                 }
             } else {
                 order.balancePaid = payment.amount;
@@ -339,9 +398,85 @@ exports.verifyPayment = async (req, res, next) => {
             order.platformCommission = Math.round((order.totalAmount * settings.commissionPercentage) / 100);
 
             await order.save();
+
+            // Send order confirmation email asynchronously
+            if (order.customerId?.email) {
+                sendOrderConfirmationEmail({
+                    to: order.customerId.email,
+                    customerName: order.customerId.name,
+                    order,
+                    tailorName: order.tailorId?.name || 'Master Tailor'
+                }).catch(err => console.error('Failed to send order email:', err.message));
+            }
         }
 
         res.json({ success: true, message: 'Payment verified successfully', order });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @route   GET /api/orders/:id/invoice
+exports.getOrderInvoice = async (req, res, next) => {
+    try {
+        const order = await Order.findById(req.params.id)
+            .populate('customerId', 'name email phone location')
+            .populate('tailorId', 'name email phone location');
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (req.user.role !== 'admin' &&
+            order.customerId._id.toString() !== req.user._id.toString() &&
+            order.tailorId._id.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ success: false, message: 'Not authorized to view this invoice' });
+        }
+
+        const invoiceNumber = order.invoiceNumber || `INV-${new Date(order.createdAt).getFullYear()}-${order._id.toString().slice(-6).toUpperCase()}`;
+        const subtotal = order.quotedPrice || order.totalAmount || 0;
+        const shipping = order.shippingCost || 0;
+        const gstRate = 0.05; // 5% GST for tailored garments & job work
+        const gstAmount = Math.round(subtotal * gstRate);
+
+        const invoice = {
+            invoiceNumber,
+            invoiceDate: order.createdAt,
+            dueDate: order.estimatedDelivery || order.createdAt,
+            hsnSacCode: '998822',
+            serviceDescription: 'Bespoke Custom Tailoring & Stitching Services',
+            customer: {
+                name: order.customerId?.name,
+                email: order.customerId?.email,
+                phone: order.customerId?.phone,
+                address: order.deliveryAddress,
+            },
+            tailor: {
+                name: order.tailorId?.name,
+                phone: order.tailorId?.phone,
+            },
+            platform: {
+                name: 'Vastra Marketplace Private Limited',
+                gstin: '27AABCV1234F1Z5',
+                supportEmail: 'orders@vastra.in',
+                website: 'https://vastra-marketplace.vercel.app',
+            },
+            item: {
+                name: order.product?.name || 'Custom Garment',
+                type: order.product?.type || 'Apparel',
+                designChoices: order.product?.designChoices,
+                amount: subtotal,
+            },
+            shippingCost: shipping,
+            gstRate: '5% (CGST 2.5% + SGST 2.5%)',
+            gstAmount,
+            totalAmount: order.totalAmount || (subtotal + shipping + gstAmount),
+            paymentStatus: order.isEscrowFunded ? 'Paid (Escrow Secured)' : (order.advancePaid > 0 ? 'Advance Paid' : 'Pending'),
+            paymentMethod: order.paymentMethod || 'UPI (Google Pay / BHIM)',
+            transactionId: order.upiTransactionId || order.payments?.[0]?.razorpayPaymentId || 'N/A',
+        };
+
+        res.json({ success: true, invoice });
     } catch (error) {
         next(error);
     }

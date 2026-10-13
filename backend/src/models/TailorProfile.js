@@ -45,6 +45,24 @@ const tailorProfileSchema = new mongoose.Schema({
         category: { type: String, default: 'general' },
         uploadedAt: { type: Date, default: Date.now },
     }],
+    upiId: {
+        type: String,
+        default: '',
+        trim: true,
+    },
+    bankAccount: {
+        accountNumber: { type: String, default: '' },
+        ifscCode: { type: String, default: '' },
+        accountHolderName: { type: String, default: '' },
+    },
+    workshopAddress: {
+        type: String,
+        default: '',
+    },
+    aadhaarOrPan: {
+        type: String,
+        default: '',
+    },
     verificationStatus: {
         type: String,
         enum: ['pending', 'approved', 'rejected'],
