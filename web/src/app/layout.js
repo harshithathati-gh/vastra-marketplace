@@ -2,6 +2,7 @@ import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import WhatsAppWidget from '@/components/WhatsAppWidget';
 
 export const metadata = {
     title: 'Vastra | From local hands to your homes !',
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
                     <Navbar />
                     <main>{children}</main>
                     <Footer />
+                    <WhatsAppWidget />
                 </AuthProvider>
             </body>
         </html>
