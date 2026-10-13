@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 export default function WhatsAppWidget({ 
-    phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919876543210',
+    phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919490216284',
     companyName = 'Vastra Support',
     defaultMessage = 'Namaste! I would like some help with custom tailoring on Vastra.' 
 }) {
@@ -20,7 +20,9 @@ export default function WhatsAppWidget({
     const handleSend = (textToSend) => {
         const msg = textToSend || userMessage || defaultMessage;
         const encoded = encodeURIComponent(msg);
-        const url = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${encoded}`;
+        const cleanNumber = (phoneNumber || '919490216284').replace(/[^0-9]/g, '');
+        const targetNumber = cleanNumber.length === 10 ? `91${cleanNumber}` : cleanNumber;
+        const url = `https://wa.me/${targetNumber}?text=${encoded}`;
         window.open(url, '_blank', 'noopener,noreferrer');
         setIsOpen(false);
     };
