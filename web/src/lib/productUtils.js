@@ -36,7 +36,7 @@ export function mapProductImage(p) {
         item.subCategory = 'Ethnic';
         item.name = 'Half Saree';
     } else if ((item.type && item.type.toLowerCase().includes('lehenga')) || (item.name && item.name.toLowerCase().includes('lehenga'))) {
-        item.baseImage = '/images/products/lehenga.png';
+        item.baseImage = '/images/products/lehenga.jpg';
         item.category = 'Women';
         item.subCategory = 'Ethnic';
         item.name = 'Lehenga';

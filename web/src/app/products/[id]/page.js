@@ -114,7 +114,7 @@ export default function ProductDetailPage() {
                 p.name = 'Half Saree';
             } else if ((p && p.type && p.type.toLowerCase().includes('lehenga')) || (p && p.name && p.name.toLowerCase().includes('lehenga'))) {
                 p.images = [
-                    'https://i.pinimg.com/736x/5e/33/8b/5e338b5b1879403d62debf567c0815ac.jpg',
+                    '/images/products/lehenga.jpg',
                     'https://i.pinimg.com/736x/c9/87/58/c98758417d002c776550e3d1ca38834e.jpg',
                     'https://i.pinimg.com/736x/31/6d/0b/316d0b59aea1e70d04f2fd9b31dace6f.jpg',
                     'https://i.pinimg.com/736x/c9/fa/6a/c9fa6acb7400324dc8cfeae9e894e70c.jpg',
