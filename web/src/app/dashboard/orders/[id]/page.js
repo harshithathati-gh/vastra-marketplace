@@ -53,6 +53,14 @@ export default function OrderDetailPage() {
         note: '',
     });
 
+    // Quote Modal State (for Tailors)
+    const [showQuoteModal, setShowQuoteModal] = useState(false);
+    const [quoteForm, setQuoteForm] = useState({
+        quotedPrice: '',
+        shippingCost: '',
+        estimatedDelivery: '',
+    });
+
     useEffect(() => {
         loadOrder();
     }, [id]);
@@ -134,7 +142,11 @@ export default function OrderDetailPage() {
         const currentMethodName = methodLabels[selectedUpiMethod] || 'UPI';
 
         try {
-            const data = await api.post(`/orders/${id}/pay`, { paymentType: 'escrow' });
+            const payAmount = order.totalAmount > 0 ? order.totalAmount : 500;
+            const data = await api.post(`/orders/${id}/pay`, { 
+                paymentType: order.totalAmount > 0 ? 'escrow' : 'advance',
+                amount: payAmount
+            });
             const isLoaded = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
 
             // If real Razorpay key is present and SDK loaded
@@ -182,6 +194,23 @@ export default function OrderDetailPage() {
             alert("Error completing payment: " + error.message);
         } finally {
             setPaymentLoading(false);
+        }
+    };
+
+    // Send Custom Quote (for Tailor directly on Order page)
+    const handleSendQuote = async (e) => {
+        e.preventDefault();
+        try {
+            await api.patch(`/orders/${id}/quote`, {
+                quotedPrice: parseFloat(quoteForm.quotedPrice),
+                shippingCost: parseFloat(quoteForm.shippingCost) || 0,
+                estimatedDelivery: quoteForm.estimatedDelivery,
+            });
+            setShowQuoteModal(false);
+            alert('Price quote submitted to customer!');
+            loadOrder();
+        } catch (err) {
+            alert('Failed to send quote: ' + err.message);
         }
     };
 
@@ -465,9 +494,45 @@ export default function OrderDetailPage() {
                                         )}
                                     </>
                                 ) : (
-                                    <p style={{ fontSize: '0.88rem', color: 'var(--text-tertiary)' }}>
-                                        {order.status === 'placed' || order.status === 'accepted' ? 'Awaiting final quote from tailor based on your custom requirements' : 'No payment required'}
-                                    </p>
+                                    <div style={{ background: '#FAF5FF', border: '1px solid #E9D5FF', borderRadius: '10px', padding: '16px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                                            <span style={{ fontSize: '1.2rem' }}>💳</span>
+                                            <strong style={{ color: '#6D28D9', fontSize: '0.95rem' }}>Secure Escrow Payment</strong>
+                                        </div>
+                                        <p style={{ fontSize: '0.82rem', color: '#581C87', lineHeight: '1.5', margin: '0 0 14px' }}>
+                                            {isTailor 
+                                                ? 'Review the customer’s measurements and custom requirements to submit your price quote.' 
+                                                : 'Your tailor is reviewing your custom requirements to send your exact stitching quote. You can lock your tailor’s schedule now with a ₹500 booking deposit via UPI.'}
+                                        </p>
+                                        
+                                        {isCustomer && (
+                                            <button
+                                                className="btn btn-primary"
+                                                style={{ width: '100%', padding: '12px', background: 'linear-gradient(135deg, #8B5CF6, #6D28D9)', fontSize: '0.9rem', fontWeight: 700 }}
+                                                onClick={() => setShowPaymentModal(true)}
+                                            >
+                                                Pay ₹500 Booking Deposit (UPI / GPay / BHIM)
+                                            </button>
+                                        )}
+
+                                        {isTailor && (order.status === 'placed' || order.status === 'accepted') && (
+                                            <button
+                                                className="btn btn-primary"
+                                                style={{ width: '100%', padding: '12px', background: '#059669', borderColor: '#059669', fontWeight: 700 }}
+                                                onClick={() => setShowQuoteModal(true)}
+                                            >
+                                                💰 Submit Price Quote to Customer
+                                            </button>
+                                        )}
+
+                                        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '10px', fontSize: '0.75rem', color: '#7E22CE' }}>
+                                            <span>🟢 Google Pay</span>
+                                            <span>•</span>
+                                            <span>🔵 BHIM</span>
+                                            <span>•</span>
+                                            <span>🟣 PhonePe</span>
+                                        </div>
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -527,7 +592,7 @@ export default function OrderDetailPage() {
 
                         <div style={{ background: '#F9FAFB', borderRadius: '8px', padding: '14px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between' }}>
                             <span style={{ fontSize: '0.9rem', color: '#4B5563' }}>Amount Payable to Escrow:</span>
-                            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#6D28D9' }}>₹{order.totalAmount}</span>
+                            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#6D28D9' }}>₹{order.totalAmount > 0 ? order.totalAmount : 500}</span>
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
@@ -563,7 +628,7 @@ export default function OrderDetailPage() {
                             className="btn btn-primary btn-full"
                             style={{ padding: '12px', fontSize: '1rem', background: '#6D28D9', borderRadius: '10px' }}
                         >
-                            {paymentLoading ? 'Connecting to Gateway...' : `Proceed to Pay ₹${order.totalAmount}`}
+                            {paymentLoading ? 'Connecting to Gateway...' : `Proceed to Pay ₹${order.totalAmount > 0 ? order.totalAmount : 500}`}
                         </button>
                         <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#9CA3AF', marginTop: '10px' }}>
                             🔒 256-Bit Encrypted Escrow. Funds held securely under Indian Banking Regulations.
@@ -710,6 +775,53 @@ export default function OrderDetailPage() {
                                 </div>
                             </div>
                         ) : null}
+                    </div>
+                </div>
+            )}
+
+            {/* SEND PRICE QUOTE MODAL (FOR TAILORS) */}
+            {showQuoteModal && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+                    <div style={{ background: 'white', borderRadius: '16px', maxWidth: '440px', width: '100%', padding: '28px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Send Price Quote</h2>
+                            <button onClick={() => setShowQuoteModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
+                        </div>
+                        <form onSubmit={handleSendQuote}>
+                            <div className="form-group">
+                                <label>Tailoring & Stitching Price (₹)</label>
+                                <input
+                                    type="number"
+                                    className="form-input"
+                                    placeholder="e.g. 2500"
+                                    value={quoteForm.quotedPrice}
+                                    onChange={(e) => setQuoteForm({ ...quoteForm, quotedPrice: e.target.value })}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Shipping & Courier Cost (₹)</label>
+                                <input
+                                    type="number"
+                                    className="form-input"
+                                    placeholder="e.g. 150 (or 0 for Free Shipping)"
+                                    value={quoteForm.shippingCost}
+                                    onChange={(e) => setQuoteForm({ ...quoteForm, shippingCost: e.target.value })}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Estimated Completion Date</label>
+                                <input
+                                    type="date"
+                                    className="form-input"
+                                    value={quoteForm.estimatedDelivery}
+                                    onChange={(e) => setQuoteForm({ ...quoteForm, estimatedDelivery: e.target.value })}
+                                />
+                            </div>
+                            <button type="submit" className="btn btn-primary btn-full" style={{ marginTop: '12px', background: '#059669', borderColor: '#059669' }}>
+                                Submit Quote to Customer
+                            </button>
+                        </form>
                     </div>
                 </div>
             )}

@@ -261,11 +261,11 @@ exports.initiatePayment = async (req, res, next) => {
 
         let amount;
         if (paymentType === 'advance') {
-            amount = Math.round((order.totalAmount * settings.advancePercentage) / 100);
+            amount = req.body.amount || Math.round((order.totalAmount * settings.advancePercentage) / 100) || 500;
         } else if (paymentType === 'escrow') {
-            amount = order.totalAmount;
+            amount = order.totalAmount > 0 ? order.totalAmount : (req.body.amount || 1500);
         } else {
-            amount = order.totalAmount - order.advancePaid;
+            amount = (order.totalAmount - order.advancePaid) > 0 ? (order.totalAmount - order.advancePaid) : (req.body.amount || 500);
         }
 
         // Check if real or test Razorpay keys are configured
