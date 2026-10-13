@@ -59,8 +59,11 @@ export function mapProductImage(p) {
         item.category = 'Men';
         item.subCategory = 'Ethnic';
         item.name = 'Sherwani';
-    } else if (item.type && item.type.toLowerCase().includes('suit')) {
-        item.baseImage = '/images/products/two_piece_suit.png';
+    } else if ((item.type && item.type.toLowerCase().includes('suit')) || (item.name && (item.name.toLowerCase().includes('suit') || item.name.toLowerCase().includes('piece')))) {
+        item.baseImage = '/images/products/suit_1.jpg';
+        item.category = 'Men';
+        item.subCategory = 'Western';
+        item.name = 'Suit (3-Piece)';
     }
 
     return item;
