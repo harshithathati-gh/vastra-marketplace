@@ -54,8 +54,11 @@ export function mapProductImage(p) {
         item.baseImage = '/images/products/kurta_mens.jpg';
     } else if (item.type && item.type.toLowerCase().includes('shirt')) {
         item.baseImage = '/images/products/formal_shirt.png';
-    } else if (item.type && item.type.toLowerCase().includes('sherwani')) {
-        item.baseImage = '/images/products/sherwani.png';
+    } else if ((item.type && item.type.toLowerCase().includes('sherwani')) || (item.name && item.name.toLowerCase().includes('sherwani'))) {
+        item.baseImage = '/images/products/sherwani_1.jpg';
+        item.category = 'Men';
+        item.subCategory = 'Ethnic';
+        item.name = 'Sherwani';
     } else if (item.type && item.type.toLowerCase().includes('suit')) {
         item.baseImage = '/images/products/two_piece_suit.png';
     }

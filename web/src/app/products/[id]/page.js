@@ -157,6 +157,18 @@ export default function ProductDetailPage() {
                     'https://i.pinimg.com/736x/be/f6/27/bef6271c7ca7e6767e1c4e35b56fd442.jpg'
                 ];
                 p.baseImage = p.images[0];
+            } else if ((p && p.type && p.type.toLowerCase().includes('sherwani')) || (p && p.name && p.name.toLowerCase().includes('sherwani'))) {
+                p.images = [
+                    '/images/products/sherwani_1.jpg',
+                    '/images/products/sherwani_2.jpg',
+                    '/images/products/sherwani_3.jpg',
+                    '/images/products/sherwani_4.jpg',
+                    '/images/products/sherwani_5.jpg'
+                ];
+                p.baseImage = p.images[0];
+                p.category = 'Men';
+                p.subCategory = 'Ethnic';
+                p.name = 'Sherwani';
             }
             setProduct(p);
             if (p) setActiveImg(p.baseImage || (p.images && p.images[0]));
